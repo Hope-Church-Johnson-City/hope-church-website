@@ -1,35 +1,27 @@
 import React from 'react';
+import serviceTimes from '../content/settings/service-times.json';
 
 /* Hope Church — Sunday service times, single source of truth.
 
-   The NEW Sunday schedule goes live on the website on
-   Sunday, July 26 2026 at 1:00pm ET (EDT = UTC-4 -> 17:00 UTC).
-   Before that instant the site shows the current (OLD) times; after it,
-   the NEW times — flipped automatically, no redeploy needed.
+   These values are now edited through the CMS (admin → "Service Times").
+   They live in content/settings/service-times.json; this module just reads
+   that file so every component and the SEO/structured data stay in sync.
 
-   `stream` is the livestreamed service (currently the 9:45am service; it
-   maps to the new 9:15am service). Change here if a different service is
-   streamed after the switch. */
-const { useState, useEffect } = React;
+   Editable fields:
+     first / second / third  — the three Sunday service start times
+     stream                  — which service is livestreamed
+     runthrough / runthroughEnd — worship & tech Sunday run-through window
+     firstServiceClasses     — kids classes offered at the first service
+     otherServiceClasses     — kids classes at the second & third services */
 
-export const SERVICE_TIMES_SWITCH = Date.parse('2026-07-26T17:00:00Z');
+// `isNew` is retained for components that branch on it (the nursery/preschool
+// split is now the permanent schedule, so it is always true).
+const TIMES = { ...serviceTimes, isNew: true };
 
-const OLD = { first: '8:00am', second: '9:45am', third: '11:30am', stream: '9:45am', runthrough: '7:00am', runthroughEnd: '7:30am', isNew: false };
-const NEW = { first: '7:30am', second: '9:15am', third: '11:00am', stream: '9:15am', runthrough: '6:30am', runthroughEnd: '7:00am', isNew: true };
+export const SERVICE_TIMES = TIMES;
 
-export const OLD_SERVICE_TIMES = OLD;
-export const NEW_SERVICE_TIMES = NEW;
-
-// The switch (Jul 26 2026) is now permanently in the past, so NEW is the
-// default the static/SSR render bakes in — this keeps the pre-rendered HTML
-// and SEO structured data correct for no-JS visitors and crawlers, with no
-// flash of old times. The date gate below is retained for safety/preview.
-// Add ?previewTimes=new (or =old) to any URL to force a set for QA.
-// Shared note: under the new schedule the 7:30 service is nursery & preschool
-// only (no K–4th grade, no Linked 5–6th).
 export function KidsServiceNote({ className }) {
   const st = useServiceTimes();
-  if (!st.isNew) return null;
   return (
     <p className={className}>
       <strong>Heads up for the {st.first} service:</strong> we offer nursery &amp; preschool only.
@@ -39,20 +31,5 @@ export function KidsServiceNote({ className }) {
 }
 
 export function useServiceTimes() {
-  const [times, setTimes] = useState(NEW);
-  useEffect(() => {
-    let force = null;
-    try {
-      // Persist the preview choice in sessionStorage so it survives in-app
-      // navigation (the ?previewTimes param is dropped on client-side nav).
-      const p = new URLSearchParams(window.location.search).get('previewTimes');
-      if (p === 'new' || p === 'old') window.sessionStorage.setItem('previewTimes', p);
-      else if (p === 'off') window.sessionStorage.removeItem('previewTimes');
-      const stored = window.sessionStorage.getItem('previewTimes');
-      if (stored === 'new') force = NEW;
-      else if (stored === 'old') force = OLD;
-    } catch { /* ignore */ }
-    setTimes(force || (Date.now() >= SERVICE_TIMES_SWITCH ? NEW : OLD));
-  }, []);
-  return times;
+  return TIMES;
 }
