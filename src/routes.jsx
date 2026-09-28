@@ -30,7 +30,7 @@ import {
 import {
   LifeGroupsPage, MissionsPage, ConnectCardPage, DiscoverHopePage,
 } from './components/getinvolved.jsx';
-import { PrayerRequestPage, GetHelpPage, PodcastPage, AppPage } from './components/pages-extra.jsx';
+import { PrayerRequestPage, GetHelpPage, PodcastPage, AppPage, DownloadPage } from './components/pages-extra.jsx';
 import { GenerationsPage, GenerationsHomeBlock } from './components/generations.jsx';
 import { PrivacyPage, AccessibilityPage, TermsPage, DeleteAccountPage } from './components/pages-legal.jsx';
 import EventDetailPage from './components/event-detail.jsx';
@@ -180,6 +180,12 @@ const ministry = (pageKey) => ({
 });
 
 export const routes = [
+  // Outside the Layout on purpose: the page to share for the app carries
+  // nothing but the store buttons (see DownloadPage).
+  {
+    path: '/download',
+    element: (<><Seo pageKey="download" /><DownloadPage /><Analytics /></>),
+  },
   {
     path: '/',
     element: <Layout />,

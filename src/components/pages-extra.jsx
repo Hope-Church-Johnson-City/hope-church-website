@@ -592,7 +592,7 @@ function PodcastPage({ initialChannel }) {
   );
 }
 
-export { PrayerRequestPage, GetHelpPage, PodcastPage, PODCASTS, AppPage, ApplePodcastsIcon, SpotifyIcon, RssIcon };
+export { PrayerRequestPage, GetHelpPage, PodcastPage, PODCASTS, AppPage, DownloadPage, ApplePodcastsIcon, SpotifyIcon, RssIcon };
 
 // ============================================================
 // App Page
@@ -646,6 +646,44 @@ function AppStoreButtons({ className = '' }) {
         </div>
       </a>
     </div>
+  );
+}
+
+// hopejc.org/download: the one link to share for the app -- nothing on it but
+// the two store buttons. Standalone (no header, footer or announcement), so a
+// person who scans a QR code or taps a texted link sees only what they came for.
+// The button for their own phone comes first; nothing redirects on its own.
+function DownloadPage() {
+  const [android, setAndroid] = React.useState(false);
+  React.useEffect(() => { setAndroid(/android/i.test(navigator.userAgent)); }, []);
+  const apple = (
+    <a key="ios" className="app-store-btn download-btn" href={APP_STORE_URL} aria-label="Download Hope Church JC on the App Store">
+      <AppPageAppleBadge/>
+      <div>
+        <div className="app-store-btn-small">Download on the</div>
+        <div className="app-store-btn-big">App Store</div>
+      </div>
+    </a>
+  );
+  const google = (
+    <a key="android" className="app-store-btn download-btn" href={PLAY_STORE_URL} aria-label="Get Hope Church JC on Google Play">
+      <AppPageGoogleBadge/>
+      <div>
+        <div className="app-store-btn-small">Get it on</div>
+        <div className="app-store-btn-big">Google Play</div>
+      </div>
+    </a>
+  );
+  return (
+    <main className="download-page" data-screen-label="Page · Download the app">
+      <div className="download-card">
+        <img className="download-icon" src="/assets/app-icon.png" alt="" width="120" height="120"/>
+        <h1 className="download-title">Hope Church</h1>
+        <p className="download-lead">Messages, the Bible, events and giving. Free on iPhone and Android.</p>
+        <div className="download-buttons">{android ? [google, apple] : [apple, google]}</div>
+      </div>
+      <a className="download-home" href="/">hopejc.org</a>
+    </main>
   );
 }
 

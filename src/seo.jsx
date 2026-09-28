@@ -161,6 +161,10 @@ export const META = {
     description:
       'Download the Hope Church app for sermons, events, giving, and more — available on the App Store and Google Play.',
   },
+  download: {
+    title: `Download the App | ${BRAND}`,
+    description: 'Get the Hope Church app on the App Store or Google Play.',
+  },
   privacy: {
     title: `Privacy Policy | ${BRAND}`,
     description: 'How Hope Church collects, uses, and protects your information.',

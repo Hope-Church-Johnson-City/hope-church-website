@@ -39,6 +39,7 @@ export const KEY_TO_PATH = {
   podcast: '/podcast',
   'podcast-finding-hope': '/podcast/finding-hope',
   app: '/app',
+  download: '/download',
   privacy: '/privacy',
   'delete-account': '/delete-account',
   accessibility: '/accessibility',
