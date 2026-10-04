@@ -636,6 +636,7 @@ function Footer({ onNav }) {
           <div>
             <h5>Connect</h5>
             <ul>
+              <li><a href={pathFor('thisweek')} onClick={(e)=>{e.preventDefault();onNav('thisweek');}}>This Week</a></li>
               <li><a href={pathFor('visit')} onClick={(e)=>{e.preventDefault();onNav('visit');}}>Plan a Visit</a></li>
               <li><a href={pathFor('about')} onClick={(e)=>{e.preventDefault();onNav('about');}}>About</a></li>
               <li><a href={pathFor('team')} onClick={(e)=>{e.preventDefault();onNav('team');}}>Team</a></li>
