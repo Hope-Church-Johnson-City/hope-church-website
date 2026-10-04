@@ -843,3 +843,12 @@ a.footer-live-btn.hero-live-btn .live-dot {
   .tw-latest { flex-direction: column; align-items: stretch; }
   .tw-latest img { width: 100%; }
 }
+
+.tw-row.tw-notice { background: #FFF7E8; box-shadow: inset 4px 0 0 #F59E0B; }
+.tw-row.tw-notice:hover { background: #FFEFD2; }
+.tw-row.tw-notice .tw-icon { background: rgba(245,158,11,0.18); }
+.tw-row.tw-notice .tw-title { font-weight: 600; color: #7C2D12; }
+.tw-badge {
+  display: block; width: fit-content; margin-bottom: 4px; padding: 2px 8px; border-radius: 999px;
+  background: #F59E0B; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}

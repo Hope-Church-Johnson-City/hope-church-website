@@ -642,6 +642,10 @@ function thisWeekDate(day) {
   return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 }
 
+// "No Hope Students – back October 14": a week something is not meeting.
+// Shown in amber so it is not read past as one more link.
+const THIS_WEEK_NOTICE = /^(no|not meeting|cancel)/i;
+
 function ThisWeekPage() {
   const [week, setWeek] = React.useState(null);
   const [latest, setLatest] = React.useState(null);
@@ -699,11 +703,15 @@ function ThisWeekPage() {
             <ul className="tw-rows">
               {rows.map((r) => {
                 const external = /^https?:/i.test(r.href);
+                const notice = THIS_WEEK_NOTICE.test(r.title || '');
                 return (
                   <li key={r.id}>
-                    <a className="tw-row" href={r.href} {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
-                      <span className="tw-icon"><Icon name={thisWeekIcon(r.icon)} size={20} color="var(--hope-blue)" /></span>
-                      <span className="tw-title">{r.title}</span>
+                    <a className={notice ? 'tw-row tw-notice' : 'tw-row'} href={r.href} {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
+                      <span className="tw-icon"><Icon name={notice ? 'calendar' : thisWeekIcon(r.icon)} size={20} color={notice ? '#B45309' : 'var(--hope-blue)'} /></span>
+                      <span className="tw-title">
+                        {notice && <span className="tw-badge">Not meeting</span>}
+                        {r.title}
+                      </span>
                       <Icon name="chevron" size={18} color="var(--ink-400, #9aa3ad)" />
                     </a>
                   </li>
