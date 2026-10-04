@@ -40,6 +40,7 @@ export const KEY_TO_PATH = {
   'podcast-finding-hope': '/podcast/finding-hope',
   app: '/app',
   download: '/download',
+  thisweek: '/this-week',
   privacy: '/privacy',
   'delete-account': '/delete-account',
   accessibility: '/accessibility',

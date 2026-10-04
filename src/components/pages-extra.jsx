@@ -592,7 +592,132 @@ function PodcastPage({ initialChannel }) {
   );
 }
 
-export { PrayerRequestPage, GetHelpPage, PodcastPage, PODCASTS, AppPage, DownloadPage, ApplePodcastsIcon, SpotifyIcon, RssIcon };
+
+// ---------- This Week ----------
+// The same list as the app's This Week screen, read live from the CMS's app
+// layout, so editing This Week in the CMS on Sunday morning updates the app
+// and hopejc.org/this-week together, with no rebuild. The link is what gets
+// texted to the congregation.
+const THIS_WEEK_CMS = 'https://media.hopejc.org';
+
+// The app's own screens, as pages on this site. A row pointing somewhere the
+// site has no page for (the Bible tab, notifications) is left out.
+const THIS_WEEK_SCREENS = {
+  nextSteps: '/next-steps', serve: '/serve', missions: '/missions', discoverHope: '/discover-hope',
+  about: '/about', team: '/team', generations: '/generations', prayer: '/prayer', getHelp: '/get-help',
+  contact: '/contact', podcasts: '/podcast', ministries: '/ministries',
+  'ministry-kids': '/ministries/kids', 'ministry-linked56': '/ministries/linked56',
+  'ministry-students': '/ministries/students', 'ministry-college': '/ministries/college',
+  'ministry-women': '/ministries/women', 'ministry-men': '/ministries/men',
+  'ministry-worship': '/ministries/worship', 'ministry-fueledbyhope': '/ministries/fueled-by-hope',
+};
+const THIS_WEEK_TABS = { home: '/', media: '/sermons', events: '/events', give: '/give' };
+
+function thisWeekHref(d) {
+  if (!d) return null;
+  if (d.kind === 'link' || d.kind === 'web') {
+    // Our own pages open here rather than reloading the site.
+    return String(d.url || '').replace(/^https:\/\/(www\.)?hopejc\.org(?=\/|$)/, '') || '/';
+  }
+  if (d.kind === 'tab') return THIS_WEEK_TABS[d.id] || null;
+  if (d.kind === 'screen') return THIS_WEEK_SCREENS[d.id] || null;
+  return null;
+}
+
+function thisWeekIcon(name) {
+  const n = String(name || '');
+  if (/play|video|mic/.test(n)) return 'play';
+  if (/heart|pray/.test(n)) return 'heart';
+  if (/gift|give|dollar/.test(n)) return 'gift';
+  if (/calendar|clock/.test(n)) return 'calendar';
+  if (/book|bible/.test(n)) return 'book';
+  if (/news|mail|envelope/.test(n)) return 'mail';
+  return 'arrow';
+}
+
+function thisWeekDate(day) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day || '');
+  if (!m) return '';
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+function ThisWeekPage() {
+  const [week, setWeek] = React.useState(null);
+  const [latest, setLatest] = React.useState(null);
+  const [failed, setFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    let live = true;
+    fetch(`${THIS_WEEK_CMS}/api/public/app-layout`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((layout) => {
+        if (!live) return;
+        const tw = layout && layout.thisWeek;
+        setWeek(tw && tw.enabled !== false ? tw : { rows: [] });
+        if (!tw || !tw.latest || tw.latest.enabled !== false) {
+          fetch(`${THIS_WEEK_CMS}/api/public/media?branch=messages&limit=1`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((j) => { if (live && j && j.media && j.media[0]) setLatest(j.media[0]); })
+            .catch(() => {});
+        }
+      })
+      .catch(() => { if (live) setFailed(true); });
+    return () => { live = false; };
+  }, []);
+
+  const rows = ((week && week.rows) || [])
+    .filter((r) => r && r.enabled !== false)
+    .map((r) => ({ ...r, href: thisWeekHref(r.destination) }))
+    .filter((r) => r.href);
+  const updated = week && thisWeekDate(week.updated);
+
+  return (
+    <div data-screen-label="Page · This Week">
+      <PageHeader eyebrow="This Week" title="This week at Hope."
+        lead={updated ? `Updated ${updated}.` : 'Notes, the newsletter, the prayer sheet and what’s coming up.'} />
+      <section className="this-week">
+        <div className="container-narrow">
+          {latest && (
+            <a className="tw-latest" href={`/sermons/${latest.branch?.slug || 'messages'}/${latest.slug}`}>
+              {latest.artwork?.url && <img src={latest.artwork.url} alt="" loading="lazy" />}
+              <div className="tw-latest-body">
+                <div className="eyebrow">Latest message</div>
+                <h2>{latest.title}</h2>
+                {latest.speaker && <p>{latest.speaker}</p>}
+              </div>
+            </a>
+          )}
+          {!week && !failed && <div className="tw-loading" aria-busy="true">Loading this week…</div>}
+          {failed && (
+            <p className="tw-empty">This week’s list didn’t load. <a href="/events">See upcoming events</a>.</p>
+          )}
+          {week && rows.length === 0 && !failed && (
+            <p className="tw-empty">Nothing posted yet. <a href="/events">See upcoming events</a>.</p>
+          )}
+          {rows.length > 0 && (
+            <ul className="tw-rows">
+              {rows.map((r) => {
+                const external = /^https?:/i.test(r.href);
+                return (
+                  <li key={r.id}>
+                    <a className="tw-row" href={r.href} {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
+                      <span className="tw-icon"><Icon name={thisWeekIcon(r.icon)} size={20} color="var(--hope-blue)" /></span>
+                      <span className="tw-title">{r.title}</span>
+                      <Icon name="chevron" size={18} color="var(--ink-400, #9aa3ad)" />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export { PrayerRequestPage, GetHelpPage, PodcastPage, PODCASTS, AppPage, DownloadPage, ThisWeekPage, ApplePodcastsIcon, SpotifyIcon, RssIcon };
 
 // ============================================================
 // App Page

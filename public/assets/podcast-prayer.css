@@ -820,3 +820,26 @@ a.footer-live-btn.hero-live-btn .live-dot {
 .download-page .app-store-btn-big { font-size: 20px; }
 .download-home { margin-top: 44px; font-size: 14px; letter-spacing: 0.04em; color: rgba(255,255,255,0.55); text-decoration: none; }
 .download-home:hover { color: #fff; }
+
+/* ---------- This Week (/this-week) ---------- */
+.this-week { padding: 8px 0 96px; }
+.tw-latest {
+  display: flex; gap: 18px; align-items: center; text-decoration: none; color: inherit;
+  background: var(--bg-muted, #f4f6f8); border-radius: 18px; padding: 14px; margin-bottom: 22px;
+}
+.tw-latest img { width: 180px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; flex: none; }
+.tw-latest h2 { font-family: var(--font-display); font-size: 22px; line-height: 1.2; margin: 4px 0; color: var(--ink-900, #1a1f26); }
+.tw-latest p { margin: 0; color: var(--ink-500, #6b7682); font-size: 15px; }
+.tw-latest:hover h2 { color: var(--hope-blue); }
+.tw-rows { list-style: none; margin: 0; padding: 0; border-radius: 18px; overflow: hidden; border: 1px solid var(--line, #e3e7eb); }
+.tw-rows li + li { border-top: 1px solid var(--line, #e3e7eb); }
+.tw-row { display: flex; align-items: center; gap: 14px; padding: 18px 18px; text-decoration: none; color: var(--ink-900, #1a1f26); background: #fff; }
+.tw-row:hover { background: var(--bg-tint, #f2f8fc); }
+.tw-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(0,130,202,0.1); flex: none; }
+.tw-title { flex: 1; font-size: 17px; font-weight: 500; line-height: 1.35; }
+.tw-loading, .tw-empty { padding: 28px 4px; color: var(--ink-500, #6b7682); font-size: 16px; }
+.tw-empty a { color: var(--hope-blue); }
+@media (max-width: 560px) {
+  .tw-latest { flex-direction: column; align-items: stretch; }
+  .tw-latest img { width: 100%; }
+}

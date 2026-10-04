@@ -30,7 +30,7 @@ import {
 import {
   LifeGroupsPage, MissionsPage, ConnectCardPage, DiscoverHopePage,
 } from './components/getinvolved.jsx';
-import { PrayerRequestPage, GetHelpPage, PodcastPage, AppPage, DownloadPage } from './components/pages-extra.jsx';
+import { PrayerRequestPage, GetHelpPage, PodcastPage, AppPage, DownloadPage, ThisWeekPage } from './components/pages-extra.jsx';
 import { GenerationsPage, GenerationsHomeBlock } from './components/generations.jsx';
 import { PrivacyPage, AccessibilityPage, TermsPage, DeleteAccountPage } from './components/pages-legal.jsx';
 import EventDetailPage from './components/event-detail.jsx';
@@ -230,6 +230,7 @@ export const routes = [
         element: <View pageKey="podcast-finding-hope" Comp={PodcastPage} extraProps={{ initialChannel: 'finding-hope' }} />,
       },
       { path: 'app', element: <View pageKey="app" Comp={AppPage} /> },
+      { path: 'this-week', element: <View pageKey="thisweek" Comp={ThisWeekPage} /> },
       { path: 'privacy', element: <View pageKey="privacy" Comp={PrivacyPage} /> },
       // Linked from the privacy policy and from Google Play's Data safety form,
       // so this path has to stay put once it is published.
