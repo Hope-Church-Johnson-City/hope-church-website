@@ -32,8 +32,8 @@ function PageHeader({ eyebrow, title, lead }) {
 // ---------- Visit Page ----------
 function VisitPage() {
   const st = useServiceTimes();
-  // Planning Center form — submissions land in PCO People and notify info@hopejc.org.
-  const formUrl = 'https://hopejc.churchcenter.com/people/forms/1235473';
+  // The Connect Card, the same Planning Center form as /connect-card.
+  const formUrl = 'https://hopejc.churchcenter.com/people/forms/341611';
   return (
     <>
       <PageHeader eyebrow="I'm New" title="We'll meet you at the Next Steps table." lead="Let us know you're coming and we'll look for you in the lobby, show you around, and help you find your way in." />
@@ -42,7 +42,7 @@ function VisitPage() {
           <div className="connect-embed-wrap">
             <iframe
               src={`${formUrl}?open_in_church_center_modal=false`}
-              title="Plan a Visit — Hope Church"
+              title="Hope Church Connect Card"
               className="connect-embed"
               loading="lazy"
               allow="clipboard-write"
