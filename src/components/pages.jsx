@@ -54,7 +54,7 @@ function VisitPage() {
               {[
                 { icon: 'clock', t: 'About 75 minutes', p: 'Worship, a message, and time to pray. Come as you are. There\u2019s no dress code.' },
                 { icon: 'kids', t: 'Kids & Tweens', p: st.isNew ? `Classrooms for infants through 6th grade at the ${st.second} & ${st.third} services — the ${st.first} service is nursery & preschool only.` : 'Safe, fun classrooms at every service for infants through 6th grade.' },
-                { icon: 'pin', t: 'Come to the Next Steps table', p: 'You\u2019ll find it in the lobby. Our volunteers there can answer your questions, help you find your next step and connect you with a group or team.' },
+                { icon: 'pin', t: 'We\u2019ll meet you when you arrive', p: 'Greeters in blue lanyards will meet you at the front doors. The Next Steps table is in the lobby, where our volunteers can answer your questions, help you find your next step and connect you with a group or team.' },
               ].map(x => (
                 <div className="visit-expect-item" key={x.t}>
                   <div className="visit-expect-icon"><Icon name={x.icon} size={18} color="var(--hope-blue)"/></div>
@@ -732,7 +732,7 @@ function ServePage() {
       intro: 'From nursery through high school, we love the next generation at Hope — and we need people who&rsquo;ll show up week after week to walk with them.',
       teams: [
         { t: 'Kids', p: 'We love kids at Hope Church! Our kids ministry is committed to the growth of each and every child that walks through our doors. Our kids ministry is from babies to 4th grade. We need Bible teachers, craft & game leaders, as well as general help.', href: 'https://hopejc.churchcenter.com/people/forms/343180' },
-        { t: 'Linked 56', p: 'We love our Hope tweens! Linked 56 is committed to helping each and every 5th and 6th grader discover their true identity in Christ. Our group meets on Sunday mornings and Wednesday nights. We welcome Bible teachers, game leaders, and general helpers.', href: 'https://hopejc.churchcenter.com/people/forms/589479' },
+        { t: 'Linked 56', p: 'Linked 56 is committed to helping each and every 5th and 6th grader discover their true identity in Christ. Our group meets on Sundays during the 9:00am, 11:00am and 12:45pm services, and on Wednesdays at 6:30pm. We welcome Bible teachers, game leaders, and general helpers.', href: 'https://hopejc.churchcenter.com/people/forms/589479' },
         { t: 'Students', p: "We love our students! Our student ministry is committed to pursuing the growth of each and every student that walks through our doors. The whole student ministry meets on Wednesday nights from 6:30pm\u20138:30pm at Hope Church. Each gathering includes worship, a message, small group interactions, and fun!", href: 'https://hopejc.churchcenter.com/people/forms/343175' },
       ],
     },
