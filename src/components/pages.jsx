@@ -55,7 +55,6 @@ function VisitPage() {
                 { icon: 'clock', t: 'About 75 minutes', p: 'Worship, a message, and time to pray. Come as you are — jeans or a tie, both work.' },
                 { icon: 'kids', t: 'Kids are a joy', p: st.isNew ? `Classrooms for infants through 6th grade at the ${st.second} & ${st.third} services — the ${st.first} service is nursery & preschool only.` : 'Safe, fun classrooms at every service for infants through 6th grade.' },
                 { icon: 'pin', t: 'Come to the Next Steps table', p: 'You\u2019ll find it in the lobby. Our volunteers there can answer your questions, help you find your next step, and get you plugged in.' },
-                { icon: 'heart', t: 'No pressure', p: 'No offering pressure, no awkward stand-up moment. Just a seat.' },
               ].map(x => (
                 <div className="visit-expect-item" key={x.t}>
                   <div className="visit-expect-icon"><Icon name={x.icon} size={18} color="var(--hope-blue)"/></div>
