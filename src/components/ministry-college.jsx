@@ -36,7 +36,7 @@ function CollegeMinistryPage({ onNav }) {
       <PageHeader
         eyebrow="Ages 18 – 30"
         title="College & Career"
-        lead="A community of young adults navigating college, the workforce, and everything in between — with Christ-centered guidance, real friendships, and a heart for the years ahead."
+        lead="A community of young adults navigating college, the workforce, and everything in between — with Christ-centered guidance, friendships, and a heart for the years ahead."
       />
 
       {/* ===== Section 1: Anchor verse + intro ===== */}

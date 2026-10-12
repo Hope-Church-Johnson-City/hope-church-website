@@ -868,7 +868,7 @@ function AppPage() {
           <header className="app-page-features-header">
             <div className="eyebrow">Everything in one place</div>
             <h2>Built for the rhythms of our church.</h2>
-            <p>The Hope App is how a lot of our church family stays plugged in during the week. Here&rsquo;s what you&rsquo;ll find inside.</p>
+            <p>The Hope App is how a lot of our church family stays connected during the week. Here&rsquo;s what you&rsquo;ll find inside.</p>
           </header>
           <div className="app-page-features-grid">
             {features.map(f => (

@@ -293,7 +293,7 @@ function SiteHeader({ onNav, current, dark = false }) {
     { id: 'lifegroups', label: 'Groups', desc: '', href: 'https://hopejc.churchcenter.com/groups/life-groups?enrollment=open_signup%2Crequest_to_join&filter=enrollment' },
     { id: 'serve', label: 'Serve', desc: 'Find a team that fits your gifts and schedule.' },
     { id: 'missions', label: 'Missions', desc: 'Our partners — local, national, and global.' },
-    { id: 'connect', label: 'Connect Card', desc: 'Say hi, share a prayer request, take a step.' },
+    { id: 'connect', label: 'Connect Card', desc: 'Say hello, share a prayer request, take a step.' },
     { id: 'discover', label: 'Discover Hope', desc: 'Our new-members class — first Wed each month.' },
   ];
   const involvedIds = involvedItems.map(i => i.id);
@@ -425,7 +425,7 @@ function SiteHeader({ onNav, current, dark = false }) {
           })}
         </nav>
         <div className="site-cta">
-          <Button variant="primary" size="sm" onClick={()=>onNav('visit')}>Plan a Visit</Button>
+          <Button variant="primary" size="sm" onClick={()=>onNav('visit')}>Plan Your Visit</Button>
         </div>
         <button
           className="site-burger"
@@ -578,8 +578,8 @@ function NewHereBlock({ onVisit }) {
       <div className="container new-here-inner">
         <div className="new-here-copy">
           <span className="eyebrow">New Here?</span>
-          <h2>We saved you a seat.</h2>
-          <p className="lead">No dress code. No pressure. You don’t need to know anyone to belong here. Let us know you’re coming and we’ll meet you at the door.</p>
+          <h2>We’re glad you’re here.</h2>
+          <p className="lead">Come as you are. You don’t need to know anyone to belong here. Let us know you’re coming and we’ll meet you at the door.</p>
           <ul className="new-here-checklist">
             <li>A friendly welcome at the front door</li>
             <li>Kids and Tweens classes are offered for infants through 6th grade</li>

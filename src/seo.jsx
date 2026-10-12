@@ -64,7 +64,7 @@ export const META = {
   'ministry-students': {
     title: `Student Ministry | ${BRAND}`,
     description:
-      'Hope Students is our ministry for teenagers — a place for middle and high schoolers to belong, grow in faith, and build real friendships.',
+      'Hope Students is our ministry for teenagers — a place for middle and high schoolers to belong, grow in faith, and build friendships.',
   },
   'ministry-college': {
     title: `College Ministry | ${BRAND}`,
@@ -129,7 +129,7 @@ export const META = {
   connect: {
     title: `Connect Card | ${BRAND}`,
     description:
-      'Say hi, share a prayer request, or take a next step. Fill out the Hope Church Connect Card and we’ll follow up with you.',
+      'Say hello, share a prayer request, or take a next step. Fill out the Hope Church Connect Card and we’ll follow up with you.',
   },
   discover: {
     title: `Discover Hope | ${BRAND}`,

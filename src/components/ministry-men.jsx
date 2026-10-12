@@ -49,7 +49,7 @@ function MenMinistryPage({ onNav }) {
       day: 'Tuesdays',
       time: '7:00 \u2013 8:00 AM',
       where: 'Student Room',
-      body: 'Relationship-building over coffee, then a deep dive into the previous Sunday\u2019s sermon \u2014 unpacking the critical topics together. <strong>Real support, real friendships, real biblical conversation.</strong>',
+      body: 'Relationship-building over coffee, then a deep dive into the previous Sunday\u2019s sermon \u2014 unpacking the critical topics together. <strong>Support, friendship, and biblical conversation.</strong>',
     },
   ];
 

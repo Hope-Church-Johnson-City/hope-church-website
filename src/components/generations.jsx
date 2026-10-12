@@ -128,7 +128,7 @@ function GenerationsPage() {
             <p className="gen-eyebrow">The Vision</p>
             <h2>God is moving!</h2>
             <p>
-              God is moving in and through Hope Church! For years, Hope has met
+              God is moving in and through Hope Church. For years, Hope has met
               in borrowed and rented space, and God has continued to move.
               Generations is our next step of faith: twenty acres of land and a
               building to call home that God can continue to move for
@@ -143,7 +143,7 @@ function GenerationsPage() {
             </p>
             <p>
               We are excited that God is opening doors for us to walk through in
-              faith! Will you partner with us on this journey?
+              faith. Will you partner with us on this journey?
             </p>
           </div>
           <div className="gen-vision-photos">
@@ -236,8 +236,7 @@ function GenerationsPage() {
         <div className="container gen-questions-inner">
           <h2>Questions about Generations?</h2>
           <p>
-            We&rsquo;d rather talk it through than have you wonder. Reach out, or
-            find one of our pastors after any service.
+            If you have questions, contact us or talk with a pastor after any service.
           </p>
           <a className="btn btn-secondary btn-lg" href={`mailto:${CONTACT_EMAIL}`}>
             Email us about Generations

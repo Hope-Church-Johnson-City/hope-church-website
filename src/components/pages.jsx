@@ -52,9 +52,9 @@ function VisitPage() {
             <h3>What to expect</h3>
             <div className="visit-expect">
               {[
-                { icon: 'clock', t: 'About 75 minutes', p: 'Worship, a message, and time to pray. Come as you are — jeans or a tie, both work.' },
-                { icon: 'kids', t: 'Kids are a joy', p: st.isNew ? `Classrooms for infants through 6th grade at the ${st.second} & ${st.third} services — the ${st.first} service is nursery & preschool only.` : 'Safe, fun classrooms at every service for infants through 6th grade.' },
-                { icon: 'pin', t: 'Come to the Next Steps table', p: 'You\u2019ll find it in the lobby. Our volunteers there can answer your questions, help you find your next step, and get you plugged in.' },
+                { icon: 'clock', t: 'About 75 minutes', p: 'Worship, a message, and time to pray. Come as you are. There\u2019s no dress code.' },
+                { icon: 'kids', t: 'Kids & Tweens', p: st.isNew ? `Classrooms for infants through 6th grade at the ${st.second} & ${st.third} services — the ${st.first} service is nursery & preschool only.` : 'Safe, fun classrooms at every service for infants through 6th grade.' },
+                { icon: 'pin', t: 'Come to the Next Steps table', p: 'You\u2019ll find it in the lobby. Our volunteers there can answer your questions, help you find your next step and connect you with a group or team.' },
               ].map(x => (
                 <div className="visit-expect-item" key={x.t}>
                   <div className="visit-expect-icon"><Icon name={x.icon} size={18} color="var(--hope-blue)"/></div>
@@ -78,7 +78,7 @@ function AboutPage({ onNav }) {
       body: 'We are commanded by God to love Him with all our heart, soul, and mind. Every fiber of our being is to love God — and from this, everything else flows.',
       values: [
         { t: 'God\u2019s Word', p: 'Scripture is our final authority. We teach it plainly and let it shape every part of how we live.' },
-        { t: 'Prayer', p: 'We talk to God before we talk about Him. Prayer isn\u2019t a warm-up — it\u2019s the work.' },
+        { t: 'Prayer', p: 'We talk to God before we talk about Him. Prayer is central to everything we do.' },
       ],
     },
     {
@@ -95,7 +95,7 @@ function AboutPage({ onNav }) {
       refs: 'Matthew 28:18-20',
       body: 'God\u2019s design for the Church is not to keep the Gospel to ourselves. He commands us to make disciples — sharing His love with others.',
       values: [
-        { t: 'Kingdom Mindset', p: 'We play for the bigger team. The kingdom is wider than our walls — or our name.' },
+        { t: 'Kingdom Mindset', p: 'We serve a mission bigger than our own church. The kingdom is wider than our walls — or our name.' },
         { t: 'Replication', p: 'We make disciples who make disciples — and plant churches who plant churches.' },
       ],
     },
@@ -612,9 +612,9 @@ function GivePage() {
 
 // ---------- Ministries, Serve, NextSteps, Contact (lighter pages) ----------
 const MINISTRIES = [
-  { slug: 'ministry-kids',       age: 'Birth · 4th Grade',   title: 'Kids Ministry',        desc: 'A safe, joyful space where kids learn who Jesus is through stories, songs, and a whole lot of play.' },
+  { slug: 'ministry-kids',       age: 'Birth · 4th Grade',   title: 'Kids Ministry',        desc: 'A safe, joyful space where kids learn who Jesus is through stories, songs, and play.' },
   { slug: 'ministry-linked56',   age: '5th · 6th Grade',     title: 'Linked 56',            desc: 'A space made just for 5th and 6th graders — the bridge between kids and students.' },
-  { slug: 'ministry-students',   age: '7th · 12th Grade',    title: 'Students',             desc: 'Wednesday nights and Sunday mornings — real friendships and honest conversations about faith.' },
+  { slug: 'ministry-students',   age: '7th · 12th Grade',    title: 'Students',             desc: 'Wednesday nights and Sunday mornings — friendships and honest conversations about faith.' },
   { slug: 'ministry-college',    age: 'Ages 18 – 30',         title: 'College & Career',     desc: 'A community of young adults navigating college, the workforce, and everything in between — with Christ-centered guidance.' },
   { slug: 'ministry-women',      age: 'Women of Hope',       title: 'Woven Women\u2019s Ministry', desc: 'Women gathering to study Scripture, share life, and grow together in every season.' },
   { slug: 'ministry-men',        age: 'Men of Hope',         title: 'Men\u2019s Ministry',  desc: 'Brothers sharpening brothers — Bible studies, breakfasts, and a community that shows up.' },
@@ -790,13 +790,13 @@ function NextStepsPage({ onNav }) {
   const steps = [
     { n: '01', t: 'Plan a Visit', p: 'Come experience a Sunday — meet us at the Next Steps table in the lobby.' },
     { n: '02', t: 'Discover Hope', p: 'A class that explains who we are and how to get connected.' },
-    { n: '03', t: 'Join a Group', p: 'Groups are where the real friendships happen.' },
+    { n: '03', t: 'Join a Group', p: 'Groups are where friendships grow.' },
     { n: '04', t: 'Serve on a Team', p: 'Use your gifts to make Sundays happen — training provided.' },
     { n: '05', t: 'Get Baptized', p: 'Ready to go public with your faith? We\u2019d love to celebrate with you.' },
   ];
   return (
     <>
-      <PageHeader eyebrow="Next Steps" title="Five steps in." lead="Not a ladder to climb — just a path most people find helpful." />
+      <PageHeader eyebrow="Next Steps" title="Five steps in." lead="A path many people find helpful." />
       <section className="steps-rails">
         <div className="container-narrow">
           {steps.map(s => (
@@ -832,7 +832,7 @@ function ContactPage() {
   const formUrl = 'https://hopejc.churchcenter.com/people/forms/1235481';
   return (
     <>
-      <PageHeader eyebrow="Contact" title="We'd love to hear from you." lead="Whether you have a question, need prayer, or simply want to introduce yourself — every message lands with a real person on our team." />
+      <PageHeader eyebrow="Contact" title="We'd love to hear from you." lead="Whether you have a question, need prayer, or want to introduce yourself, a member of our team will read your message." />
       <section className="visit-section">
         <div className="container visit-grid">
           <div className="connect-embed-wrap">

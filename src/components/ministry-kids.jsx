@@ -145,7 +145,7 @@ function KidsMinistryPage({ onNav }) {
         <div className="container">
           <header className="kids-section-head kids-section-head-center">
             <span className="eyebrow">Inside Hope Kids</span>
-            <h2>A whole lot of learning, laughter, and lifelong friendships.</h2>
+            <h2>Learning, laughter, and lasting friendships.</h2>
           </header>
           <div className="kids-gallery">
             {gallery.map((g, i) => (

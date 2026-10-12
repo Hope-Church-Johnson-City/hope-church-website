@@ -93,7 +93,7 @@ function HeroC({ onVisit, onWatch }) {
             <span className="line">God.</span>
             <span className="line">Love people.</span>
           </h1>
-          <p className="hero-c-sub">A Sunday morning church in Johnson City built on three commitments — and a seat saved for you.</p>
+          <p className="hero-c-sub">A Sunday morning church in Johnson City built on three commitments.</p>
           <div className="hero-c-actions">
             <Button variant="primary" size="xl" onClick={onVisit} iconRight="arrow">Plan Your Visit</Button>
             <Button variant="ghost-on-dark" size="xl" onClick={onWatch} icon="play">Watch Latest</Button>
@@ -189,9 +189,9 @@ function UpcomingEvents({ onEvents }) {
 // ======================================================
 function MinistriesBlock({ onMinistries }) {
   const m = [
-    { age: 'Birth · 4th Grade', title: 'Hope Kids', desc: 'A safe, joyful space where kids learn who Jesus is through stories, songs, and a whole lot of play.', icon: 'kids' },
+    { age: 'Birth · 4th Grade', title: 'Hope Kids', desc: 'A safe, joyful space where kids learn who Jesus is through stories, songs, and play.', icon: 'kids' },
     { age: '5th · 6th Grade',   title: 'Linked 56',  desc: 'A space made just for 5th and 6th graders — the bridge between kids and students.', icon: 'kids' },
-    { age: '7th · 12th Grade',  title: 'Hope Students', desc: 'Wednesday nights and Sunday mornings — real friendships and honest conversations about faith.', icon: 'book' },
+    { age: '7th · 12th Grade',  title: 'Hope Students', desc: 'Wednesday nights and Sunday mornings — friendships and honest conversations about faith.', icon: 'book' },
     { age: 'Families',           title: 'Groups', desc: 'Small groups that meet around the city in homes, coffee shops, and parks. The easiest way in.', icon: 'hands' },
   ];
   return (

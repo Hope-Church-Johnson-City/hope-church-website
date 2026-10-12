@@ -18,7 +18,7 @@ function LifeGroupsPage({ onNav }) {
   ];
   return (
     <>
-      <PageHeader eyebrow="Get Involved" title="Find your people." lead="Sunday is where we gather. Groups are where the real friendships happen — in homes, around tables, throughout the week." />
+      <PageHeader eyebrow="Get Involved" title="Find your people." lead="Sunday is where we gather. Groups are where friendships grow — in homes, around tables, throughout the week." />
 
       {/* Why groups */}
       <section className="visit-section" style={{paddingBottom: 60}}>
@@ -450,7 +450,7 @@ function DiscoverHopePage({ onNav }) {
             <div className="discover-faq">
               <details>
                 <summary>Do I have to become a partner?</summary>
-                <p>Not at all. Plenty of people come to Discover Hope to learn more and decide later — or to ask questions they&rsquo;ve been holding for a while. No pressure either way.</p>
+                <p>Not at all. Plenty of people come to Discover Hope to learn more and decide later — or to ask questions they&rsquo;ve been holding for a while. No one is required to become a partner.</p>
               </details>
               <details>
                 <summary>What if I&rsquo;ve never been to Hope?</summary>

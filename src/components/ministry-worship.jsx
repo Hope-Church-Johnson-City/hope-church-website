@@ -99,7 +99,7 @@ function WorshipMinistryPage({ onNav }) {
             </h1>
 
             <p className="wt-anchor-lead">
-              The team that leads us in song and runs the room every weekend &mdash; voices, instruments, sound, slides, cameras, and lights. <strong>Skilled musicians and trained tech volunteers serving side by side</strong>, plus a real on-ramp for anyone new.
+              The team that leads us in song and runs the room every weekend &mdash; voices, instruments, sound, slides, cameras, and lights. <strong>Skilled musicians and trained tech volunteers serving side by side</strong>, plus a place to start if you&rsquo;re new.
             </p>
 
             <div className="wt-anchor-actions">
