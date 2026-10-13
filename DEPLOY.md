@@ -1,87 +1,78 @@
-# Hope Church — multi-page + SEO update
+# Build and deploy
 
-## What changed and why
+Host: Vercel, project for this repo, domain www.hopejc.org. The apex
+`hopejc.org` redirects to `www` (in `vercel.json`); canonical tags use
+`https://www.hopejc.org`. To change the canonical domain, change `SITE_ORIGIN`
+in `src/nav.js` and the redirect together.
 
-The site used to be a single-page React app: every "page" (Events, About, etc.)
-was just a piece of state, so there was only **one real URL** and Google only ever
-saw a blank HTML shell. That was the cause of both problems — no separate pages, and
-the Search Console "duplicate / not indexed" warnings.
+## Deploy
 
-It's now a **statically pre-rendered, multi-page site**. Each page is generated as
-its own real HTML file at build time, so both visitors and Google get complete,
-readable HTML immediately.
+Push to `main`. Vercel's GitHub app is installed on the Hope-Church-Johnson-City
+organisation for this repo only, and builds with `npm run build`, output `dist`.
+No dashboard settings need changing for a normal deploy.
 
-### Every page now has its own URL
+A rebuild without a code change is a POST to the Vercel deploy hook "CMS
+rebuild" (branch `main`). The hook URL is stored only as the Worker secret
+`VERCEL_DEPLOY_HOOK`. Reconnecting the Git integration in Vercel deletes deploy
+hooks; if that happens, create a new one and set it on the Worker
+(`wrangler secret put VERCEL_DEPLOY_HOOK`, from `~/hope-media-automation/worker-deploy`).
 
-| Page | URL |
-|------|-----|
-| Home | `/` |
-| Plan a Visit | `/visit` |
-| About | `/about` |
-| Team | `/team` |
-| Sermons | `/sermons` |
-| Events | `/events` |
-| Ministries | `/ministries` |
-| Kids / Students / College … | `/ministries/kids`, `/ministries/students`, … |
-| Give | `/give` |
-| Serve | `/serve` |
-| Next Steps | `/next-steps` |
-| Contact | `/contact` |
-| Life Groups | `/life-groups` |
-| Missions | `/missions` |
-| Connect Card | `/connect` |
-| Discover Hope | `/discover-hope` |
-| Prayer | `/prayer` |
-| Podcast / Finding Hope | `/podcast`, `/podcast/finding-hope` |
-| App | `/app` |
-| Privacy / Accessibility | `/privacy`, `/accessibility` |
+## What the build does
 
-### SEO fixes
+`npm run build`:
 
-- **Unique `<title>`, meta description, and `<link rel="canonical">` on every page**
-  (canonical points at the `www.hopejc.org` version). This resolves
-  "Duplicate without user-selected canonical."
-- **`sitemap.xml`** (auto-generated from the page list at build time) and
-  **`robots.txt`** that points to it — so Google can discover every page.
-- **Real 404 page** (`/404`) that returns a proper not-found status.
-- **Old `?page=…` links still work** — they redirect to the new clean URL, so any
-  bookmarked or already-indexed links won't break.
-- Header and footer navigation now use real `<a href>` links, so Google can crawl
-  from page to page.
+1. `gen-events.mjs`: fetches `https://media.hopejc.org/api/public/calendar`
+   (upcoming plus the last 180 days) to `src/generated/events.json`.
+2. `gen-discover-hope.mjs`: picks the next Discover Hope class from that file to
+   `src/generated/discover-hope.json`.
+3. `gen-announcement.mjs`: fetches `/api/public/app-layout` and writes its
+   `announcement` to `src/generated/announcement.json`.
+4. `gen-sitemap.mjs`: writes `public/sitemap.xml` from `src/nav.js` plus
+   upcoming events (generated file, git-ignored).
+5. `vite-react-ssg build`: pre-renders every page in `src/nav.js` plus one page
+   per event in `events.json` (`vite.config.js`) into `dist/`.
+6. `postbuild-404.mjs`: copies `dist/404/index.html` to `dist/404.html`.
 
-## How to deploy
+If a CMS fetch fails, steps 1 to 3 keep the previous generated file and the
+build still succeeds. Check the build log for `gen-...: keeping the previous
+file` when content looks old.
 
-From the project folder:
+## How CMS changes reach the site
+
+Events, the announcement and the Discover Hope class are baked in at build time
+and also fetched live by the browser, so a visitor sees an edit within a page
+load and the static HTML catches up on the next build.
+
+The CMS marks the site stale (`app_settings.site_stale_at`) when staff edit
+events or the announcement. The Worker cron then calls the deploy hook after 90
+seconds of quiet, at most once every 5 minutes, plus a nightly rebuild at about
+3 a.m. Eastern. Site changes in the CMS need no action here.
+
+Editing the CMS database directly with SQL skips this. After editing events or
+the announcement that way, set it by hand (from
+`~/hope-media-automation/worker-deploy`):
 
 ```bash
-npm install            # picks up the new build tooling (vite-react-ssg, react-router-dom)
-git add -A
-git commit -m "Convert to multi-page pre-rendered site + SEO (sitemap, canonical, 404)"
-git push
+npx wrangler d1 execute hope-media --remote --command "INSERT INTO app_settings (key,value) VALUES ('site_stale_at', CAST(strftime('%s','now') AS INTEGER)*1000) ON CONFLICT (key) DO UPDATE SET value=excluded.value;"
 ```
 
-Vercel will rebuild automatically. The build command is unchanged in name
-(`npm run build`) — it now runs the pre-rendering step and writes one HTML file per
-page into `dist/`. No Vercel dashboard changes are required.
+## After adding a page
 
-### One Vercel thing to confirm
+1. Add the key and path to `KEY_TO_PATH` in `src/nav.js` (the sitemap follows).
+2. Add the route in `src/routes.jsx` and the title and description in `src/seo.jsx`.
+3. Update the page table in README.md.
 
-You're currently redirecting `hopejc.org` → `www.hopejc.org`, and all the canonical
-tags match that (`www`). That's correct and consistent — no action needed unless you
-*prefer* the bare `hopejc.org`. If you ever switch, change the canonical domain in
-`src/nav.js` (`SITE_ORIGIN`) and the redirect direction in Vercel together.
+## Search Console
 
-## After it's live — in Google Search Console
+Submit `https://www.hopejc.org/sitemap.xml` under Indexing, Sitemaps. Old
+`?page=...` links redirect to the clean URLs.
 
-1. Submit the sitemap: **Indexing → Sitemaps →** add `https://www.hopejc.org/sitemap.xml`.
-2. Use **URL Inspection** on a couple of the new pages (e.g. `/events`, `/about`) and
-   click **Request indexing**.
-3. The existing warnings clear on their own over the next crawl cycles now that each
-   page is real and canonicalized — this can take days to a few weeks.
+## Vercel routing (`vercel.json`)
 
-## Where things live (for future edits)
-
-- `src/nav.js` — the master list of page → URL. Add a page here.
-- `src/seo.jsx` — the title/description for each page.
-- `src/routes.jsx` — wires each URL to its existing page component.
-- `src/components/…` — your actual page content (unchanged).
+- `/sermons/<branch>/...` and `/events/img/...` are rewritten to the Worker
+  (`hope-media.cowens-09f.workers.dev`), as is `/events/<slug>` for events with
+  no pre-rendered file.
+- `media.`, `calendar.`, `dashboard.` and `analytics.hopejc.org` are served by
+  the Worker through host-based rewrites; their root paths redirect to
+  `/admin`, `/calendar`, `/dashboard` and `/analytics`.
+- `cleanUrls` on, `trailingSlash` off.
