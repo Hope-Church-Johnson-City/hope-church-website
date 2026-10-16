@@ -2859,3 +2859,29 @@
   .discover-intro { padding: 56px 0 32px; }
   .discover-cover { padding: 56px 0; }
 }
+
+/* ---- homepage hero while a service is live (src/liveStream.jsx) ---- */
+.hero-a-live-eyebrow { display: inline-flex; align-items: center; gap: 10px; color: #fff; }
+.hero-a-live-eyebrow .live-dot { width: 9px; height: 9px; border-radius: 50%; background: #FF3B4E; box-shadow: 0 0 0 0 rgba(255,59,78,.6); animation: hero-live-pulse 1.8s ease-out infinite; }
+@keyframes hero-live-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,59,78,.55); } 80%, 100% { box-shadow: 0 0 0 12px rgba(255,59,78,0); } }
+.hero-a--live .hero-a-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 48px; align-items: center; padding-top: 120px; padding-bottom: 140px; }
+.hero-a--live .hero-a-title { font-size: 64px; }
+.hero-a-player { min-width: 0; animation: hero-live-in .5s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes hero-live-in { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
+.hero-a-player-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000; box-shadow: 0 24px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08); }
+.hero-a-player-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.hero-a-player-wait { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255,255,255,.7); font-weight: 600; }
+.hero-a-player-cap { display: flex; align-items: center; gap: 10px; margin-top: 14px; min-width: 0; }
+.hero-a-player-tally { flex: none; background: #E5243B; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; padding: 4px 9px; border-radius: 5px; }
+.hero-a-player-title { color: #fff; font-weight: 700; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 1024px) {
+  .hero-a--live .hero-a-inner { grid-template-columns: 1fr; gap: 32px; padding-top: 96px; }
+  .hero-a--live .hero-a-player { order: -1; }
+  .hero-a--live .hero-a-title { font-size: 52px; }
+}
+@media (max-width: 640px) {
+  .hero-a--live .hero-a-inner { padding: 72px 20px 110px; gap: 24px; }
+  .hero-a--live .hero-a-title { font-size: 38px; }
+  .hero-a-player-frame { border-radius: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .hero-a-player, .hero-a-live-eyebrow .live-dot { animation: none; } }

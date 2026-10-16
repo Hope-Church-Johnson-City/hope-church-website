@@ -3,6 +3,7 @@ import { resources } from '../resources.js';
 import { Icon, Button, SectionHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
+import { useLiveStream } from '../liveStream.jsx';
 // Hope Church — 3 homepage hero variations + supporting blocks
 
 // ======================================================
@@ -11,21 +12,52 @@ import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 function HeroA({ onVisit, onWatch }) {
   const st = useServiceTimes();
   const fourthLive = useFourthServiceLive();
+  // While a service is live on YouTube the hero makes room for the player;
+  // the rest of the time it is exactly as before.
+  const live = useLiveStream();
   return (
-    <section className="hero-a" data-screen-label="Hero A">
+    <section className={'hero-a' + (live ? ' hero-a--live' : '')} data-screen-label="Hero A">
       <div className="hero-a-media">
         <div className="hero-a-photo fallback hero-photo-anim" />
       </div>
       <div className="hero-a-inner">
-        <span className="eyebrow hero-a-eyebrow">Welcome to Hope Church</span>
-        <h1 className="hero-a-title">Love God.<br/>Love <em>people.</em><br/>Make disciples.</h1>
-        <div className="hero-a-actions">
-          <Button variant="primary" size="xl" onClick={onVisit} iconRight="arrow">Plan Your Visit</Button>
-          <a className="footer-live-btn hero-live-btn" href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">
-            <span className="live-dot" aria-hidden="true"/>
-            Watch live at {st.stream}
-          </a>
+        <div className="hero-a-copy">
+          {live
+            ? <span className="eyebrow hero-a-eyebrow hero-a-live-eyebrow"><span className="live-dot" aria-hidden="true"/>Live now</span>
+            : <span className="eyebrow hero-a-eyebrow">Welcome to Hope Church</span>}
+          <h1 className="hero-a-title">Love God.<br/>Love <em>people.</em><br/>Make disciples.</h1>
+          <div className="hero-a-actions">
+            <Button variant="primary" size="xl" onClick={onVisit} iconRight="arrow">Plan Your Visit</Button>
+            {live
+              ? <a className="footer-live-btn hero-live-btn" href={live.watchUrl} target="_blank" rel="noopener">
+                  <span className="live-dot" aria-hidden="true"/>
+                  Open on YouTube
+                </a>
+              : <a className="footer-live-btn hero-live-btn" href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">
+                  <span className="live-dot" aria-hidden="true"/>
+                  Watch live at {st.stream}
+                </a>}
+          </div>
         </div>
+        {live && (
+          <div className="hero-a-player">
+            <div className="hero-a-player-frame">
+              {live.embedUrl
+                ? <iframe
+                    src={live.embedUrl}
+                    title={`${live.title} — live`}
+                    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                : <div className="hero-a-player-wait">The stream is starting…</div>}
+            </div>
+            <div className="hero-a-player-cap">
+              <span className="hero-a-player-tally">Live</span>
+              <span className="hero-a-player-title">{live.title}</span>
+            </div>
+          </div>
+        )}
       </div>
       <div className="hero-a-bottom">
         <span>Gray, Tennessee</span>
