@@ -93,7 +93,7 @@ Notes:
   day and time in its title and its link's date (`...-YYYY-MM-DD`) to be
   today, so a multi-day event is never tagged (`eventTodayTag` in
   `src/thisWeek.jsx`; `?previewToday=YYYY-MM-DD` overrides today for QA).
-  Time tiles show am/pm under the time. Desktop puts the section heading to
+  Time tiles show the time only, no am/pm. Desktop puts the section heading to
   the left of the card (at most 640px wide), with the app block under it
   (store badges from the existing App Band, and a QR code to `/download`, the
   page that sends a phone to the right store; `public/assets/app-download-qr.svg`
