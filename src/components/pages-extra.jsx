@@ -2,7 +2,7 @@ import React from 'react';
 import { resources } from '../resources.js';
 import { Icon, Button } from './shared.jsx';
 import { PageHeader } from './pages.jsx';
-import { THIS_WEEK_CMS, thisWeekIcon, thisWeekDate, thisWeekRows, THIS_WEEK_NOTICE } from '../thisWeek.jsx';
+import { THIS_WEEK_CMS, thisWeekIcon, thisWeekDate, thisWeekRows, THIS_WEEK_NOTICE, isChristmasTree, ChristmasTree } from '../thisWeek.jsx';
 // Hope Church — Prayer Request page + Podcast page (RSS-driven)
 
 const { useState: useStatePP, useEffect: useEffectPP, useRef: useRefPP, useMemo: useMemoPP } = React;
@@ -659,7 +659,9 @@ function ThisWeekPage() {
                 return (
                   <li key={r.id}>
                     <a className={notice ? 'tw-row tw-notice' : 'tw-row'} href={r.href} {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
-                      <span className="tw-icon"><Icon name={notice ? 'calendar' : thisWeekIcon(r.icon)} size={20} color={notice ? '#B45309' : 'var(--hope-blue)'} /></span>
+                      <span className={'tw-icon' + (!notice && isChristmasTree(r) ? ' is-tree' : '')}>{!notice && isChristmasTree(r)
+                        ? <ChristmasTree size={20} />
+                        : <Icon name={notice ? 'calendar' : thisWeekIcon(r.icon)} size={20} color={notice ? '#B45309' : 'var(--hope-blue)'} />}</span>
                       <span className="tw-title">
                         {notice && <span className="tw-badge">Not meeting</span>}
                         {r.title}

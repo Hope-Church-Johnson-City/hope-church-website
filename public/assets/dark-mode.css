@@ -796,4 +796,4 @@
 [data-theme="dark"] .home-week-row.is-notice { background: rgba(245,158,11,0.12); }
 [data-theme="dark"] .home-week-row.is-notice .home-week-title { color: #FCD9A8; }
 [data-theme="dark"] .home-week-chev { color: rgba(255,255,255,0.4); }
-[data-theme="dark"] .home-week-icon.is-tree { background: rgba(63,168,98,0.18); }
+[data-theme="dark"] .home-week-icon.is-tree, [data-theme="dark"] .tw-icon.is-tree { background: rgba(63,168,98,0.18); }

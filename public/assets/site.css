@@ -441,7 +441,7 @@ a.home-week-row:focus-visible { outline: 2px solid var(--hope-blue); outline-off
   width: 40px; height: 40px; border-radius: 12px; flex: none;
   display: grid; place-items: center; background: rgba(0,130,202,0.1);
 }
-.home-week-icon.is-tree { background: rgba(47,143,78,0.12); }
+.home-week-icon.is-tree, .tw-icon.is-tree { background: rgba(47,143,78,0.12); }
 .home-week-title { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
 .home-week-chev { color: var(--ink-300, #c8c9cf); display: inline-flex; }
 a.home-week-row:hover .home-week-chev { color: var(--hope-blue); }
