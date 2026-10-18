@@ -85,9 +85,21 @@ Notes:
   fetched in the browser only, so publishing This Week, or a calendar change
   (the CMS computes the event rows on each request), shows without a rebuild;
   a layout save does not need to mark the site stale. The pre-rendered HTML
-  holds a placeholder card. Desktop puts the section heading to the left of
-  the card (at most 640px wide); below 1024px the heading sits above it, and
-  on phones the card is full width with 16px gutters. Shared helpers are in
+  holds a placeholder card. The card shows the first four events (a "No ..."
+  notice always shows) and, when more are left, a footer "See all N this week"
+  to `/this-week`. On desktop the link rows are a 2x2 grid of compact tiles; on
+  phones they are rows. An event that starts today in church time
+  (America/New_York) gets a "Today" tag, or "Tonight" from 5pm: it needs a
+  day and time in its title and its link's date (`...-YYYY-MM-DD`) to be
+  today, so a multi-day event is never tagged (`eventTodayTag` in
+  `src/thisWeek.jsx`; `?previewToday=YYYY-MM-DD` overrides today for QA).
+  Time tiles show am/pm under the time. Desktop puts the section heading to
+  the left of the card (at most 640px wide), with the app block under it
+  (store badges from the existing App Band, and a QR code to `/download`, the
+  page that sends a phone to the right store; `public/assets/app-download-qr.svg`
+  is a static file, regenerate it if that URL changes); below 1024px the
+  heading sits above the card and the app block is hidden, and on phones the
+  card is full width with 16px gutters. Shared helpers are in
   `src/thisWeek.jsx`. `?previewThisWeek=empty` shows the empty state.
 - The homepage hero checks `/api/public/live` in the browser once a minute
   (`src/liveStream.jsx`). While a Transmit broadcast is live on YouTube (never

@@ -132,14 +132,53 @@ export function isEventRow(row) {
 }
 
 /**
- * "Sun 5:30pm · Woven Farm to Table" -> { day: 'SUN', time: '5:30', name }.
- * A title without that prefix comes back with day and time null.
+ * "Sun 5:30pm · Woven Farm to Table" -> { day: 'SUN', time: '5:30', ampm: 'PM',
+ * hour24: 17, name }. A title without that prefix comes back with day, time and
+ * ampm null.
  */
 export function splitEventTitle(title) {
   const t = String(title || '');
   const m = /^(sun|mon|tue|wed|thu|fri|sat)[a-z]*\.?\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*[·•|-]\s*(.+)$/i.exec(t);
-  if (!m) return { day: null, time: null, name: t };
-  return { day: m[1].toUpperCase(), time: `${m[2]}:${m[3] || '00'}`, name: m[5] };
+  if (!m) return { day: null, time: null, ampm: null, hour24: null, name: t };
+  const ampm = m[4] ? m[4].toUpperCase() : null;
+  let hour24 = Number(m[2]);
+  if (ampm === 'PM' && hour24 < 12) hour24 += 12;
+  if (ampm === 'AM' && hour24 === 12) hour24 = 0;
+  return { day: m[1].toUpperCase(), time: `${m[2]}:${m[3] || '00'}`, ampm, hour24: ampm ? hour24 : null, name: m[5] };
+}
+
+/**
+ * Today in church time (America/New_York) as `{ date: 'YYYY-MM-DD', day: 'SUN' }`.
+ * `?previewToday=YYYY-MM-DD` overrides it for screenshots and QA only.
+ */
+export function churchToday(now = new Date()) {
+  let date = '';
+  try {
+    const p = new URLSearchParams(window.location.search).get('previewToday');
+    if (/^\d{4}-\d{2}-\d{2}$/.test(p || '')) date = p;
+  } catch { /* no window: not a preview */ }
+  if (!date) {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+    date = parts; // en-CA is YYYY-MM-DD
+  }
+  const [y, mo, d] = date.split('-').map(Number);
+  const day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
+  return { date, day };
+}
+
+/**
+ * "Today" or "Tonight" for an event row that starts today, else null. The row's
+ * date is the one on the end of its event link (`/events/<slug>-YYYY-MM-DD`);
+ * only a row with a day and time in its title counts, so an event spanning
+ * several days, which has neither, is never tagged.
+ */
+export function eventTodayTag(row, today = churchToday()) {
+  const { day, hour24 } = splitEventTitle(row && row.title);
+  if (!day) return null;
+  const url = String((row.destination && row.destination.url) || '');
+  const m = /(\d{4}-\d{2}-\d{2})\/?(?:[?#].*)?$/.exec(url);
+  if (m ? m[1] !== today.date : day !== today.day) return null;
+  return hour24 !== null && hour24 >= 17 ? 'Tonight' : 'Today';
 }
 
 /**

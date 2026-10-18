@@ -802,3 +802,11 @@
 [data-theme="dark"] .hwk-tile.is-blank, [data-theme="dark"] .hwk-card.is-loading .hwk-bar { background: var(--ink-200); }
 [data-theme="dark"] .hwk-row.is-notice { background: rgba(245,158,11,0.12); }
 [data-theme="dark"] .hwk-row.is-notice .hwk-title { color: #FCD9A8; }
+[data-theme="dark"] .home-week { background: linear-gradient(180deg, rgba(0,130,202,0.14) 0%, rgba(0,130,202,0.04) 55%, var(--bg-tint) 100%), var(--bg-tint); }
+[data-theme="dark"] .hwk-trail { color: rgba(255,255,255,0.55); }
+[data-theme="dark"] .hwk-today { background: rgba(0,130,202,0.28); color: #7CCBF2; }
+[data-theme="dark"] .hwk-foot { color: #4DB3EA; }
+[data-theme="dark"] .hwk-foot:hover { background: rgba(255,255,255,0.04); color: #4DB3EA; }
+[data-theme="dark"] .hwk-day span small { color: rgba(255,255,255,0.6); }
+[data-theme="dark"] .home-week-app { border-top-color: rgba(255,255,255,0.12); }
+[data-theme="dark"] .home-week-app .app-store-btn { background: #0A0F15; border: 1px solid rgba(255,255,255,0.18); }

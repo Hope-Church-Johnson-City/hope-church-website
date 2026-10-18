@@ -4,7 +4,7 @@ import { Icon, Button, SectionHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
-import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor } from '../thisWeek.jsx';
+import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor, eventTodayTag, churchToday } from '../thisWeek.jsx';
 // Hope Church — 3 homepage hero variations + supporting blocks
 
 // ======================================================
@@ -201,15 +201,16 @@ function HomeWeekLink({ r }) {
   );
 }
 
-function HomeWeekEvent({ r }) {
+function HomeWeekEvent({ r, today }) {
   const notice = THIS_WEEK_NOTICE.test(r.title || '');
-  const { day, time, name } = splitEventTitle(r.title);
+  const { day, time, ampm, name } = splitEventTitle(r.title);
   const tree = !notice && isChristmasTree(r);
+  const tag = notice ? null : eventTodayTag(r, today);
   let tile;
   if (tree) {
     tile = <span className="hwk-day is-tree"><ChristmasTree size={day ? 22 : 28} />{day && <b className="hwk-day-sub">{day}</b>}</span>;
   } else if (day && !notice) {
-    tile = <span className="hwk-day"><b>{day}</b><span>{time}</span></span>;
+    tile = <span className="hwk-day"><b>{day}</b><span>{time}{ampm && <small>{ampm}</small>}</span></span>;
   } else {
     tile = <span className={'hwk-day' + (notice ? ' is-notice' : '')}><Icon name="calendar" size={22} color={notice ? '#B45309' : 'var(--hope-blue)'} strokeWidth={2} /></span>;
   }
@@ -220,6 +221,7 @@ function HomeWeekEvent({ r }) {
         <span className="hwk-title">
           {notice && <span className="hwk-badge">Not meeting</span>}
           {notice ? r.title : name}
+          {tag && <span className="hwk-today">{tag}</span>}
         </span>
         <HomeWeekTrail href={r.href} />
       </a>
@@ -242,11 +244,21 @@ function HomeWeekMessage({ m }) {
   );
 }
 
+const HOME_WEEK_EVENTS = 4;
+
 function HomeThisWeek() {
   const { week, latest, failed } = useThisWeek();
   const rows = thisWeekRows(week);
   const links = rows.filter((r) => !isEventRow(r));
-  const events = rows.filter(isEventRow);
+  const allEvents = rows.filter(isEventRow);
+  // The first four events; a "No ..." notice always shows, whatever its place.
+  let regular = 0;
+  const events = allEvents.filter((r) => {
+    if (THIS_WEEK_NOTICE.test(r.title || '')) return true;
+    regular += 1;
+    return regular <= HOME_WEEK_EVENTS;
+  });
+  const today = churchToday();
   // "Sunday, October 18": the weekday and date of thisWeek.updated.
   const date = week && thisWeekDate(week.updated);
   const loading = !week && !failed;
@@ -257,6 +269,24 @@ function HomeThisWeek() {
           <span className="eyebrow">This Week</span>
           <h2 id="home-week-title">This week at Hope.</h2>
           <p className="home-week-meta">Sunday’s message, this week’s links and events. The same list as in the app.</p>
+          <div className="home-week-app">
+            <p>Get This Week, the Bible and giving in the Hope app.</p>
+            <div className="home-week-app-row">
+              <div className="app-stores">
+                <a className="app-store-btn" href="https://apps.apple.com/us/app/hope-church-jc/id1427669078" target="_blank" rel="noopener" aria-label="Download on the App Store">
+                  <AppleBadge/>
+                  <div><div className="app-store-btn-small">Download on the</div><div className="app-store-btn-big">App Store</div></div>
+                </a>
+                <a className="app-store-btn" href="https://play.google.com/store/apps/details?id=org.hopejc.app" target="_blank" rel="noopener" aria-label="Get it on Google Play">
+                  <GoogleBadge/>
+                  <div><div className="app-store-btn-small">Get it on</div><div className="app-store-btn-big">Google Play</div></div>
+                </a>
+              </div>
+              <a className="home-week-qr" href="/download" aria-label="Scan to get the Hope app">
+                <img src="/assets/app-download-qr.svg" alt="QR code for hopejc.org/download" width="84" height="84" />
+              </a>
+            </div>
+          </div>
         </div>
         <div className={'hwk-card' + (loading ? ' is-loading' : '')} aria-busy={loading || undefined}>
           <div className="hwk-band">
@@ -284,12 +314,15 @@ function HomeThisWeek() {
             </div>
           )}
           {links.length > 0 && (
-            <ul className="hwk-list">{links.map((r) => <HomeWeekLink key={r.id} r={r} />)}</ul>
+            <ul className="hwk-list hwk-links">{links.map((r) => <HomeWeekLink key={r.id} r={r} />)}</ul>
           )}
           {events.length > 0 && (
             <>
               <div className="hwk-section">Coming up this week</div>
-              <ul className="hwk-list hwk-events">{events.map((r) => <HomeWeekEvent key={r.id} r={r} />)}</ul>
+              <ul className="hwk-list hwk-events">{events.map((r) => <HomeWeekEvent key={r.id} r={r} today={today} />)}</ul>
+              {allEvents.length > events.length && (
+                <a className="hwk-foot" href="/this-week">See all {allEvents.length} this week <Icon name="chevron" size={15} strokeWidth={2.5} /></a>
+              )}
             </>
           )}
         </div>
