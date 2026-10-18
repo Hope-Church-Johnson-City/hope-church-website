@@ -147,38 +147,101 @@ export function splitEventTitle(title) {
   return { day: m[1].toUpperCase(), time: `${m[2]}:${m[3] || '00'}`, ampm, hour24: ampm ? hour24 : null, name: m[5] };
 }
 
+const CHURCH_TZ = 'America/New_York';
+const pad = (n) => String(n).padStart(2, '0');
+
 /**
- * Today in church time (America/New_York) as `{ date: 'YYYY-MM-DD', day: 'SUN' }`.
- * `?previewToday=YYYY-MM-DD` overrides it for screenshots and QA only.
+ * The current church time (America/New_York): `{ date: 'YYYY-MM-DD',
+ * tomorrow: 'YYYY-MM-DD', time: 'HH:MM' }`. `?previewNow=YYYY-MM-DDTHH:MM`
+ * overrides it, for screenshots and QA only.
  */
-export function churchToday(now = new Date()) {
+export function churchNow(now = new Date()) {
   let date = '';
+  let time = '';
   try {
-    const p = new URLSearchParams(window.location.search).get('previewToday');
-    if (/^\d{4}-\d{2}-\d{2}$/.test(p || '')) date = p;
+    const p = new URLSearchParams(window.location.search).get('previewNow');
+    const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})$/.exec(p || '');
+    if (m) { date = m[1]; time = m[2]; }
   } catch { /* no window: not a preview */ }
   if (!date) {
-    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
-    date = parts; // en-CA is YYYY-MM-DD
+    const parts = {};
+    new Intl.DateTimeFormat('en-US', { timeZone: CHURCH_TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      .formatToParts(now).forEach((x) => { parts[x.type] = x.value; });
+    date = `${parts.year}-${parts.month}-${parts.day}`;
+    time = `${parts.hour}:${parts.minute}`;
   }
   const [y, mo, d] = date.split('-').map(Number);
-  const day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
-  return { date, day };
+  const t = new Date(Date.UTC(y, mo - 1, d + 1));
+  return { date, time, tomorrow: `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}` };
 }
 
 /**
- * "Today" or "Tonight" for an event row that starts today, else null. The row's
- * date is the one on the end of its event link (`/events/<slug>-YYYY-MM-DD`);
- * only a row with a day and time in its title counts, so an event spanning
- * several days, which has neither, is never tagged.
+ * Church time for the browser, null until the page has mounted so the
+ * pre-rendered HTML and first render carry no tag. Re-read every minute while
+ * the page is visible, and when the tab comes back.
  */
-export function eventTodayTag(row, today = churchToday()) {
-  const { day, hour24 } = splitEventTitle(row && row.title);
-  if (!day) return null;
-  const url = String((row.destination && row.destination.url) || '');
-  const m = /(\d{4}-\d{2}-\d{2})\/?(?:[?#].*)?$/.exec(url);
-  if (m ? m[1] !== today.date : day !== today.day) return null;
-  return hour24 !== null && hour24 >= 17 ? 'Tonight' : 'Today';
+export function useChurchNow() {
+  const [now, setNow] = React.useState(null);
+  React.useEffect(() => {
+    const tick = () => { if (!document.hidden) setNow(churchNow()); };
+    setNow(churchNow());
+    const id = setInterval(tick, 60000);
+    document.addEventListener('visibilitychange', tick);
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', tick); };
+  }, []);
+  return now;
+}
+
+/** When an event row starts and ends: the CMS's fields, else the date on its link and the time in its title. */
+export function eventWhen(row) {
+  if (row && row.startDate) {
+    return { startDate: row.startDate, startTime: row.startTime || null, endDate: row.endDate || null, endTime: row.endTime || null };
+  }
+  const url = String((row && row.destination && row.destination.url) || '');
+  const d = /(\d{4}-\d{2}-\d{2})\/?(?:[?#].*)?$/.exec(url);
+  const t = /^(?:sun|mon|tue|wed|thu|fri|sat)[a-z]*\.?\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i.exec(String((row && row.title) || ''));
+  let startTime = null;
+  if (t) {
+    let h = Number(t[1]);
+    const pm = t[3].toLowerCase() === 'pm';
+    if (pm && h < 12) h += 12;
+    if (!pm && h === 12) h = 0;
+    startTime = `${pad(h)}:${t[2] || '00'}`;
+  }
+  return { startDate: d ? d[1] : null, startTime, endDate: null, endTime: null };
+}
+
+/**
+ * What to say about an event row right now, in church time:
+ * `{ hide, tag }`. A row whose last day is before today, or that ended earlier
+ * today, is hidden. A tag needs a start time, is never given to a "No ..."
+ * notice or a multi-day event, and only for today and tomorrow.
+ */
+export function eventStatus(row, now) {
+  const none = { hide: false, tag: null };
+  if (!now) return none;
+  const w = eventWhen(row);
+  if (!w.startDate) return none;
+  const notice = THIS_WEEK_NOTICE.test(String((row && row.title) || ''));
+  if ((w.endDate || w.startDate) < now.date) return { hide: true, tag: null };
+  if (notice || w.endDate || !w.startTime) return none;
+  if (w.startDate === now.date) {
+    if (w.endTime) {
+      if (now.time >= w.endTime) return { hide: !notice, tag: null };
+      if (now.time >= w.startTime) return { hide: false, tag: 'Happening now' };
+    } else if (now.time >= w.startTime) {
+      return { hide: false, tag: 'Today' };
+    }
+    if (now.time < '12:00') return { hide: false, tag: 'This morning' };
+    if (now.time < '17:00') return { hide: false, tag: 'This afternoon' };
+    return { hide: false, tag: 'Tonight' };
+  }
+  if (w.startDate === now.tomorrow) {
+    if (w.startTime < '12:00') return { hide: false, tag: 'Tomorrow morning' };
+    if (w.startTime < '17:00') return { hide: false, tag: 'Tomorrow afternoon' };
+    return { hide: false, tag: 'Tomorrow night' };
+  }
+  return none;
 }
 
 /**

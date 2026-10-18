@@ -548,7 +548,8 @@ a.hwk-row:hover .hwk-trail { color: var(--hwk-blue); }
   .hwk-date { font-size: 16.5px; white-space: normal; text-wrap: balance; }
   .hwk-all { padding: 7px 9px 7px 11px; font-size: 14px; }
   .hwk-foot { padding: 14px 16px 16px; }
-  .hwk-today { margin-left: 8px; }
+  /* Own line on a phone, so a longer tag never changes how the title wraps. */
+  .hwk-today { display: table; margin: 5px 0 0; }
   .hwk-message { margin-top: 14px; padding: 10px; gap: 12px; border-radius: 16px; }
   .hwk-message-art { width: 101px; }
   .hwk-message-label { font-size: 13px; }

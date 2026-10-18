@@ -88,11 +88,22 @@ Notes:
   holds a placeholder card. The card shows the first four events (a "No ..."
   notice always shows) and, when more are left, a footer "See all N this week"
   to `/this-week`. On desktop the link rows are a 2x2 grid of compact tiles; on
-  phones they are rows. An event that starts today in church time
-  (America/New_York) gets a "Today" tag, or "Tonight" from 5pm: it needs a
-  day and time in its title and its link's date (`...-YYYY-MM-DD`) to be
-  today, so a multi-day event is never tagged (`eventTodayTag` in
-  `src/thisWeek.jsx`; `?previewToday=YYYY-MM-DD` overrides today for QA).
+  phones they are rows. Each event row can carry a tag, worked out in the
+  browser from church time (America/New_York), so the pre-rendered HTML has
+  none, and re-read every minute while the page is visible (`eventStatus`,
+  `useChurchNow` in `src/thisWeek.jsx`). It uses the row's `startDate`,
+  `startTime`, `endDate` and `endTime` from the CMS (HH:MM, church time), and
+  only if `startDate` is missing falls back to the date on the event link and
+  the time in the title. No tag for a "No ..." notice, a multi-day event
+  (`endDate`) or a row with no `startTime`. Today: "Happening now" between
+  start and end; "Today" if it started and has no end time; otherwise "This
+  morning" (before 12:00), "This afternoon" (12:00-16:59) or "Tonight" (17:00
+  on). Tomorrow, by the event's start: "Tomorrow morning", "Tomorrow
+  afternoon" or "Tomorrow night". Later days have no tag. A row whose last day
+  is before today, or that ended earlier today, is hidden. On a phone the tag
+  sits on its own line under the title, so a change of tag never changes how
+  the title wraps. `?previewNow=YYYY-MM-DDTHH:MM` sets church time, for QA and
+  screenshots only.
   Time tiles show the time only, no am/pm. Desktop puts the section heading to
   the left of the card (at most 640px wide), with the app block under it
   (store badges from the existing App Band, and a QR code to `/download`, the
@@ -168,7 +179,7 @@ them.
 - **Opt out**: put `data-no-reveal` on an element or any ancestor. A new card
   type is added to `CARDS` in `src/motion.js`.
 - **This Week card**: eases in when seen (`watchInView`, attribute `data-tw`),
-  its rows rise in a stagger by their `--i` index, the "Today" pill pulses once.
+  its rows rise in a stagger by their `--i` index, the tag pill pulses once.
 - **Hero**: a 100 ms fade-up stagger, 860 ms in all. **Page change**: the main
   content fades in after a client-side navigation (`main[data-pt]`), never on
   the first load. Buttons, nav underline, dropdown and mobile menu share the

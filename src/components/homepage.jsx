@@ -5,7 +5,7 @@ import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
 import { watchInView } from '../motion.js';
-import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor, eventTodayTag, churchToday } from '../thisWeek.jsx';
+import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor, eventStatus, useChurchNow } from '../thisWeek.jsx';
 // Hope Church — 3 homepage hero variations + supporting blocks
 
 // ======================================================
@@ -202,11 +202,11 @@ function HomeWeekLink({ r, i }) {
   );
 }
 
-function HomeWeekEvent({ r, today, i }) {
+function HomeWeekEvent({ r, now, i }) {
   const notice = THIS_WEEK_NOTICE.test(r.title || '');
   const { day, time, name } = splitEventTitle(r.title);
   const tree = !notice && isChristmasTree(r);
-  const tag = notice ? null : eventTodayTag(r, today);
+  const tag = eventStatus(r, now).tag;
   let tile;
   if (tree) {
     tile = <span className="hwk-day is-tree"><ChristmasTree size={day ? 22 : 28} />{day && <b className="hwk-day-sub">{day}</b>}</span>;
@@ -251,7 +251,10 @@ function HomeThisWeek() {
   const { week, latest, failed } = useThisWeek();
   const rows = thisWeekRows(week);
   const links = rows.filter((r) => !isEventRow(r));
-  const allEvents = rows.filter(isEventRow);
+  // Church time, read in the browser only: the pre-rendered HTML has no tags and
+  // keeps every event; once mounted, past events drop out and tags appear.
+  const now = useChurchNow();
+  const allEvents = rows.filter(isEventRow).filter((r) => !eventStatus(r, now).hide);
   // The first four events; a "No ..." notice always shows, whatever its place.
   let regular = 0;
   const events = allEvents.filter((r) => {
@@ -259,7 +262,6 @@ function HomeThisWeek() {
     regular += 1;
     return regular <= HOME_WEEK_EVENTS;
   });
-  const today = churchToday();
   // "Sunday, October 18": the weekday and date of thisWeek.updated.
   const date = week && thisWeekDate(week.updated);
   const loading = !week && !failed;
@@ -324,7 +326,7 @@ function HomeThisWeek() {
           {events.length > 0 && (
             <>
               <div className="hwk-section">Coming up this week</div>
-              <ul className="hwk-list hwk-events is-live">{events.map((r, n) => <HomeWeekEvent key={r.id} r={r} today={today} i={links.length + n + 1} />)}</ul>
+              <ul className="hwk-list hwk-events is-live">{events.map((r, n) => <HomeWeekEvent key={r.id} r={r} now={now} i={links.length + n + 1} />)}</ul>
               {allEvents.length > events.length && (
                 <a className="hwk-foot" href="/this-week">See all {allEvents.length} this week <Icon name="chevron" size={15} strokeWidth={2.5} /></a>
               )}
