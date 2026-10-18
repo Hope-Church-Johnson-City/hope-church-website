@@ -4,6 +4,7 @@ import { Icon, Button, SectionHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
+import { watchInView } from '../motion.js';
 import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor, eventTodayTag, churchToday } from '../thisWeek.jsx';
 // Hope Church — 3 homepage hero variations + supporting blocks
 
@@ -180,11 +181,11 @@ function HomeWeekTrail({ href }) {
   );
 }
 
-function HomeWeekLink({ r }) {
+function HomeWeekLink({ r, i }) {
   const notice = THIS_WEEK_NOTICE.test(r.title || '');
   const tree = !notice && isChristmasTree(r);
   return (
-    <li>
+    <li style={{ '--i': i }}>
       <a className={'hwk-row' + (notice ? ' is-notice' : '')} href={r.href} {...linkProps(r.href)}>
         {tree
           ? <span className="hwk-tile is-tree"><ChristmasTree size={28} /></span>
@@ -201,7 +202,7 @@ function HomeWeekLink({ r }) {
   );
 }
 
-function HomeWeekEvent({ r, today }) {
+function HomeWeekEvent({ r, today, i }) {
   const notice = THIS_WEEK_NOTICE.test(r.title || '');
   const { day, time, name } = splitEventTitle(r.title);
   const tree = !notice && isChristmasTree(r);
@@ -215,7 +216,7 @@ function HomeWeekEvent({ r, today }) {
     tile = <span className={'hwk-day' + (notice ? ' is-notice' : '')}><Icon name="calendar" size={22} color={notice ? '#B45309' : 'var(--hope-blue)'} strokeWidth={2} /></span>;
   }
   return (
-    <li>
+    <li style={{ '--i': i }}>
       <a className={'hwk-row hwk-event' + (notice ? ' is-notice' : '')} href={r.href} {...linkProps(r.href)}>
         {tile}
         <span className="hwk-title">
@@ -262,6 +263,10 @@ function HomeThisWeek() {
   // "Sunday, October 18": the weekday and date of thisWeek.updated.
   const date = week && thisWeekDate(week.updated);
   const loading = !week && !failed;
+  // The card eases in as it scrolls into view (src/motion.js); its rows then
+  // rise in a light stagger (public/assets/motion.css).
+  const cardRef = React.useRef(null);
+  React.useEffect(() => watchInView(cardRef.current), []);
   return (
     <section className="home-week" aria-labelledby="home-week-title">
       <div className="container home-week-inner">
@@ -288,13 +293,13 @@ function HomeThisWeek() {
             </div>
           </div>
         </div>
-        <div className={'hwk-card' + (loading ? ' is-loading' : '')} aria-busy={loading || undefined}>
+        <div ref={cardRef} className={'hwk-card' + (loading ? ' is-loading' : '')} aria-busy={loading || undefined}>
           <div className="hwk-band">
             <div className="hwk-band-top">
               <span className="hwk-band-tile"><Icon name="calendar" size={26} color="#fff" strokeWidth={2} /></span>
               <span className="hwk-band-text">
                 <span className="hwk-eyebrow">This Week</span>
-                <span className="hwk-date">{loading ? <span className="hwk-bar" /> : (date || 'At Hope')}</span>
+                <span className="hwk-date">{loading ? <span className="hwk-bar" /> : <span className="hwk-date-text is-live">{date || 'At Hope'}</span>}</span>
               </span>
               <a className="hwk-all" href="/this-week">See all <Icon name="chevron" size={14} strokeWidth={2.75} /></a>
             </div>
@@ -314,12 +319,12 @@ function HomeThisWeek() {
             </div>
           )}
           {links.length > 0 && (
-            <ul className="hwk-list hwk-links">{links.map((r) => <HomeWeekLink key={r.id} r={r} />)}</ul>
+            <ul className="hwk-list hwk-links is-live">{links.map((r, n) => <HomeWeekLink key={r.id} r={r} i={n + 1} />)}</ul>
           )}
           {events.length > 0 && (
             <>
               <div className="hwk-section">Coming up this week</div>
-              <ul className="hwk-list hwk-events">{events.map((r) => <HomeWeekEvent key={r.id} r={r} today={today} />)}</ul>
+              <ul className="hwk-list hwk-events is-live">{events.map((r, n) => <HomeWeekEvent key={r.id} r={r} today={today} i={links.length + n + 1} />)}</ul>
               {allEvents.length > events.length && (
                 <a className="hwk-foot" href="/this-week">See all {allEvents.length} this week <Icon name="chevron" size={15} strokeWidth={2.5} /></a>
               )}

@@ -1,0 +1,170 @@
+/* =========================================================
+   HOPE CHURCH — MOTION (additive, loaded last)
+
+   One calm feel across the site: 180-260 ms for interactions, about 520 ms
+   for reveals, one easing curve (--motion-ease in colors_and_type.css).
+   Only transform and opacity move (plus colour and shadow on hover). No
+   looping or auto-playing decoration, no parallax, no layout animation.
+
+   Content is always visible without JS: the "pre" states below are set by
+   src/motion.js after hydration, only for what is below the fold, and never
+   under prefers-reduced-motion. See README "Motion".
+   ========================================================= */
+
+/* ---------- Scroll reveals (src/motion.js) ---------- */
+[data-rv="pre"] { opacity: 0; transform: translateY(var(--motion-rise)); }
+[data-rv="in"] {
+  opacity: 1; transform: none;
+  transition: opacity var(--motion-reveal) var(--motion-ease), transform var(--motion-reveal) var(--motion-ease);
+  transition-delay: var(--rv-delay, 0ms);
+}
+
+/* Lazy images fade in as they load. */
+img[data-ld="wait"] { opacity: 0; }
+img[data-ld="done"] { animation: motion-fade var(--motion-reveal) var(--motion-ease) both; }
+@keyframes motion-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes motion-rise { from { opacity: 0; transform: translateY(var(--motion-rise)); } to { opacity: 1; transform: none; } }
+@keyframes motion-rise-sm { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Page change: a quick fade of the main content ---------- */
+main[data-pt="in"] { animation: motion-fade var(--motion-base) var(--motion-ease) both; }
+
+/* ---------- Hero: a short load-in, under 900 ms in all ---------- */
+.hero-a-photo.hero-photo-anim { animation: hero-photo-settle 800ms var(--motion-ease) both; }
+@keyframes hero-photo-settle { from { opacity: .55; transform: scale(1.03); } to { opacity: 1; transform: none; } }
+.hero-a-eyebrow, .hero-a-title, .hero-a-actions, .hero-a-bottom {
+  animation: motion-rise 560ms var(--motion-ease) both;
+}
+.hero-a-eyebrow { animation-delay: 0ms; }
+.hero-a-title { animation-delay: 100ms; }
+.hero-a-actions { animation-delay: 200ms; }
+.hero-a-bottom { animation-name: motion-fade; animation-delay: 300ms; }
+
+/* ---------- Buttons: one hover and press feel ---------- */
+.btn, .gen-btn, .footer-live-btn, .app-store-btn {
+  transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease),
+              background-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease),
+              border-color var(--motion-fast) var(--motion-ease);
+}
+.btn-primary:hover, .btn-secondary:hover, .gen-btn:hover, .app-store-btn:hover {
+  transform: translateY(-1px);
+}
+.btn-primary:hover { box-shadow: 0 12px 28px rgba(0,130,202,0.34); }
+.btn-secondary:hover { box-shadow: 0 8px 20px rgba(16,30,54,0.10); }
+.btn:active, .gen-btn:active, .app-store-btn:active, .footer-live-btn:active { transform: scale(.98); box-shadow: none; }
+
+/* ---------- Nav: an underline that draws in on hover ---------- */
+.site-nav a::after, .nav-dropdown-trigger::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px;
+  background: var(--hope-blue); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--motion-base) var(--motion-ease);
+}
+.nav-dropdown-trigger::after { right: 14px; }
+.site-nav a:hover::after, .site-nav a.active::after,
+.nav-dropdown-trigger:hover::after, .nav-dropdown-trigger.active::after,
+.nav-dropdown.open .nav-dropdown-trigger::after { transform: scaleX(1); }
+.site-header.dark .site-nav a::after, .site-header.dark .nav-dropdown-trigger::after,
+[data-theme="dark"] .site-nav a::after, [data-theme="dark"] .nav-dropdown-trigger::after { background: var(--hope-sky); }
+.site-nav a, .nav-dropdown-trigger { transition: color var(--motion-fast) var(--motion-ease); }
+
+/* ---------- Dropdown and mobile menu: fade and slide, items in a light stagger ---------- */
+.nav-dropdown-panel {
+  transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-base) var(--motion-ease), visibility 0s linear var(--motion-base);
+}
+.nav-dropdown.open .nav-dropdown-panel {
+  transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-base) var(--motion-ease);
+}
+.nav-dropdown-caret { transition: transform var(--motion-base) var(--motion-ease); }
+.nav-dropdown-item { transition: background-color var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease); }
+.nav-dropdown-item:hover { transform: translateX(2px); }
+.nav-dropdown.open .nav-dropdown-item { animation: motion-rise-sm var(--motion-base) var(--motion-ease) both; }
+.nav-dropdown.open .nav-dropdown-item:nth-child(2) { animation-delay: 30ms; }
+.nav-dropdown.open .nav-dropdown-item:nth-child(3) { animation-delay: 60ms; }
+.nav-dropdown.open .nav-dropdown-item:nth-child(4) { animation-delay: 90ms; }
+.nav-dropdown.open .nav-dropdown-item:nth-child(5) { animation-delay: 120ms; }
+.nav-dropdown.open .nav-dropdown-item:nth-child(n+6) { animation-delay: 150ms; }
+
+.mobile-menu { transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-base) var(--motion-ease); }
+.mobile-menu.open .mobile-menu-nav > *,
+.mobile-menu.open .mobile-menu-cta, .mobile-menu.open .mobile-menu-foot {
+  animation: motion-rise-sm var(--motion-base) var(--motion-ease) both;
+}
+.mobile-menu.open .mobile-menu-nav > :nth-child(2) { animation-delay: 25ms; }
+.mobile-menu.open .mobile-menu-nav > :nth-child(3) { animation-delay: 50ms; }
+.mobile-menu.open .mobile-menu-nav > :nth-child(4) { animation-delay: 75ms; }
+.mobile-menu.open .mobile-menu-nav > :nth-child(5) { animation-delay: 100ms; }
+.mobile-menu.open .mobile-menu-nav > :nth-child(6) { animation-delay: 125ms; }
+.mobile-menu.open .mobile-menu-nav > :nth-child(n+7) { animation-delay: 150ms; }
+.mobile-menu.open .mobile-menu-cta { animation-delay: 170ms; }
+.mobile-menu.open .mobile-menu-foot { animation-delay: 200ms; }
+
+/* ---------- Cards and images: a small lift, a slow zoom inside the frame ---------- */
+.ministry-card, .event-card, .event-card-big, .msg-card, .msg-list-card, .visit-card, .discover-card,
+.lifegroup-card, .value-card, .belief-card, .step-rail, .app-feature-card {
+  transition: transform var(--motion-base) var(--motion-ease), box-shadow var(--motion-base) var(--motion-ease),
+              border-color var(--motion-base) var(--motion-ease), background-color var(--motion-base) var(--motion-ease);
+}
+.new-here-photo > img, .hwk-message-art img, .sermons-podcast-cover img {
+  transition: transform 700ms var(--motion-ease);
+}
+.new-here-photo:hover > img, .hwk-message:hover .hwk-message-art img,
+.sermons-podcast-card:hover .sermons-podcast-cover img { transform: scale(1.03); }
+
+/* ---------- This Week card ---------- */
+.hwk-card[data-tw="pre"] { opacity: 0; transform: translateY(16px); }
+.hwk-card[data-tw="in"] {
+  opacity: 1; transform: none;
+  transition: opacity var(--motion-reveal) var(--motion-ease), transform var(--motion-reveal) var(--motion-ease);
+}
+/* Rows rise in a light stagger when the card is seen, and when the live list
+   replaces the placeholder (they only exist after the fetch). */
+.hwk-card[data-tw="pre"] .is-live li, .hwk-card[data-tw="pre"] .hwk-message, .hwk-card[data-tw="pre"] .hwk-date-text { opacity: 0; }
+.hwk-card:not([data-tw="pre"]) .is-live li {
+  animation: motion-rise var(--motion-reveal) var(--motion-ease) both;
+  animation-delay: calc(var(--i, 0) * var(--motion-stagger) + 80ms);
+}
+.hwk-card:not([data-tw="pre"]) .hwk-message, .hwk-card:not([data-tw="pre"]) .hwk-date-text {
+  animation: motion-fade var(--motion-reveal) var(--motion-ease) both;
+}
+.hwk-card:not([data-tw="pre"]) .hwk-foot, .hwk-card:not([data-tw="pre"]) .hwk-section {
+  animation: motion-fade var(--motion-reveal) var(--motion-ease) 400ms both;
+}
+.hwk-card[data-tw="pre"] .hwk-foot, .hwk-card[data-tw="pre"] .hwk-section { opacity: 0; }
+
+a.hwk-row { transition: background-color var(--motion-fast) var(--motion-ease); }
+a.hwk-row:active { background: rgba(0,130,202,0.10); }
+.hwk-trail { transition: transform var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease); }
+a.hwk-row:hover .hwk-trail { transform: translateX(3px); }
+.hwk-tile, .hwk-day { transition: transform var(--motion-fast) var(--motion-ease); }
+a.hwk-row:active .hwk-tile, a.hwk-row:active .hwk-day { transform: scale(.96); }
+.hwk-play { transition: transform var(--motion-fast) var(--motion-ease), box-shadow var(--motion-fast) var(--motion-ease); }
+.hwk-message:hover .hwk-play { transform: scale(1.07); box-shadow: 0 8px 18px rgba(0,130,202,0.38); }
+.hwk-message:active .hwk-play { transform: scale(.95); }
+.hwk-message { transition: box-shadow var(--motion-base) var(--motion-ease), transform var(--motion-fast) var(--motion-ease); }
+.hwk-message:hover { box-shadow: 0 8px 22px rgba(15,23,42,0.11); }
+.hwk-message:active { transform: scale(.995); }
+.hwk-all, .hwk-foot { transition: background-color var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease); }
+.hwk-all:active { transform: scale(.97); }
+/* "Today" / "Tonight": one soft ring when the card appears, then nothing. */
+.hwk-card:not([data-tw="pre"]) .hwk-today { animation: motion-pulse 1100ms var(--motion-ease) 700ms 1 both; }
+@keyframes motion-pulse { 0% { box-shadow: 0 0 0 0 rgba(0,130,202,.32); } 100% { box-shadow: 0 0 0 9px rgba(0,130,202,0); } }
+
+/* ---------- Reduced motion and print: nothing moves, nothing is hidden ---------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-rv], [data-tw], img[data-ld], main[data-pt] { opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; }
+  .hero-a-photo.hero-photo-anim, .hero-a-eyebrow, .hero-a-title, .hero-a-actions, .hero-a-bottom,
+  .nav-dropdown.open .nav-dropdown-item, .mobile-menu.open .mobile-menu-nav > *,
+  .mobile-menu.open .mobile-menu-cta, .mobile-menu.open .mobile-menu-foot,
+  .hwk-card .is-live li, .hwk-card .hwk-message, .hwk-card .hwk-date-text, .hwk-card .hwk-foot,
+  .hwk-card .hwk-section, .hwk-card .hwk-today { animation: none !important; opacity: 1; transform: none; }
+  .btn, .btn:hover, .btn:active, .gen-btn:hover, .gen-btn:active, .app-store-btn:hover, .app-store-btn:active,
+  .ministry-card:hover, .event-card:hover, .event-card-big:hover, .msg-card:hover, .msg-list-card:hover,
+  a.hwk-row:hover .hwk-trail, a.hwk-row:active .hwk-tile, a.hwk-row:active .hwk-day,
+  .hwk-message:hover .hwk-play, .hwk-message:active .hwk-play, .nav-dropdown-item:hover,
+  .new-here-photo:hover > img, .hwk-message:hover .hwk-message-art img { transform: none !important; }
+  .site-nav a::after, .nav-dropdown-trigger::after { transition: none; }
+}
+@media print {
+  [data-rv], [data-tw], img[data-ld] { opacity: 1 !important; transform: none !important; animation: none !important; }
+}

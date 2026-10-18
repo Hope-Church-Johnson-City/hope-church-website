@@ -8,7 +8,11 @@
    vite-react-ssg walks this `routes` array at build time and writes one static
    HTML file per concrete path (dist/events/index.html, dist/about/index.html …)
    so search engines and first-paint both get real, complete HTML. */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { initReveal } from './motion.js';
+
+// useLayoutEffect warns during pre-rendering, where there is no layout.
+const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 import { Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -137,6 +141,21 @@ function NotFound() {
 /* ---------- shared layout (header + footer wrap every page) ---------- */
 function Layout() {
   const location = useLocation();
+  const mainRef = useRef(null);
+  const firstPath = useRef(location.pathname);
+
+  // Motion (see src/motion.js): reveal what is below the fold as it scrolls
+  // in, and fade the page in after a client-side navigation. Neither runs for
+  // the first page load, which is the pre-rendered HTML as it is.
+  useBrowserLayoutEffect(() => {
+    const main = mainRef.current;
+    if (main && location.pathname !== firstPath.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      main.removeAttribute('data-pt');
+      void main.offsetWidth; // restart the animation on a second navigation
+      main.setAttribute('data-pt', 'in');
+    }
+    return initReveal(main);
+  }, [location.pathname]);
   const current = keyForPath(location.pathname);
   const onNav = useNav();
 
@@ -156,7 +175,7 @@ function Layout() {
       />
       <SundayStrip />
       <SiteHeader onNav={onNav} current={current} dark={false} />
-      <main>
+      <main ref={mainRef}>
         <Outlet />
       </main>
       <Footer onNav={onNav} />

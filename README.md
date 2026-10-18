@@ -146,6 +146,39 @@ Sermon library and most ministry calendars are Subsplash embeds
 `media.hopejc.org`. Giving is the Church Center giving page in an iframe.
 The Contact form opens the visitor's email client (`mailto:info@hopejc.org`).
 
+## Motion
+
+Calm and quick, nothing decorative: interactions take 180-260 ms, reveals about
+520 ms, all on one curve. Only transform and opacity move (plus colour and
+shadow on hover); there is no looping or auto-playing motion, parallax or
+layout animation. Tokens are in `public/assets/colors_and_type.css`:
+`--motion-ease`, `--motion-fast`, `--motion-base`, `--motion-reveal`,
+`--motion-stagger`, `--motion-rise`. The rules are in `public/assets/motion.css`,
+loaded last in `index.html`, so it overrides earlier hover rules without editing
+them.
+
+- **Scroll reveals** (`src/motion.js`, started from `Layout` in `routes.jsx`):
+  section headers and cards (the `CARDS` list in that file), or a section's
+  first container if it has none, fade up 14px once as they scroll in, with
+  50 ms steps within a group. Below-the-fold images fade in as they load.
+  Nothing on screen when the page loads is ever hidden, and the pre-rendered
+  HTML and a no-JS page show everything: the hidden state is a `data-rv="pre"`
+  attribute that only JS sets, and it is removed once the element has settled
+  so its own hover transitions come back.
+- **Opt out**: put `data-no-reveal` on an element or any ancestor. A new card
+  type is added to `CARDS` in `src/motion.js`.
+- **This Week card**: eases in when seen (`watchInView`, attribute `data-tw`),
+  its rows rise in a stagger by their `--i` index, the "Today" pill pulses once.
+- **Hero**: a 100 ms fade-up stagger, 860 ms in all. **Page change**: the main
+  content fades in after a client-side navigation (`main[data-pt]`), never on
+  the first load. Buttons, nav underline, dropdown and mobile menu share the
+  same feel.
+- **Reduced motion**: under `prefers-reduced-motion: reduce` the script does
+  nothing and the CSS turns off every animation, transition and transform
+  (content stays fully visible). Print shows everything too.
+- The header's shrink on scroll (`height` in `redesign-header-hero.css`) was
+  there before and is the one layout transition left.
+
 ## Theme
 
 Light or dark, in this order: `?theme=` URL parameter, saved preference, OS

@@ -191,6 +191,14 @@
   --dur-fast: 120ms;
   --dur-base: 200ms;
   --dur-slow: 360ms;
+  /* One shared feel for interaction and reveal motion (public/assets/motion.css,
+     src/motion.js). Interactions 180-260ms, reveals about 500ms. */
+  --motion-ease: cubic-bezier(.2, .7, .2, 1);
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-reveal: 520ms;
+  --motion-stagger: 50ms;
+  --motion-rise: 14px;
 
   /* =========================================================
      LAYOUT
