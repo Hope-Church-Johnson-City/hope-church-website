@@ -70,13 +70,24 @@ Notes:
 - `/this-week` reads `/api/public/app-layout` and the latest message from
   `/api/public/media` in the browser only.
 - The homepage "This week at Hope." block (`HomeThisWeek` in
-  `components/homepage.jsx`, under the hero) shows the first six rows of the
-  same `thisWeek` list, also fetched in the browser only, with a "See all" link
-  to `/this-week`. Publishing This Week in the CMS updates the apps,
-  `/this-week` and this block together; no rebuild is involved, so a layout
-  save does not need to mark the site stale. The pre-rendered HTML holds
-  placeholder rows. Shared helpers (link mapping, icons, the Christmas tree for
-  `glyph: "christmas-tree"` or the `tree` / `tree.fill` symbol) are in
+  `components/homepage.jsx`, under the hero) is drawn like the app's Home
+  This Week card (iOS `HomeWeek.swift`): a tinted band with the date from
+  `thisWeek.updated`, a "See all" link to `/this-week` and the Sunday's
+  message card (newest message from `/api/public/media?branch=messages&limit=1`,
+  as on `/this-week`; hidden when there is none or `thisWeek.latest.enabled`
+  is false); then the link rows (solid tiles in the app's colours, by icon
+  name: notes blue, newsletter teal, prayer pink, give green, else navy); then
+  "Coming up this week" with the event rows (ids `ev-*`, `no-*`,
+  `all-events`), whose tile shows the day and time split off the title's
+  "Sun 5:30pm · " prefix. An event with no prefix shows its glyph (the
+  Christmas tree for `glyph: "christmas-tree"` or `tree` / `tree.fill`, else a
+  calendar). "No ..." rows keep the amber Not meeting style. All of it is
+  fetched in the browser only, so publishing This Week, or a calendar change
+  (the CMS computes the event rows on each request), shows without a rebuild;
+  a layout save does not need to mark the site stale. The pre-rendered HTML
+  holds a placeholder card. Desktop puts the section heading to the left of
+  the card (at most 640px wide); below 1024px the heading sits above it, and
+  on phones the card is full width with 16px gutters. Shared helpers are in
   `src/thisWeek.jsx`. `?previewThisWeek=empty` shows the empty state.
 - The homepage hero checks `/api/public/live` in the browser once a minute
   (`src/liveStream.jsx`). While a Transmit broadcast is live on YouTube (never

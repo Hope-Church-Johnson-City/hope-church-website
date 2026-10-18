@@ -94,24 +94,65 @@ function previewEmpty() {
 }
 
 /**
- * The homepage's copy of This Week: `{ week, failed }`. `week` starts null so
- * the pre-rendered HTML and the first client render agree; a switched-off
- * section reads as an empty list.
+ * The homepage's copy of This Week: `{ week, latest, failed }`. `week` starts
+ * null so the pre-rendered HTML and the first client render agree; a
+ * switched-off section reads as an empty list. `latest` is the newest Sunday
+ * message from /api/public/media, fetched the way /this-week does, unless the
+ * layout turns it off (`thisWeek.latest.enabled === false`).
  */
 export function useThisWeek() {
-  const [state, setState] = React.useState({ week: null, failed: false });
+  const [state, setState] = React.useState({ week: null, latest: null, failed: false });
   React.useEffect(() => {
     let live = true;
-    if (previewEmpty()) { setState({ week: { rows: [] }, failed: false }); return undefined; }
+    if (previewEmpty()) { setState({ week: { rows: [] }, latest: null, failed: false }); return undefined; }
     fetch(`${THIS_WEEK_CMS}/api/public/app-layout`)
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((layout) => {
         if (!live) return;
         const tw = layout && layout.thisWeek;
-        setState({ week: tw && tw.enabled !== false ? tw : { rows: [] }, failed: false });
+        const week = tw && tw.enabled !== false ? tw : { rows: [] };
+        setState((s) => ({ ...s, week, failed: false }));
+        if (!tw || !tw.latest || tw.latest.enabled !== false) {
+          fetch(`${THIS_WEEK_CMS}/api/public/media?branch=messages&limit=1`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((j) => { if (live && j && j.media && j.media[0]) setState((s) => ({ ...s, latest: j.media[0] })); })
+            .catch(() => {});
+        }
       })
-      .catch(() => { if (live) setState({ week: null, failed: true }); });
+      .catch(() => { if (live) setState({ week: null, latest: null, failed: true }); });
     return () => { live = false; };
   }, []);
   return state;
+}
+
+/** Rows the This Week builder makes from the calendar (APP-LAYOUT.md). */
+export function isEventRow(row) {
+  const id = String((row && row.id) || '');
+  return id.startsWith('ev-') || id.startsWith('no-') || id === 'all-events';
+}
+
+/**
+ * "Sun 5:30pm · Woven Farm to Table" -> { day: 'SUN', time: '5:30', name }.
+ * A title without that prefix comes back with day and time null.
+ */
+export function splitEventTitle(title) {
+  const t = String(title || '');
+  const m = /^(sun|mon|tue|wed|thu|fri|sat)[a-z]*\.?\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*[·•|-]\s*(.+)$/i.exec(t);
+  if (!m) return { day: null, time: null, name: t };
+  return { day: m[1].toUpperCase(), time: `${m[2]}:${m[3] || '00'}`, name: m[5] };
+}
+
+/**
+ * The app's colour for a link row's tile (HomeWeek.swift `style`), by SF Symbol
+ * name or id: iOS system teal, pink and green, brand blue for notes, and the
+ * deep brand blue for anything else.
+ */
+export function thisWeekTileColor(row) {
+  const key = `${(row && row.icon) || ''} ${(row && row.id) || ''} ${(row && row.title) || ''}`.toLowerCase();
+  if (/note|play/.test(key)) return '#0082CA';
+  if (/newspaper|newsletter/.test(key)) return '#30B0C7';
+  if (/heart|prayer/.test(key)) return '#FF2D55';
+  if (/gift|give/.test(key)) return '#34C759';
+  if (/step|signpost/.test(key)) return '#5856D6';
+  return '#004A98';
 }

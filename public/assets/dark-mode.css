@@ -787,13 +787,18 @@
   color: #fff;
 }
 
-/* Homepage This Week block: the card sits on the tinted section like the
-   other cards; the notice row keeps its amber, toned for dark. */
-[data-theme="dark"] .home-week-card { background: var(--bg-muted); box-shadow: none; }
-[data-theme="dark"] .home-week-icon { background: rgba(0,130,202,0.18); }
-[data-theme="dark"] .home-week-row.is-loading .home-week-icon,
-[data-theme="dark"] .home-week-bar { background: var(--ink-200); }
-[data-theme="dark"] .home-week-row.is-notice { background: rgba(245,158,11,0.12); }
-[data-theme="dark"] .home-week-row.is-notice .home-week-title { color: #FCD9A8; }
-[data-theme="dark"] .home-week-chev { color: rgba(255,255,255,0.4); }
-[data-theme="dark"] .home-week-icon.is-tree, [data-theme="dark"] .tw-icon.is-tree { background: rgba(63,168,98,0.18); }
+/* Homepage This Week card: the card is the raised surface on the tinted
+   section, the message card one step above it; the notice row keeps its
+   amber, toned for dark. */
+[data-theme="dark"] .hwk-card { background: var(--bg-muted); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+[data-theme="dark"] .hwk-band { background: linear-gradient(160deg, rgba(0,130,202,0.28) 0%, rgba(0,130,202,0.08) 70%, rgba(0,130,202,0) 100%); }
+[data-theme="dark"] .hwk-eyebrow, [data-theme="dark"] .hwk-all, [data-theme="dark"] .hwk-day b { color: #4DB3EA; }
+[data-theme="dark"] .hwk-all { background: rgba(0,130,202,0.24); }
+[data-theme="dark"] .hwk-message { background: #222C3A; box-shadow: none; }
+[data-theme="dark"] .hwk-message-label, [data-theme="dark"] .hwk-section, [data-theme="dark"] .hwk-day .hwk-day-sub { color: rgba(255,255,255,0.6); }
+[data-theme="dark"] .hwk-day { background: rgba(0,130,202,0.22); }
+[data-theme="dark"] .hwk-tile.is-tree, [data-theme="dark"] .hwk-day.is-tree, [data-theme="dark"] .tw-icon.is-tree { background: rgba(63,168,98,0.2); }
+[data-theme="dark"] .hwk-trail { color: rgba(255,255,255,0.4); }
+[data-theme="dark"] .hwk-tile.is-blank, [data-theme="dark"] .hwk-card.is-loading .hwk-bar { background: var(--ink-200); }
+[data-theme="dark"] .hwk-row.is-notice { background: rgba(245,158,11,0.12); }
+[data-theme="dark"] .hwk-row.is-notice .hwk-title { color: #FCD9A8; }

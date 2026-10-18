@@ -4,7 +4,7 @@ import { Icon, Button, SectionHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
-import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE } from '../thisWeek.jsx';
+import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor } from '../thisWeek.jsx';
 // Hope Church — 3 homepage hero variations + supporting blocks
 
 // ======================================================
@@ -151,71 +151,146 @@ function HeroC({ onVisit, onWatch }) {
 }
 
 // ======================================================
-// This Week at a glance (the app's This Week list)
+// This Week, as the app's Home card
 // ======================================================
-// The first few rows of /this-week, read live from the CMS like that page, so
-// publishing This Week updates the app, /this-week and this block together.
-// The pre-rendered HTML holds placeholder rows of the same height, so the
-// page does not jump when the list arrives.
-const HOME_WEEK_MAX = 6;
+// The same card as the app's Home "This Week" (HomeWeek.swift): a tinted band
+// with the date and Sunday's message, the week's links, then the events. Read
+// live from the CMS like /this-week, so publishing This Week, or a change to
+// the calendar, shows here without a rebuild. The pre-rendered HTML holds a
+// placeholder card, so the page does not jump when the list arrives.
 
-function HomeWeekRow({ r }) {
-  const external = /^https?:/i.test(r.href);
+function ExternalArrow({ size = 14 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 17 17 7M8 7h9v9" />
+    </svg>
+  );
+}
+
+function linkProps(href) {
+  return /^https?:/i.test(href) ? { target: '_blank', rel: 'noopener' } : {};
+}
+
+function HomeWeekTrail({ href }) {
+  const external = /^https?:/i.test(href);
+  return (
+    <span className="hwk-trail" aria-hidden="true">
+      {external ? <ExternalArrow size={16} /> : <Icon name="chevron" size={16} strokeWidth={2.5} />}
+    </span>
+  );
+}
+
+function HomeWeekLink({ r }) {
   const notice = THIS_WEEK_NOTICE.test(r.title || '');
+  const tree = !notice && isChristmasTree(r);
   return (
     <li>
-      <a className={'home-week-row' + (notice ? ' is-notice' : '')} href={r.href}
-         {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
-        <span className={'home-week-icon' + (!notice && isChristmasTree(r) ? ' is-tree' : '')}>
-          {!notice && isChristmasTree(r)
-            ? <ChristmasTree size={22} />
-            : <Icon name={notice ? 'calendar' : thisWeekIcon(r.icon)} size={18} color={notice ? '#B45309' : 'var(--hope-blue)'} />}
-        </span>
-        <span className="home-week-title">
-          {notice && <span className="home-week-badge">Not meeting</span>}
+      <a className={'hwk-row' + (notice ? ' is-notice' : '')} href={r.href} {...linkProps(r.href)}>
+        {tree
+          ? <span className="hwk-tile is-tree"><ChristmasTree size={28} /></span>
+          : <span className="hwk-tile" style={{ background: notice ? '#F59E0B' : thisWeekTileColor(r) }}>
+              <Icon name={notice ? 'calendar' : thisWeekIcon(r.icon)} size={22} color="#fff" strokeWidth={2} />
+            </span>}
+        <span className="hwk-title">
+          {notice && <span className="hwk-badge">Not meeting</span>}
           {r.title}
         </span>
-        <span className="home-week-chev"><Icon name="chevron" size={16} /></span>
+        <HomeWeekTrail href={r.href} />
       </a>
     </li>
   );
 }
 
+function HomeWeekEvent({ r }) {
+  const notice = THIS_WEEK_NOTICE.test(r.title || '');
+  const { day, time, name } = splitEventTitle(r.title);
+  const tree = !notice && isChristmasTree(r);
+  let tile;
+  if (tree) {
+    tile = <span className="hwk-day is-tree"><ChristmasTree size={day ? 22 : 28} />{day && <b className="hwk-day-sub">{day}</b>}</span>;
+  } else if (day && !notice) {
+    tile = <span className="hwk-day"><b>{day}</b><span>{time}</span></span>;
+  } else {
+    tile = <span className={'hwk-day' + (notice ? ' is-notice' : '')}><Icon name="calendar" size={22} color={notice ? '#B45309' : 'var(--hope-blue)'} strokeWidth={2} /></span>;
+  }
+  return (
+    <li>
+      <a className={'hwk-row hwk-event' + (notice ? ' is-notice' : '')} href={r.href} {...linkProps(r.href)}>
+        {tile}
+        <span className="hwk-title">
+          {notice && <span className="hwk-badge">Not meeting</span>}
+          {notice ? r.title : name}
+        </span>
+        <HomeWeekTrail href={r.href} />
+      </a>
+    </li>
+  );
+}
+
+function HomeWeekMessage({ m }) {
+  const href = `/sermons/${(m.branch && m.branch.slug) || 'messages'}/${m.slug}`;
+  const art = m.artwork && (m.artwork.thumb || m.artwork.url);
+  return (
+    <a className="hwk-message" href={href}>
+      <span className="hwk-message-art">{art && <img src={art} alt="" loading="lazy" />}</span>
+      <span className="hwk-message-text">
+        <span className="hwk-message-label">Sunday’s message</span>
+        <span className="hwk-message-title">{m.title}</span>
+      </span>
+      <span className="hwk-play" aria-hidden="true"><Icon name="play" size={16} color="#fff" /></span>
+    </a>
+  );
+}
+
 function HomeThisWeek() {
-  const { week, failed } = useThisWeek();
+  const { week, latest, failed } = useThisWeek();
   const rows = thisWeekRows(week);
-  const shown = rows.slice(0, HOME_WEEK_MAX);
-  const more = rows.length - shown.length;
-  const updated = week && thisWeekDate(week.updated);
+  const links = rows.filter((r) => !isEventRow(r));
+  const events = rows.filter(isEventRow);
+  // "Sunday, October 18": the weekday and date of thisWeek.updated.
+  const date = week && thisWeekDate(week.updated);
+  const loading = !week && !failed;
   return (
     <section className="home-week" aria-labelledby="home-week-title">
       <div className="container home-week-inner">
         <div className="home-week-head">
           <span className="eyebrow">This Week</span>
           <h2 id="home-week-title">This week at Hope.</h2>
-          <p className="home-week-meta">{updated ? `Updated ${updated}.` : 'Notes, the newsletter, the prayer sheet and events.'}</p>
-          <a className="btn btn-secondary btn-md home-week-all" href="/this-week">
-            {more > 0 ? `See all ${rows.length}` : 'See all'} <Icon name="arrow" size={15} />
-          </a>
+          <p className="home-week-meta">Sunday’s message, this week’s links and events. The same list as in the app.</p>
         </div>
-        <div className="home-week-card">
-          {!week && !failed && (
-            <ul className="home-week-rows" aria-busy="true" aria-label="Loading this week">
-              {Array.from({ length: HOME_WEEK_MAX }, (_, i) => (
-                <li key={i}><span className="home-week-row is-loading"><span className="home-week-icon" /><span className="home-week-bar" /></span></li>
+        <div className={'hwk-card' + (loading ? ' is-loading' : '')} aria-busy={loading || undefined}>
+          <div className="hwk-band">
+            <div className="hwk-band-top">
+              <span className="hwk-band-tile"><Icon name="calendar" size={26} color="#fff" strokeWidth={2} /></span>
+              <span className="hwk-band-text">
+                <span className="hwk-eyebrow">This Week</span>
+                <span className="hwk-date">{loading ? <span className="hwk-bar" /> : (date || 'At Hope')}</span>
+              </span>
+              <a className="hwk-all" href="/this-week">See all <Icon name="chevron" size={14} strokeWidth={2.75} /></a>
+            </div>
+            {latest && <HomeWeekMessage m={latest} />}
+          </div>
+          {loading && (
+            <ul className="hwk-list" aria-label="Loading this week">
+              {[0, 1, 2, 3].map((i) => (
+                <li key={i}><span className="hwk-row"><span className="hwk-tile is-blank" /><span className="hwk-bar" /></span></li>
               ))}
             </ul>
           )}
-          {(failed || (week && rows.length === 0)) && (
-            <div className="home-week-empty">
+          {!loading && rows.length === 0 && (
+            <div className="hwk-empty">
               <p>{failed ? 'This week’s list didn’t load.' : 'Nothing posted yet this week.'}</p>
               <a href="/events">See upcoming events <Icon name="arrow" size={14} /></a>
             </div>
           )}
-          {shown.length > 0 && (
-            <ul className="home-week-rows">
-              {shown.map((r) => <HomeWeekRow key={r.id} r={r} />)}
-            </ul>
+          {links.length > 0 && (
+            <ul className="hwk-list">{links.map((r) => <HomeWeekLink key={r.id} r={r} />)}</ul>
+          )}
+          {events.length > 0 && (
+            <>
+              <div className="hwk-section">Coming up this week</div>
+              <ul className="hwk-list hwk-events">{events.map((r) => <HomeWeekEvent key={r.id} r={r} />)}</ul>
+            </>
           )}
         </div>
       </div>
