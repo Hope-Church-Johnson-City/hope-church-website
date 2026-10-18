@@ -268,7 +268,7 @@ function HomeThisWeek() {
         <div className="home-week-head">
           <span className="eyebrow">This Week</span>
           <h2 id="home-week-title">This week at Hope.</h2>
-          <p className="home-week-meta">Sunday’s message, this week’s links and events. The same list as in the app.</p>
+          <p className="home-week-meta">Sunday’s message, this week’s links and what’s coming up.</p>
           <div className="home-week-app">
             <p>Get This Week, the Bible and giving in the Hope app.</p>
             <div className="home-week-app-row">
