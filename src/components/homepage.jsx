@@ -203,14 +203,14 @@ function HomeWeekLink({ r }) {
 
 function HomeWeekEvent({ r, today }) {
   const notice = THIS_WEEK_NOTICE.test(r.title || '');
-  const { day, time, ampm, name } = splitEventTitle(r.title);
+  const { day, time, name } = splitEventTitle(r.title);
   const tree = !notice && isChristmasTree(r);
   const tag = notice ? null : eventTodayTag(r, today);
   let tile;
   if (tree) {
     tile = <span className="hwk-day is-tree"><ChristmasTree size={day ? 22 : 28} />{day && <b className="hwk-day-sub">{day}</b>}</span>;
   } else if (day && !notice) {
-    tile = <span className="hwk-day"><b>{day}</b><span>{time}{ampm && <small>{ampm}</small>}</span></span>;
+    tile = <span className="hwk-day"><b>{day}</b><span>{time}</span></span>;
   } else {
     tile = <span className={'hwk-day' + (notice ? ' is-notice' : '')}><Icon name="calendar" size={22} color={notice ? '#B45309' : 'var(--hope-blue)'} strokeWidth={2} /></span>;
   }

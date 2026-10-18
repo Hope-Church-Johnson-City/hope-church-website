@@ -482,7 +482,6 @@ a.hwk-row:hover .hwk-trail { color: var(--hwk-blue); }
 }
 .hwk-day b { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; color: var(--hwk-blue); }
 .hwk-day span { font-size: 15px; font-weight: 700; color: var(--fg-1); }
-.hwk-day span small { display: block; margin-top: 1px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; color: var(--ink-500, #6b7682); }
 .hwk-day.is-tree { background: rgba(47,143,78,0.12); }
 .hwk-day .hwk-day-sub { font-size: 10px; color: var(--ink-500, #6b7682); }
 .hwk-day.is-notice { background: rgba(245,158,11,0.18); }
