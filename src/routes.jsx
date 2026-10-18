@@ -20,7 +20,7 @@ import {
   AnnouncementBar, SundayStrip, SiteHeader, Footer, NewHereBlock, ServiceTimes,
 } from './components/shared.jsx';
 import {
-  HeroA, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA,
+  HeroA, HomeThisWeek, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA,
 } from './components/homepage.jsx';
 import {
   VisitPage, AboutPage, TeamPage, SermonsPage, EventsPage,
@@ -89,6 +89,7 @@ function HomePage({ onNav }) {
           )
         }
       />
+      <HomeThisWeek />
       <NewHereBlock onVisit={() => onNav('visit')} />
       <GenerationsHomeBlock onGenerations={() => onNav('generations')} />
       <ThisWeekSermon onSermons={() => onNav('sermons')} />

@@ -2,6 +2,7 @@ import React from 'react';
 import { resources } from '../resources.js';
 import { Icon, Button } from './shared.jsx';
 import { PageHeader } from './pages.jsx';
+import { THIS_WEEK_CMS, thisWeekIcon, thisWeekDate, thisWeekRows, THIS_WEEK_NOTICE } from '../thisWeek.jsx';
 // Hope Church — Prayer Request page + Podcast page (RSS-driven)
 
 const { useState: useStatePP, useEffect: useEffectPP, useRef: useRefPP, useMemo: useMemoPP } = React;
@@ -598,53 +599,7 @@ function PodcastPage({ initialChannel }) {
 // layout, so editing This Week in the CMS on Sunday morning updates the app
 // and hopejc.org/this-week together, with no rebuild. The link is what gets
 // texted to the congregation.
-const THIS_WEEK_CMS = 'https://media.hopejc.org';
-
-// The app's own screens, as pages on this site. A row pointing somewhere the
-// site has no page for (the Bible tab, notifications) is left out.
-const THIS_WEEK_SCREENS = {
-  nextSteps: '/next-steps', serve: '/serve', missions: '/missions', discoverHope: '/discover-hope',
-  about: '/about', team: '/team', generations: '/generations', prayer: '/prayer', getHelp: '/get-help',
-  contact: '/contact', podcasts: '/podcast', ministries: '/ministries',
-  'ministry-kids': '/ministries/kids', 'ministry-linked56': '/ministries/linked56',
-  'ministry-students': '/ministries/students', 'ministry-college': '/ministries/college',
-  'ministry-women': '/ministries/women', 'ministry-men': '/ministries/men',
-  'ministry-worship': '/ministries/worship', 'ministry-fueledbyhope': '/ministries/fueled-by-hope',
-};
-const THIS_WEEK_TABS = { home: '/', media: '/sermons', events: '/events', give: '/give' };
-
-function thisWeekHref(d) {
-  if (!d) return null;
-  if (d.kind === 'link' || d.kind === 'web') {
-    // Our own pages open here rather than reloading the site.
-    return String(d.url || '').replace(/^https:\/\/(www\.)?hopejc\.org(?=\/|$)/, '') || '/';
-  }
-  if (d.kind === 'tab') return THIS_WEEK_TABS[d.id] || null;
-  if (d.kind === 'screen') return THIS_WEEK_SCREENS[d.id] || null;
-  return null;
-}
-
-function thisWeekIcon(name) {
-  const n = String(name || '');
-  if (/play|video|mic/.test(n)) return 'play';
-  if (/heart|pray/.test(n)) return 'heart';
-  if (/gift|give|dollar/.test(n)) return 'gift';
-  if (/calendar|clock/.test(n)) return 'calendar';
-  if (/book|bible/.test(n)) return 'book';
-  if (/news|mail|envelope/.test(n)) return 'mail';
-  return 'arrow';
-}
-
-function thisWeekDate(day) {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day || '');
-  if (!m) return '';
-  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-}
-
-// "No Hope Students – back October 14": a week something is not meeting.
-// Shown in amber so it is not read past as one more link.
-const THIS_WEEK_NOTICE = /^(no|not meeting|cancel)/i;
+// The helpers are shared with the homepage block, in src/thisWeek.jsx.
 
 function ThisWeekPage() {
   const [week, setWeek] = React.useState(null);
@@ -670,10 +625,7 @@ function ThisWeekPage() {
     return () => { live = false; };
   }, []);
 
-  const rows = ((week && week.rows) || [])
-    .filter((r) => r && r.enabled !== false)
-    .map((r) => ({ ...r, href: thisWeekHref(r.destination) }))
-    .filter((r) => r.href);
+  const rows = thisWeekRows(week);
   const updated = week && thisWeekDate(week.updated);
 
   return (

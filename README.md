@@ -69,6 +69,15 @@ Notes:
   and the build continues. The `src/generated/*.json` files are committed.
 - `/this-week` reads `/api/public/app-layout` and the latest message from
   `/api/public/media` in the browser only.
+- The homepage "This week at Hope." block (`HomeThisWeek` in
+  `components/homepage.jsx`, under the hero) shows the first six rows of the
+  same `thisWeek` list, also fetched in the browser only, with a "See all" link
+  to `/this-week`. Publishing This Week in the CMS updates the apps,
+  `/this-week` and this block together; no rebuild is involved, so a layout
+  save does not need to mark the site stale. The pre-rendered HTML holds
+  placeholder rows. Shared helpers (link mapping, icons, the Christmas tree for
+  `glyph: "christmas-tree"` or the `tree` / `tree.fill` symbol) are in
+  `src/thisWeek.jsx`. `?previewThisWeek=empty` shows the empty state.
 - The homepage hero checks `/api/public/live` in the browser once a minute
   (`src/liveStream.jsx`). While a Transmit broadcast is live on YouTube (never
   a private test) it shows the YouTube player beside the headline and an "Open
@@ -79,7 +88,8 @@ Notes:
 - Sermon pages (`/sermons/<branch>/...`) and the CMS hosts (`media.`,
   `dashboard.`, `calendar.`, `analytics.hopejc.org`) are proxied to the Worker
   by `vercel.json` rewrites, so they are never stale.
-- `VITE_CMS_ORIGIN` overrides `https://media.hopejc.org` for local testing.
+- `VITE_CMS_ORIGIN` overrides `https://media.hopejc.org` for local testing
+  (This Week included).
 - Add `?previewBanner` to see the announcement outside its window, or
   `?previewSignup=closed` for the Discover Hope "coming soon" state.
 

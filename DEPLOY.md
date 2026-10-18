@@ -39,6 +39,9 @@ file` when content looks old.
 
 ## How CMS changes reach the site
 
+This Week (`/this-week` and the homepage block) is read in the browser only and
+never needs a rebuild.
+
 Events, the announcement and the Discover Hope class are baked in at build time
 and also fetched live by the browser, so a visitor sees an edit within a page
 load and the static HTML catches up on the next build.

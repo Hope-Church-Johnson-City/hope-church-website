@@ -86,6 +86,7 @@
 
 /* SECTIONS — formerly var(--ink-050) */
 [data-theme="dark"] .messages-section,
+[data-theme="dark"] .home-week,
 [data-theme="dark"] .ministries-section,
 [data-theme="dark"] .about-values,
 [data-theme="dark"] .about-mission,
@@ -785,3 +786,14 @@
 [data-theme="dark"] .fh-secondhalf-copy p strong {
   color: #fff;
 }
+
+/* Homepage This Week block: the card sits on the tinted section like the
+   other cards; the notice row keeps its amber, toned for dark. */
+[data-theme="dark"] .home-week-card { background: var(--bg-muted); box-shadow: none; }
+[data-theme="dark"] .home-week-icon { background: rgba(0,130,202,0.18); }
+[data-theme="dark"] .home-week-row.is-loading .home-week-icon,
+[data-theme="dark"] .home-week-bar { background: var(--ink-200); }
+[data-theme="dark"] .home-week-row.is-notice { background: rgba(245,158,11,0.12); }
+[data-theme="dark"] .home-week-row.is-notice .home-week-title { color: #FCD9A8; }
+[data-theme="dark"] .home-week-chev { color: rgba(255,255,255,0.4); }
+[data-theme="dark"] .home-week-icon.is-tree { background: rgba(63,168,98,0.18); }

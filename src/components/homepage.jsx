@@ -4,6 +4,7 @@ import { Icon, Button, SectionHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
+import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE } from '../thisWeek.jsx';
 // Hope Church — 3 homepage hero variations + supporting blocks
 
 // ======================================================
@@ -143,6 +144,79 @@ function HeroC({ onVisit, onWatch }) {
             {fourthLive && <div><b>{st.fourth.replace('pm','')}</b><s>pm</s></div>}
           </div>
           <a href="https://maps.google.com/?q=5034+Bobby+Hicks+Hwy+Suite+10+Gray+TN+37615" target="_blank" rel="noopener" className="btn btn-outline-on-dark btn-sm">Directions</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ======================================================
+// This Week at a glance (the app's This Week list)
+// ======================================================
+// The first few rows of /this-week, read live from the CMS like that page, so
+// publishing This Week updates the app, /this-week and this block together.
+// The pre-rendered HTML holds placeholder rows of the same height, so the
+// page does not jump when the list arrives.
+const HOME_WEEK_MAX = 6;
+
+function HomeWeekRow({ r }) {
+  const external = /^https?:/i.test(r.href);
+  const notice = THIS_WEEK_NOTICE.test(r.title || '');
+  return (
+    <li>
+      <a className={'home-week-row' + (notice ? ' is-notice' : '')} href={r.href}
+         {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
+        <span className={'home-week-icon' + (!notice && isChristmasTree(r) ? ' is-tree' : '')}>
+          {!notice && isChristmasTree(r)
+            ? <ChristmasTree size={22} />
+            : <Icon name={notice ? 'calendar' : thisWeekIcon(r.icon)} size={18} color={notice ? '#B45309' : 'var(--hope-blue)'} />}
+        </span>
+        <span className="home-week-title">
+          {notice && <span className="home-week-badge">Not meeting</span>}
+          {r.title}
+        </span>
+        <span className="home-week-chev"><Icon name="chevron" size={16} /></span>
+      </a>
+    </li>
+  );
+}
+
+function HomeThisWeek() {
+  const { week, failed } = useThisWeek();
+  const rows = thisWeekRows(week);
+  const shown = rows.slice(0, HOME_WEEK_MAX);
+  const more = rows.length - shown.length;
+  const updated = week && thisWeekDate(week.updated);
+  return (
+    <section className="home-week" aria-labelledby="home-week-title">
+      <div className="container home-week-inner">
+        <div className="home-week-head">
+          <span className="eyebrow">This Week</span>
+          <h2 id="home-week-title">This week at Hope.</h2>
+          <p className="home-week-meta">{updated ? `Updated ${updated}.` : 'Notes, the newsletter, the prayer sheet and events.'}</p>
+          <a className="btn btn-secondary btn-md home-week-all" href="/this-week">
+            {more > 0 ? `See all ${rows.length}` : 'See all'} <Icon name="arrow" size={15} />
+          </a>
+        </div>
+        <div className="home-week-card">
+          {!week && !failed && (
+            <ul className="home-week-rows" aria-busy="true" aria-label="Loading this week">
+              {Array.from({ length: HOME_WEEK_MAX }, (_, i) => (
+                <li key={i}><span className="home-week-row is-loading"><span className="home-week-icon" /><span className="home-week-bar" /></span></li>
+              ))}
+            </ul>
+          )}
+          {(failed || (week && rows.length === 0)) && (
+            <div className="home-week-empty">
+              <p>{failed ? 'This week’s list didn’t load.' : 'Nothing posted yet this week.'}</p>
+              <a href="/events">See upcoming events <Icon name="arrow" size={14} /></a>
+            </div>
+          )}
+          {shown.length > 0 && (
+            <ul className="home-week-rows">
+              {shown.map((r) => <HomeWeekRow key={r.id} r={r} />)}
+            </ul>
+          )}
         </div>
       </div>
     </section>
@@ -326,4 +400,4 @@ function GiveCTA({ onGive }) {
   );
 }
 
-export { HeroA, HeroB, HeroC, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA };
+export { HeroA, HeroB, HeroC, HomeThisWeek, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA };
