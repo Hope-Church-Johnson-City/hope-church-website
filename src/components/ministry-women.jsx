@@ -12,7 +12,7 @@ import { HopeCalendarEmbed } from './embeds.jsx';
 
 function WomenMinistryPage({ onNav }) {
   const FACEBOOK_URL = 'https://www.facebook.com/groups/1441473576255607';
-  const CONTACT_EMAIL = 'mailto:info@hopejc.org?subject=Woven%20Women%27s%20Ministry';
+  const CONTACT_EMAIL = 'mailto:woven@hopejc.org?subject=Woven%20Women%27s%20Ministry';
 
   const rhythms = [
     {
@@ -58,12 +58,9 @@ function WomenMinistryPage({ onNav }) {
             </blockquote>
           </div>
 
-          <div className="wv-anchor-media">
+          <div className="wv-anchor-media wv-anchor-media--single">
             <div className="wv-photo-back">
               <img src="/assets/woven-retreat-porch.jpg" alt="The Woven women's retreat group gathered together on a cabin porch at night"/>
-            </div>
-            <div className="wv-photo-front">
-              <img src="/assets/woven-leaders-christmas.jpg" alt="Woven leaders gathered together at the Christmas gathering at Hope Church"/>
             </div>
           </div>
         </div>
@@ -131,6 +128,14 @@ function WomenMinistryPage({ onNav }) {
           <div className="cta-band-actions">
             <Button variant="primary" size="xl" icon="facebook" onClick={() => window.open(FACEBOOK_URL, '_blank', 'noopener')}>Woven Facebook Group</Button>
             <Button variant="outline-on-dark" size="xl" iconRight="arrow" onClick={() => window.location.href = CONTACT_EMAIL}>Ask about Woven</Button>
+          </div>
+          <div className="wv-contact">
+            <span className="wv-contact-label">Questions? Contact Jennifer Holifield</span>
+            <div className="wv-contact-links">
+              <a href="tel:+14239433542">(423) 943-3542</a>
+              <span aria-hidden="true">&middot;</span>
+              <a href="mailto:woven@hopejc.org">woven@hopejc.org</a>
+            </div>
           </div>
           <div className="wv-cta-back">
             <a href="#" onClick={(e)=>{e.preventDefault(); onNav && onNav('ministries');}}>&larr; Back to all ministries</a>

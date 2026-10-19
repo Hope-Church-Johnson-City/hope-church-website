@@ -142,6 +142,13 @@
   transform: rotate(-2.5deg);
   z-index: 2;
 }
+/* One photo instead of the stacked pair: it sits in the column at full width. */
+.wv-anchor-media--single { min-height: 0; display: flex; align-items: center; }
+.wv-anchor-media--single::after { display: none; }
+.wv-anchor-media--single .wv-photo-back {
+  position: relative; top: auto; right: auto;
+  width: 100%; transform: rotate(1.5deg);
+}
 .wv-photo-back img, .wv-photo-front img {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
@@ -365,6 +372,19 @@
   font-size: 18px; line-height: 1.6;
   max-width: 620px; margin: 0 auto 40px;
 }
+.wv-contact { margin-top: 36px; }
+.wv-contact-label {
+  display: block; margin-bottom: 8px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--wv-sky);
+}
+.wv-contact-links {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px;
+  font-size: 18px; font-weight: 600;
+}
+.wv-contact-links a { color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.35); }
+.wv-contact-links a:hover { border-bottom-color: #fff; }
+.wv-contact-links span { color: rgba(255,255,255,0.5); }
 .wv-cta-back { margin-top: 32px; }
 .wv-cta-back a {
   color: #fff;
