@@ -82,6 +82,18 @@
   ],
   "redirects": [
     {
+      "source": "/media/:branch(messages|students-messages|mid-week|finding-hope-podcast)",
+      "has": [{ "type": "host", "value": "www.hopejc.org" }],
+      "destination": "/sermons/:branch",
+      "permanent": true
+    },
+    {
+      "source": "/media/:branch(messages|students-messages|mid-week|finding-hope-podcast)/:rest*",
+      "has": [{ "type": "host", "value": "www.hopejc.org" }],
+      "destination": "/sermons/:branch/:rest*",
+      "permanent": true
+    },
+    {
       "source": "/",
       "has": [
         {
