@@ -6,7 +6,7 @@
   "description": "Hope Church — Gray / Johnson City, TN. Public website.",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/gen-events.mjs && node scripts/gen-discover-hope.mjs && node scripts/gen-announcement.mjs && node scripts/gen-sitemap.mjs && vite-react-ssg build && node scripts/postbuild-404.mjs",
+    "build": "node scripts/gen-events.mjs && node scripts/gen-discover-hope.mjs && node scripts/gen-announcement.mjs && node scripts/gen-help.mjs && node scripts/gen-sitemap.mjs && vite-react-ssg build && node scripts/postbuild-404.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
