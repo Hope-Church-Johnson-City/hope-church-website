@@ -755,7 +755,7 @@ a.footer-live-btn.hero-live-btn .live-dot {
   padding: 3px 9px; border-radius: 999px; margin-bottom: 12px;
 }
 
-.resource-card h3 {
+.resource-card h4 {
   font-family: var(--font-display);
   font-size: 17.5px; line-height: 1.25; margin: 0; color: var(--fg-1);
 }
@@ -773,6 +773,25 @@ a.footer-live-btn.hero-live-btn .live-dot {
 .resource-line.resource-phone a { font-weight: 700; }
 .resource-line.resource-address { color: var(--ink-600); }
 
+/* Featured card (biblical counseling) and category groups */
+.resource-featured { max-width: 640px; margin: 0 auto 56px; }
+.resource-card-featured {
+  border: 2px solid var(--hope-blue);
+  padding: 26px 26px 24px;
+}
+.resource-card-featured h4 { font-size: 22px; }
+.resource-card-featured .resource-desc { font-size: 15px; line-height: 1.5; margin-top: 9px; }
+.resource-badge-info { color: var(--hope-blue); background: rgba(0,130,202,0.07); border-color: rgba(0,130,202,0.25); }
+
+.resource-category + .resource-category { margin-top: 48px; }
+.resource-cat-title {
+  font-family: var(--font-display);
+  font-size: 24px; line-height: 1.2; letter-spacing: -0.01em;
+  margin: 0 0 18px; padding-bottom: 10px;
+  color: var(--fg-1);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
 /* Dark mode */
 [data-theme='dark'] .resource-card {
   background: var(--bg-muted);
@@ -783,6 +802,11 @@ a.footer-live-btn.hero-live-btn .live-dot {
 [data-theme='dark'] .resource-contact { border-top-color: rgba(255,255,255,0.1); }
 [data-theme='dark'] .resource-line svg { color: var(--hope-sky); }
 [data-theme='dark'] .resource-line a:hover { color: var(--hope-sky); }
+[data-theme='dark'] .resource-card-featured { border-color: var(--hope-sky); }
+[data-theme='dark'] .resource-cat-title { border-bottom-color: rgba(255,255,255,0.12); }
+[data-theme='dark'] .resource-badge.resource-badge-info {
+  color: var(--hope-sky); background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2);
+}
 [data-theme='dark'] .resource-badge {
   color: #fda29b; background: rgba(217,45,32,0.14); border-color: rgba(253,162,155,0.35);
 }
@@ -790,6 +814,8 @@ a.footer-live-btn.hero-live-btn .live-dot {
 @media (max-width: 600px) {
   .resource-grid { grid-template-columns: 1fr; }
   .resource-head h2 { font-size: 30px; }
+  .resource-cat-title { font-size: 21px; }
+  .resource-featured { margin-bottom: 40px; }
 }
 
 /* ---------- /download: only the app and its two store buttons ---------- */

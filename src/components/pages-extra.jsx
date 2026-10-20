@@ -65,39 +65,124 @@ function PrayerRequestPage() {
 // ============================================================
 
 // Community Resource List — local addiction recovery, mental/behavioral
-// health, crisis, and hospital resources. `url`/`url2` are real links;
-// `phone` renders as a tel: link; `desc`/`address` are plain text.
-const HELP_RESOURCES = [
-  { name: 'Alcoholics Anonymous', url: 'https://www.aatricitiestn.org', phone: '(423) 928-0871' },
-  { name: 'Ballad Health Behavioral Health Outpatient Clinics', url: 'https://www.balladhealth.org/locations/behavioral-health/johnson-city', phone: '(423) 302-3480' },
-  { name: 'Ballad Health Respond 24/7 Intervention Hotline', badge: '24/7 Hotline', phone: '1 (800) 366-1132' },
-  { name: 'Bristol Regional Medical Center', url: 'https://www.balladhealth.org/locations/hospitals/bristol-regional', phone: '(423) 844-1121' },
-  { name: 'Comprehensive Community Services', url: 'https://www.ccstreatment.com', phone: '(423) 349-4070' },
-  { name: 'Covenant Counseling', url: 'https://www.covenantkpt.com', phone: '(423) 247-4536' },
-  { name: 'Creekside Behavioral Health', badge: '24/7', url: 'https://www.creeksidebh.com', phone: '(423) 830-8110' },
-  { name: 'Crisis Response Service', badge: '24/7 Crisis', url: 'https://www.frontierhealth.org/crisis-response/', phone: '(877) 928-9062' },
-  { name: 'Franklin Woods Community Hospital', desc: 'Johnson City, TN | Ballad Health', url: 'https://www.balladhealth.org/locations/hospitals/franklin-woods' },
-  { name: 'Gracepointe Counseling', url: 'https://www.gracepcc.com', phone: '(423) 283-4958' },
-  { name: 'Health Connect America', url: 'https://www.healthconnectamerica.com' },
-  { name: 'Holston Valley Medical Center', desc: 'Kingsport, TN', url: 'https://www.balladhealth.org/locations/hospitals/holston-valley', phone: '(423) 223-4000' },
-  { name: 'Johnson City Medical Center', desc: 'Ballad Health', url: 'https://www.balladhealth.org/locations/hospitals/johnson-city-medical-center', phone: '(423) 431-6111' },
-  { name: 'Narcotics Anonymous', url: 'https://www.mana-e-tn.org', phone: '(423) 302-0494' },
-  { name: 'New Leaf Senior Care', desc: 'Sycamore Shoals Hospital — Inpatient Senior Behavioral Health, Elizabethton', url: 'https://www.balladhealth.org/locations/behavioral-health/senior-inpatient-elizabethton', phone: '(423) 542-1358' },
-  { name: 'Overmountain Recovery', desc: 'Medication-Assisted Opioid Treatment Program', url: 'https://www.overmountainrecovery.org/opioid-treatment-program/', phone: '(833) 371-0509' },
-  { name: 'Papillon Behavioral Health', phone: '(423) 529-0385' },
-  { name: 'Ridgeview Pavilion', desc: 'Inpatient Psychiatric Care, Bristol | Ballad Health', url: 'https://www.balladhealth.org/locations/behavioral-health/ridgeview', phone: '(423) 844-6000' },
-  { name: 'SMART Recovery Johnson City', url: 'https://www.smartrecovery.org', url2: 'https://www.facebook.com/SMARTrecoveryJohnsonCity' },
-  { name: 'Strong Futures', desc: 'Outpatient Behavioral Health Clinic | Ballad Health', url: 'https://www.balladhealth.org/locations/behavioral-health/strong-futures-greeneville', phone: '(423) 278-1696' },
-  { name: 'Summit Counseling Center', url: 'https://www.summitcounselingtn.com', phone: '(423) 930-8898' },
-  { name: 'Tri-Cities Eating Disorder Therapy', phone: '(423) 708-6982' },
-  { name: 'Turning Point', address: '208 E Unaka Ave, Johnson City, TN 37601', phone: '(423) 928-9062' },
-  { name: 'Watauga Behavioral Health Services', url: 'https://www.frontierhealth.org/mentalhealth/', phone: '(423) 232-2600' },
-  { name: 'Willow Ridge', phone: '(423) 461-7750' },
-  { name: 'Woodridge Hospital', desc: 'Inpatient Behavioral Health, Johnson City | Ballad Health', url: 'https://www.balladhealth.org/locations/hospitals/woodridge-psychiatric', phone: '(423) 431-7111' },
+// health, crisis, and hospital resources, grouped so people can find the kind
+// of help they need instead of scanning one long alphabetical list.
+// `url`/`url2` are real links; `phone` renders as a tel: link;
+// `desc`/`address` are plain text.
+
+// Shown first, on its own: the church's first referral for counseling.
+const FEATURED_HELP = {
+  name: 'East Tennessee Biblical Counseling',
+  badge: 'Biblical counseling',
+  desc: 'Christ-centered counseling for anxiety, depression, marriage, grief, addiction and other hard seasons. Partners with local churches.',
+  url: 'https://www.easttnbc.org/',
+  phone: '(423) 467-2552',
+  address: '170 Promise Land Dr., Gray, TN 37615',
+};
+
+const HELP_CATEGORIES = [
+  {
+    title: 'Crisis & 24/7 Help',
+    resources: [
+      { name: 'Ballad Health Respond 24/7 Intervention Hotline', badge: '24/7 Hotline', phone: '1 (800) 366-1132' },
+      { name: 'Crisis Response Service', badge: '24/7 Crisis', url: 'https://www.frontierhealth.org/crisis-response/', phone: '(877) 928-9062' },
+    ],
+  },
+  {
+    title: 'Counseling',
+    resources: [
+      { name: 'Covenant Counseling', url: 'https://www.covenantkpt.com', phone: '(423) 247-4536' },
+      { name: 'Gracepointe Counseling', url: 'https://www.gracepcc.com', phone: '(423) 283-4958' },
+      { name: 'Summit Counseling Center', url: 'https://www.summitcounselingtn.com', phone: '(423) 930-8898' },
+      { name: 'Tri-Cities Eating Disorder Therapy', phone: '(423) 708-6982' },
+    ],
+  },
+  {
+    title: 'Behavioral Health Clinics',
+    resources: [
+      { name: 'Ballad Health Behavioral Health Outpatient Clinics', url: 'https://www.balladhealth.org/locations/behavioral-health/johnson-city', phone: '(423) 302-3480' },
+      { name: 'Health Connect America', url: 'https://www.healthconnectamerica.com' },
+      { name: 'Papillon Behavioral Health', phone: '(423) 529-0385' },
+      { name: 'Strong Futures', desc: 'Outpatient Behavioral Health Clinic | Ballad Health', url: 'https://www.balladhealth.org/locations/behavioral-health/strong-futures-greeneville', phone: '(423) 278-1696' },
+      { name: 'Watauga Behavioral Health Services', url: 'https://www.frontierhealth.org/mentalhealth/', phone: '(423) 232-2600' },
+    ],
+  },
+  {
+    title: 'Addiction & Recovery',
+    resources: [
+      { name: 'Alcoholics Anonymous', url: 'https://www.aatricitiestn.org', phone: '(423) 928-0871' },
+      { name: 'Comprehensive Community Services', url: 'https://www.ccstreatment.com', phone: '(423) 349-4070' },
+      { name: 'Narcotics Anonymous', url: 'https://www.mana-e-tn.org', phone: '(423) 302-0494' },
+      { name: 'Overmountain Recovery', desc: 'Medication-Assisted Opioid Treatment Program', url: 'https://www.overmountainrecovery.org/opioid-treatment-program/', phone: '(833) 371-0509' },
+      { name: 'SMART Recovery Johnson City', url: 'https://www.smartrecovery.org', url2: 'https://www.facebook.com/SMARTrecoveryJohnsonCity' },
+      { name: 'Turning Point', address: '208 E Unaka Ave, Johnson City, TN 37601', phone: '(423) 928-9062' },
+      { name: 'Willow Ridge', phone: '(423) 461-7750' },
+    ],
+  },
+  {
+    title: 'Inpatient Behavioral Health',
+    resources: [
+      { name: 'Creekside Behavioral Health', badge: '24/7', url: 'https://www.creeksidebh.com', phone: '(423) 830-8110' },
+      { name: 'New Leaf Senior Care', desc: 'Sycamore Shoals Hospital — Inpatient Senior Behavioral Health, Elizabethton', url: 'https://www.balladhealth.org/locations/behavioral-health/senior-inpatient-elizabethton', phone: '(423) 542-1358' },
+      { name: 'Ridgeview Pavilion', desc: 'Inpatient Psychiatric Care, Bristol | Ballad Health', url: 'https://www.balladhealth.org/locations/behavioral-health/ridgeview', phone: '(423) 844-6000' },
+      { name: 'Woodridge Hospital', desc: 'Inpatient Behavioral Health, Johnson City | Ballad Health', url: 'https://www.balladhealth.org/locations/hospitals/woodridge-psychiatric', phone: '(423) 431-7111' },
+    ],
+  },
+  {
+    title: 'Hospitals',
+    resources: [
+      { name: 'Bristol Regional Medical Center', url: 'https://www.balladhealth.org/locations/hospitals/bristol-regional', phone: '(423) 844-1121' },
+      { name: 'Franklin Woods Community Hospital', desc: 'Johnson City, TN | Ballad Health', url: 'https://www.balladhealth.org/locations/hospitals/franklin-woods' },
+      { name: 'Holston Valley Medical Center', desc: 'Kingsport, TN', url: 'https://www.balladhealth.org/locations/hospitals/holston-valley', phone: '(423) 223-4000' },
+      { name: 'Johnson City Medical Center', desc: 'Ballad Health', url: 'https://www.balladhealth.org/locations/hospitals/johnson-city-medical-center', phone: '(423) 431-6111' },
+    ],
+  },
 ];
 
 const cleanUrl = (u) => u.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
 const telHref = (p) => `tel:${p.replace(/[^0-9]/g, '')}`;
+
+function ResourceCard({ r, featured = false }) {
+  return (
+    <div className={featured ? 'resource-card resource-card-featured' : 'resource-card'}>
+      {r.badge && (
+        <span className={featured ? 'resource-badge resource-badge-info' : 'resource-badge'}>
+          {!featured && <Icon name="clock" size={12} />} {r.badge}
+        </span>
+      )}
+      <h4>{r.name}</h4>
+      {r.desc && <p className="resource-desc">{r.desc}</p>}
+      {(r.phone || r.url || r.url2 || r.address) && (
+      <div className="resource-contact">
+        {r.phone && (
+          <div className="resource-line resource-phone">
+            <Icon name="phone" size={16} />
+            <a href={telHref(r.phone)}>{r.phone}</a>
+          </div>
+        )}
+        {r.url && (
+          <div className="resource-line">
+            <Icon name="globe" size={16} />
+            <a href={r.url} target="_blank" rel="noopener noreferrer">{cleanUrl(r.url)}</a>
+          </div>
+        )}
+        {r.url2 && (
+          <div className="resource-line">
+            <Icon name="facebook" size={16} />
+            <a href={r.url2} target="_blank" rel="noopener noreferrer">Facebook group</a>
+          </div>
+        )}
+        {r.address && (
+          <div className="resource-line resource-address">
+            <Icon name="pin" size={16} />
+            <span>{r.address}</span>
+          </div>
+        )}
+      </div>
+      )}
+    </div>
+  );
+}
 
 function GetHelpPage() {
   const formUrl = 'https://hopejc.churchcenter.com/people/forms/1305460';
@@ -129,45 +214,17 @@ function GetHelpPage() {
             <h2>Community Resource List</h2>
             <p>Local help for recovery, counseling, crisis support, and behavioral health across the Tri-Cities. Tap any number to call.</p>
           </div>
-          <div className="resource-grid">
-            {HELP_RESOURCES.map((r) => (
-              <div key={r.name} className="resource-card">
-                {r.badge && (
-                  <span className="resource-badge"><Icon name="clock" size={12} /> {r.badge}</span>
-                )}
-                <h3>{r.name}</h3>
-                {r.desc && <p className="resource-desc">{r.desc}</p>}
-                {(r.phone || r.url || r.url2 || r.address) && (
-                <div className="resource-contact">
-                  {r.phone && (
-                    <div className="resource-line resource-phone">
-                      <Icon name="phone" size={16} />
-                      <a href={telHref(r.phone)}>{r.phone}</a>
-                    </div>
-                  )}
-                  {r.url && (
-                    <div className="resource-line">
-                      <Icon name="globe" size={16} />
-                      <a href={r.url} target="_blank" rel="noopener noreferrer">{cleanUrl(r.url)}</a>
-                    </div>
-                  )}
-                  {r.url2 && (
-                    <div className="resource-line">
-                      <Icon name="facebook" size={16} />
-                      <a href={r.url2} target="_blank" rel="noopener noreferrer">Facebook group</a>
-                    </div>
-                  )}
-                  {r.address && (
-                    <div className="resource-line resource-address">
-                      <Icon name="pin" size={16} />
-                      <span>{r.address}</span>
-                    </div>
-                  )}
-                </div>
-                )}
-              </div>
-            ))}
+          <div className="resource-featured">
+            <ResourceCard r={FEATURED_HELP} featured />
           </div>
+          {HELP_CATEGORIES.map((c) => (
+            <div key={c.title} className="resource-category">
+              <h3 className="resource-cat-title">{c.title}</h3>
+              <div className="resource-grid">
+                {c.resources.map((r) => <ResourceCard key={r.name} r={r} />)}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>
