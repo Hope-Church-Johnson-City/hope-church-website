@@ -415,9 +415,6 @@
 [data-theme="dark"] .l56-meta-row dt {
   color: var(--fg-1);
 }
-[data-theme="dark"] .staff-card .elder-email {
-  color: var(--hope-sky);
-}
 [data-theme="dark"] .l56-meta-row {
   border-bottom-color: rgba(255, 255, 255, 0.12);
 }

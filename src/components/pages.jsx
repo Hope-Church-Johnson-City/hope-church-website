@@ -300,29 +300,54 @@ function AboutPage({ onNav }) {
 }
 
 // ---------- Team Page ----------
+// Each photo opens an email to that person. The address is put together only
+// when the photo is clicked and is never written into the page, so it isn't
+// shown and the address harvesters that read page text don't find it. Every
+// address is @hopejc.org, so only the part before the @ is kept here.
+function StaffPhoto({ person }) {
+  const open = () => { window.location.href = 'mailto:' + person.mail + '@' + 'hopejc.org'; };
+  if (!person.mail) return <div className="staff-photo elder" style={{backgroundImage: `url('${person.img}')`}} />;
+  return (
+    <button
+      type="button"
+      className="staff-photo elder staff-photo-mail"
+      style={{backgroundImage: `url('${person.img}')`}}
+      onClick={open}
+      aria-label={`Email ${person.name}`}
+      title={`Email ${person.name}`}
+    >
+      <span className="staff-photo-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" />
+        </svg>
+      </span>
+    </button>
+  );
+}
+
 function TeamPage() {
   const elders = [
-    { name: 'Rick Keller',    role: 'Lead Pastor / Elder', img: '/assets/elder-rick.png',   email: 'rkeller@hopejc.org' },
-    { name: 'Will Easler',    role: 'Lead Pastor / Elder', img: '/assets/elder-will.jpg',   email: 'weasler@hopejc.org' },
-    { name: 'David Wallace',  role: 'Elder',               img: '/assets/elder-david.jpg',  email: 'elders@hopejc.org'  },
-    { name: 'Tommy Snapp',    role: 'Elder',               img: '/assets/elder-tommy.jpg',  email: 'elders@hopejc.org'  },
-    { name: 'Jason Gaede',    role: 'Elder',               img: '/assets/elder-jason.jpg',  email: 'elders@hopejc.org'  },
-    { name: 'Jeff Mann',      role: 'Elder',               img: '/assets/elder-jeff.jpg',   email: 'elders@hopejc.org'  },
-    { name: 'Steve Tallent',  role: 'Elder',               img: '/assets/elder-steve.jpg',  email: 'elders@hopejc.org'  },
+    { name: 'Rick Keller',    role: 'Lead Pastor / Elder', img: '/assets/elder-rick.png',   mail: 'rkeller' },
+    { name: 'Will Easler',    role: 'Lead Pastor / Elder', img: '/assets/elder-will.jpg',   mail: 'weasler' },
+    { name: 'David Wallace',  role: 'Elder',               img: '/assets/elder-david.jpg',  mail: 'elders'  },
+    { name: 'Tommy Snapp',    role: 'Elder',               img: '/assets/elder-tommy.jpg',  mail: 'elders'  },
+    { name: 'Jason Gaede',    role: 'Elder',               img: '/assets/elder-jason.jpg',  mail: 'elders'  },
+    { name: 'Jeff Mann',      role: 'Elder',               img: '/assets/elder-jeff.jpg',   mail: 'elders'  },
+    { name: 'Steve Tallent',  role: 'Elder',               img: '/assets/elder-steve.jpg',  mail: 'elders'  },
   ];
   const staff = [
-    { name: 'Rick Keller',     role: 'Lead Pastor',       img: '/assets/elder-rick.png',     email: 'rkeller@hopejc.org'    },
-    { name: 'Will Easler',     role: 'Lead Pastor',       img: '/assets/elder-will.jpg',     email: 'weasler@hopejc.org'    },
-    { name: 'Jesse Broughton', role: 'Executive Pastor',  img: '/assets/staff-jesse.jpg',    email: 'jbroughton@hopejc.org' },
-    { name: 'Cameron Owens',   role: 'Worship Pastor',    img: '/assets/staff-cameron.jpg',  email: 'cowens@hopejc.org'     },
-    { name: 'Logan Harris',    role: 'Next-Gen Pastor',   img: '/assets/staff-logan.jpg',    email: 'lharris@hopejc.org'    },
-    { name: 'Ashley Tipton',   role: 'Kids Director',     img: '/assets/staff-ashley.jpg',   email: 'atipton@hopejc.org'    },
-    { name: 'Stacie Taylor',   role: 'Linked56 Director', img: '/assets/staff-stacie.jpg',   email: 'staylor@hopejc.org'    },
+    { name: 'Rick Keller',     role: 'Lead Pastor',       img: '/assets/elder-rick.png',     mail: 'rkeller'    },
+    { name: 'Will Easler',     role: 'Lead Pastor',       img: '/assets/elder-will.jpg',     mail: 'weasler'    },
+    { name: 'Jesse Broughton', role: 'Executive Pastor',  img: '/assets/staff-jesse.jpg',    mail: 'jbroughton' },
+    { name: 'Cameron Owens',   role: 'Worship Pastor',    img: '/assets/staff-cameron.jpg',  mail: 'cowens'     },
+    { name: 'Logan Harris',    role: 'Next-Gen Pastor',   img: '/assets/staff-logan.jpg',    mail: 'lharris'    },
+    { name: 'Ashley Tipton',   role: 'Kids Director',     img: '/assets/staff-ashley.jpg',   mail: 'atipton'    },
+    { name: 'Stacie Taylor',   role: 'Linked56 Director', img: '/assets/staff-stacie.jpg',   mail: 'staylor'    },
   ];
   const support = [
-    { name: 'Gemma Johnson',      role: 'Office Administrator',     img: '/assets/staff-gemma.jpeg',     email: 'gjohnson@hopejc.org' },
-    { name: 'Stacie Taylor',      role: 'Administrative Assistant', img: '/assets/staff-stacie.jpg',     email: 'staylor@hopejc.org'  },
-    { name: 'Gabrielle Day',      role: 'Financial Assistant',      img: '/assets/staff-gabrielle.jpg',  email: 'gday@hopejc.org'     },
+    { name: 'Gemma Johnson',      role: 'Office Administrator',     img: '/assets/staff-gemma.jpeg',     mail: 'gjohnson' },
+    { name: 'Stacie Taylor',      role: 'Administrative Assistant', img: '/assets/staff-stacie.jpg',     mail: 'staylor'  },
+    { name: 'Gabrielle Day',      role: 'Financial Assistant',      img: '/assets/staff-gabrielle.jpg',  mail: 'gday'     },
   ];
   return (
     <>
@@ -335,10 +360,9 @@ function TeamPage() {
           <div className="staff-grid staff-grid-elders">
             {elders.map(e => (
               <div className="staff-card elder-card" key={e.name}>
-                <div className="staff-photo elder" style={{backgroundImage: `url('${e.img}')`}} />
+                <StaffPhoto person={e} />
                 <h4>{e.name}</h4>
                 <div className="role">{e.role}</div>
-                {e.email && <a className="elder-email" href={`mailto:${e.email}`}>{e.email}</a>}
               </div>
             ))}
           </div>
@@ -352,10 +376,9 @@ function TeamPage() {
           <div className="staff-grid staff-grid-elders">
             {staff.map(s => (
               <div className="staff-card elder-card" key={s.name}>
-                <div className="staff-photo elder" style={{backgroundImage: `url('${s.img}')`}} />
+                <StaffPhoto person={s} />
                 <h4>{s.name}</h4>
                 <div className="role">{s.role}</div>
-                {s.email && <a className="elder-email" href={`mailto:${s.email}`}>{s.email}</a>}
               </div>
             ))}
           </div>
@@ -369,10 +392,9 @@ function TeamPage() {
           <div className="staff-grid staff-grid-elders staff-grid-support">
             {support.map(s => (
               <div className="staff-card elder-card" key={s.name}>
-                <div className="staff-photo elder" style={{backgroundImage: `url('${s.img}')`}} />
+                <StaffPhoto person={s} />
                 <h4>{s.name}</h4>
                 <div className="role">{s.role}</div>
-                {s.email && <a className="elder-email" href={`mailto:${s.email}`}>{s.email}</a>}
               </div>
             ))}
           </div>

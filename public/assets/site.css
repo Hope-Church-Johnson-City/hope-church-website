@@ -1686,12 +1686,27 @@ a.hwk-row:hover .hwk-trail { color: var(--hwk-blue); }
 .staff-photo.elder::after { display: none; }
 .staff-card h4 { font-size: 17px; margin-bottom: 2px; font-weight: 700; }
 .staff-card .role { font-size: 13px; color: var(--fg-3); font-weight: 600; letter-spacing: 0.04em; }
-.staff-card .elder-email {
-  display: inline-block; margin-top: 8px;
-  font-size: 12.5px; color: var(--hope-sky);
-  text-decoration: none; word-break: break-all;
+/* A photo that opens an email to the person (StaffPhoto in pages.jsx). */
+.staff-photo-mail {
+  display: block; width: 100%; padding: 0; border: 0;
+  font: inherit; color: inherit; cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-.staff-card .elder-email:hover { text-decoration: underline; }
+.staff-photo-mail:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 35, 70, .18); }
+.staff-photo-mail:focus-visible { outline: 3px solid var(--hope-sky); outline-offset: 3px; }
+.staff-photo-badge {
+  position: absolute; right: 10px; bottom: 10px;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .92); color: var(--hope-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+  transition: transform .18s ease;
+}
+.staff-photo-mail:hover .staff-photo-badge { transform: scale(1.08); }
+@media (prefers-reduced-motion: reduce) {
+  .staff-photo-mail, .staff-photo-badge { transition: none; }
+  .staff-photo-mail:hover { transform: none; }
+}
 
 /* Next steps rails */
 .steps-rails { padding: 96px 0; background: var(--ink-050); }
