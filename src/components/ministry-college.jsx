@@ -2,14 +2,13 @@ import React from 'react';
 import { Button } from './shared.jsx';
 import { PageHeader } from './pages.jsx';
 import { HopeCalendarEmbed } from './embeds.jsx';
-import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
+import { useServiceTimes } from '../serviceTimes.jsx';
 // Hope Church — College & Career ministry detail page (slug: ministry-college)
 // Ages 18–30. Young adults navigating college, work, and the in-between years.
 // Anchored in Jeremiah 29:11 — "plans to give you hope and a future."
 
 function CollegeMinistryPage({ onNav }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   const FACEBOOK_URL = 'https://www.facebook.com/groups/966091859004086/';
   const CONTACT_EMAIL = 'mailto:info@hopejc.org?subject=College%20%26%20Career%20Group';
 
@@ -110,14 +109,14 @@ function CollegeMinistryPage({ onNav }) {
               <span className="cc-rhythm-day">Sunday Mornings</span>
               <h3>Worship together.</h3>
               <div className="cc-rhythm-times">
-                <span>{st.first}</span>
-                <span className="cc-dot">·</span>
-                <span>{st.second}</span>
-                <span className="cc-dot">·</span>
-                <span>{st.third}</span>
-                {fourthLive && <><span className="cc-dot">·</span><span>{st.fourth}</span></>}
+                {st.sunday.map((t, i) => (
+                  <React.Fragment key={t.time}>
+                    {i > 0 && <span className="cc-dot">·</span>}
+                    <span>{t.label}</span>
+                  </React.Fragment>
+                ))}
               </div>
-              <p>Find your row in the auditorium and worship with the whole church. Many of our group sit together at the {st.second.replace('am','')} &mdash; grab a coffee in the lobby first and come find us.</p>
+              <p>Find your row in the auditorium and worship with the whole church. Many of our group sit together at the {st.featured.short} &mdash; grab a coffee in the lobby first and come find us.</p>
               <p>After service, stick around. The lobby is where most of our friendships actually start.</p>
             </article>
           </div>

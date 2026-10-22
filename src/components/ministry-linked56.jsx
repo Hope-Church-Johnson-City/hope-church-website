@@ -1,11 +1,13 @@
 import React from 'react';
 import { Button } from './shared.jsx';
 import { HopeCalendarEmbed } from './embeds.jsx';
+import { useServiceTimes } from '../serviceTimes.jsx';
 // Hope Church — Linked 56 ministry detail page (slug: ministry-linked56)
 // 5th–6th grade tweens. Hope Tweens sub-brand. Identity in Christ.
 // Copy sourced from Linked 56 print/social materials.
 
 function Linked56MinistryPage({ onNav }) {
+  const st = useServiceTimes();
   const SERVE_URL = 'https://hopejc.churchcenter.com/people/forms/589479';
   const FB_URL = 'https://www.facebook.com/groups/6330937060346904/';
 
@@ -53,7 +55,7 @@ function Linked56MinistryPage({ onNav }) {
       <section className="l56-block">
         <div className="container l56-block-inner">
           <h2 className="l56-block-title">Wednesday Nights</h2>
-          <p className="l56-block-body">Linked56 is for 5th and 6th graders and meets on Sundays during the 9:00am, 11:00am and 12:45pm services, and on Wednesdays at 6:30pm. On Wednesdays, students connect with friends through fun games, enjoy pizza, and grow in their faith through engaging Bible study. This semester, we&rsquo;re learning practical skills for studying the Bible on our own&mdash;discovering how to understand God&rsquo;s Word, apply it to everyday life, and build a lasting relationship with Jesus. Linked56 is a place where preteens can belong, have fun, ask questions, and grow together in their walk with Christ.</p>
+          <p className="l56-block-body">Linked56 is for 5th and 6th graders and meets on Sundays during {st.classServices}, and on Wednesdays at 6:30pm. On Wednesdays, students connect with friends through fun games, enjoy pizza, and grow in their faith through engaging Bible study. This semester, we&rsquo;re learning practical skills for studying the Bible on our own&mdash;discovering how to understand God&rsquo;s Word, apply it to everyday life, and build a lasting relationship with Jesus. Linked56 is a place where preteens can belong, have fun, ask questions, and grow together in their walk with Christ.</p>
           <dl className="l56-meta">
             <div className="l56-meta-row">
               <dt>When</dt>

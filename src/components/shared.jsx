@@ -2,7 +2,7 @@ import React from 'react';
 import { hrefFor } from '../announcement.jsx';
 import { resources } from '../resources.js';
 import { pathFor } from '../nav.js';
-import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
+import { useServiceTimes } from '../serviceTimes.jsx';
 // Hope Church — shared components: Header, Footer, Sunday strip, Announcement bar
 
 const { useState, useEffect } = React;
@@ -262,22 +262,23 @@ function SimpleThemeToggle() {
 // ---------- Sunday Strip (sticky service times, top of page) ----------
 function SundayStrip() {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   return (
     <div className="sunday-strip">
       <div className="container sunday-strip-inner">
         <div className="sunday-strip-left">
           <span className="sunday-strip-label">Sundays</span>
           <div className="sunday-strip-times">
-            <span>{st.first}</span><em/>
-            <span>{st.second}</span><em/>
-            <span>{st.third}</span>
-            {fourthLive && <><em/><span>{st.fourth}</span></>}
+            {st.sunday.map((t, i) => (
+              <React.Fragment key={t.time}>
+                {i > 0 && <em/>}
+                <span>{t.label}</span>
+              </React.Fragment>
+            ))}
           </div>
         </div>
         <div className="sunday-strip-right">
           <a href="https://www.google.com/maps/search/?api=1&query=5034+Bobby+Hicks+Hwy+Johnson+City+TN" target="_blank" rel="noopener"><Icon name="pin" size={13}/> 5034 Bobby Hicks Hwy</a>
-          <a href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">Watch Live on Sundays at {st.stream}</a>
+          <a href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">Watch Live on Sundays{st.streamAt}</a>
           <ThemeToggle/>
         </div>
       </div>
@@ -288,7 +289,6 @@ function SundayStrip() {
 // ---------- Site Header ----------
 function SiteHeader({ onNav, current, dark = false }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   const involvedItems = [
     { id: 'lifegroups', label: 'Groups', desc: '', href: 'https://hopejc.churchcenter.com/groups/life-groups?enrollment=open_signup%2Crequest_to_join&filter=enrollment' },
     { id: 'serve', label: 'Serve', desc: 'Find a team that fits your gifts and schedule.' },
@@ -495,7 +495,7 @@ function SiteHeader({ onNav, current, dark = false }) {
         <div className="mobile-menu-foot">
           <div className="mobile-menu-foot-label">Sundays</div>
           <div className="mobile-menu-foot-times">
-            {st.first.replace('am','')} · {st.second.replace('am','')} · {fourthLive ? <>{st.third.replace('am','')} · {st.fourth}</> : st.third}
+            {st.dotted}
           </div>
           <a href="https://www.google.com/maps/search/?api=1&query=5034+Bobby+Hicks+Hwy+Johnson+City+TN" target="_blank" rel="noopener" className="mobile-menu-foot-addr">
             <Icon name="pin" size={14}/> 5034 Bobby Hicks Hwy, Johnson City, TN
@@ -532,19 +532,13 @@ function MissionBar() {
 // ---------- Service Times block ----------
 function ServiceTimes() {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   const ALL_CLASSES = 'All classes (nursery–Linked 56)';
-  const times = [
-    { t: st.first.replace('am',''), s: 'am', name: 'First Service', note: st.isNew ? 'Nursery & preschool only' : null },
-    { t: st.second.replace('am',''), s: 'am', name: 'Second Service', note: st.isNew ? ALL_CLASSES : null },
-    { t: st.third.replace('am',''), s: 'am', name: 'Third Service', note: st.isNew ? ALL_CLASSES : null },
-  ];
-  // The 12:45 service shows as "coming soon" before it starts, then becomes an
-  // ordinary card alongside the others.
-  if (st.isNew) times.push({
-    t: st.fourth.replace('pm',''), s: 'pm', name: 'Fourth Service',
-    note: ALL_CLASSES, soon: !fourthLive,
-  });
+  // A service without a note has every class; that line only appears when some
+  // other service is limited, otherwise it would say nothing.
+  const times = st.sunday.map((t) => ({
+    t: t.short, s: t.ampm, name: t.name,
+    note: t.note || (st.hasNotes ? ALL_CLASSES : null),
+  }));
   return (
     <section className="service-times" data-screen-label="ServiceTimes">
       <div className="container">
@@ -554,12 +548,10 @@ function ServiceTimes() {
         </div>
         <div className="service-times-grid">
           {times.map((x) => (
-            <div key={x.name} className={x.soon ? 'service-time service-time-soon' : 'service-time'}>
-              {x.soon && <div className="st-soon">Coming Soon</div>}
+            <div key={x.name} className="service-time">
               <div className="st-time">{x.t}<s>{x.s}</s></div>
               <div className="st-name">{x.name}</div>
               {x.note && <div className="st-note">{x.note}</div>}
-              {x.soon && <div className="st-desc">Starting Sunday, September&nbsp;20</div>}
             </div>
           ))}
         </div>
@@ -602,7 +594,6 @@ function NewHereBlock({ onVisit }) {
 // ---------- Footer ----------
 function Footer({ onNav }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   return (
     <footer className="site-footer">
       <div className="container footer-inner">
@@ -627,10 +618,7 @@ function Footer({ onNav }) {
           <div>
             <h5>Sundays</h5>
             <ul>
-              <li>{st.first}</li>
-              <li>{st.second}</li>
-              <li>{st.third}</li>
-              {fourthLive && <li>{st.fourth}</li>}
+              {st.sunday.map((t) => <li key={t.time}>{t.label}</li>)}
             </ul>
           </div>
           <div>
@@ -669,7 +657,7 @@ function Footer({ onNav }) {
         <div className="footer-live-row">
           <a className="footer-live-btn" href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">
             <span className="live-dot" aria-hidden="true"/>
-            Watch live at {st.stream}
+            Watch live{st.streamAt}
           </a>
         </div>
       </div>

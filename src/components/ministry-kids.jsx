@@ -2,13 +2,12 @@ import React from 'react';
 import { Icon, Button } from './shared.jsx';
 import { PageHeader } from './pages.jsx';
 import { HopeCalendarEmbed } from './embeds.jsx';
-import { useServiceTimes, useFourthServiceLive, KidsServiceNote } from '../serviceTimes.jsx';
+import { useServiceTimes, KidsServiceNote } from '../serviceTimes.jsx';
 // Hope Church — Kids Ministry detail page (slug: ministry-kids)
 // Uses PageHeader, Button, Icon from shared.jsx.
 
 function KidsMinistryPage({ onNav }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   const SERVE_URL = 'https://hopejc.churchcenter.com/people/forms/343180';
   const FB_URL = 'https://www.facebook.com/groups/422411476309472';
 
@@ -114,10 +113,12 @@ function KidsMinistryPage({ onNav }) {
             <span className="eyebrow">Sunday Mornings</span>
             <h2>A fun, safe, Christ-centered space for every age.</h2>
             <div className="kids-service-times">
-              <span>{st.first}</span><span className="kids-dot">&middot;</span>
-              <span>{st.second}</span><span className="kids-dot">&middot;</span>
-              <span>{st.third}</span>
-              {fourthLive && <><span className="kids-dot">&middot;</span><span>{st.fourth}</span></>}
+              {st.sunday.map((t, i) => (
+                <React.Fragment key={t.time}>
+                  {i > 0 && <span className="kids-dot">&middot;</span>}
+                  <span>{t.label}</span>
+                </React.Fragment>
+              ))}
             </div>
             <KidsServiceNote className="kids-service-note" />
           </header>

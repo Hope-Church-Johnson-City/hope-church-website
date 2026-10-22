@@ -38,7 +38,7 @@ The sitemap is generated from `nav.js`.
 | anything else | pre-rendered 404 (`dist/404.html`) |
 
 `components/shared.jsx` has the header, footer, Sunday strip and announcement
-bar. `src/serviceTimes.jsx` holds the Sunday service times used across pages.
+bar. `src/serviceTimes.jsx` exposes the Sunday service times (`useServiceTimes()`, a list, plus `KidsServiceNote`); every page maps over that list, so any number of services renders. The data is `src/generated/service-times.json` (see below), not constants.
 Navigation uses real `<a href>` links; routing is react-router. Old
 `?page=...` links redirect to the clean URL.
 
@@ -48,7 +48,7 @@ and `/fonts`.
 ## Data from the CMS
 
 The CMS is the Cloudflare Worker at `media.hopejc.org` (repo hope-church-cms).
-Three things on the site come from its public JSON API. Each is fetched at
+Four things on the site come from its public JSON API. Each is fetched at
 build time so the pre-rendered HTML has the content, then fetched again in the
 browser so an edit shows before the next rebuild finishes.
 
@@ -56,6 +56,7 @@ browser so an edit shows before the next rebuild finishes.
 |---|---|---|---|---|
 | Events (list and each event page) | `/api/public/calendar` | `gen-events.mjs` -> `src/generated/events.json` | `/events/<slug>` pages, sitemap | `components/event-detail.jsx` |
 | Announcement bar | `/api/public/app-layout` (the `announcement` field, same document the apps read) | `gen-announcement.mjs` -> `src/generated/announcement.json` | every page | `src/announcement.jsx` |
+| Sunday service times | `/api/public/service-times` | `gen-service-times.mjs` -> `src/generated/service-times.json` | every page with times; the opening hours in `index.html`'s JSON-LD (`vite.config.js`) | `src/serviceTimes.jsx` |
 | Next Discover Hope class | picked from the events file | `gen-discover-hope.mjs` -> `src/generated/discover-hope.json` | `/discover-hope` | `src/discoverHope.js` |
 
 Notes:

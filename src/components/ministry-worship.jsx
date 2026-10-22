@@ -227,10 +227,10 @@ function WorshipMinistryPage({ onNav }) {
                 </div>
               </li>
               <li className="wt-sched-row">
-                <div className="wt-sched-time">{st.first.replace('am','')}<s>Sunday Services</s></div>
+                <div className="wt-sched-time">{st.sunday[0].short}<s>Sunday Services</s></div>
                 <div className="wt-sched-detail">
-                  <h4>Three Services <span className="who">Tech all services</span></h4>
-                  <p>Doors open and we&rsquo;re live. Worship rotates by service; tech serves through all three. Coffee, prayer, and a real seat at the table for every volunteer on schedule.</p>
+                  <h4>{st.countWord} {st.count === 1 ? 'Service' : 'Services'} <span className="who">Tech all services</span></h4>
+                  <p>Doors open and we&rsquo;re live. Worship rotates by service; tech serves through every service. Coffee, prayer, and a real seat at the table for every volunteer on schedule.</p>
                 </div>
               </li>
             </ol>

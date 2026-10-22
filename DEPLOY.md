@@ -27,13 +27,16 @@ hooks; if that happens, create a new one and set it on the Worker
    `src/generated/discover-hope.json`.
 3. `gen-announcement.mjs`: fetches `/api/public/app-layout` and writes its
    `announcement` to `src/generated/announcement.json`.
-4. `gen-sitemap.mjs`: writes `public/sitemap.xml` from `src/nav.js` plus
+4. `gen-service-times.mjs`: fetches `/api/public/service-times` to
+   `src/generated/service-times.json`. The pages and the Sunday opening hours in
+   `index.html` are built from it.
+5. `gen-sitemap.mjs`: writes `public/sitemap.xml` from `src/nav.js` plus
    upcoming events (generated file, git-ignored).
-5. `vite-react-ssg build`: pre-renders every page in `src/nav.js` plus one page
+6. `vite-react-ssg build`: pre-renders every page in `src/nav.js` plus one page
    per event in `events.json` (`vite.config.js`) into `dist/`.
-6. `postbuild-404.mjs`: copies `dist/404/index.html` to `dist/404.html`.
+7. `postbuild-404.mjs`: copies `dist/404/index.html` to `dist/404.html`.
 
-If a CMS fetch fails, steps 1 to 3 keep the previous generated file and the
+If a CMS fetch fails, steps 1 to 4 keep the previous generated file and the
 build still succeeds. Check the build log for `gen-...: keeping the previous
 file` when content looks old.
 

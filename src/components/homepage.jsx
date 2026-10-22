@@ -2,7 +2,7 @@ import React from 'react';
 import { resources } from '../resources.js';
 import { Icon, Button, SectionHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
-import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
+import { useServiceTimes } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
 import { watchInView } from '../motion.js';
 import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree, ChristmasTree, THIS_WEEK_NOTICE, isEventRow, splitEventTitle, thisWeekTileColor, eventStatus, useChurchNow } from '../thisWeek.jsx';
@@ -13,7 +13,6 @@ import { useThisWeek, thisWeekRows, thisWeekIcon, thisWeekDate, isChristmasTree,
 // ======================================================
 function HeroA({ onVisit, onWatch }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   // While a service is live on YouTube the hero makes room for the player;
   // the rest of the time it is exactly as before.
   const live = useLiveStream();
@@ -37,7 +36,7 @@ function HeroA({ onVisit, onWatch }) {
                 </a>
               : <a className="footer-live-btn hero-live-btn" href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">
                   <span className="live-dot" aria-hidden="true"/>
-                  Watch live at {st.stream}
+                  Watch live{st.streamAt}
                 </a>}
           </div>
         </div>
@@ -64,7 +63,7 @@ function HeroA({ onVisit, onWatch }) {
       <div className="hero-a-bottom">
         <span>Gray, Tennessee</span>
         <div className="hero-a-bottom-right">
-          <span>Sundays · {st.first.replace('am','')} · {st.second.replace('am','')} · {fourthLive ? <>{st.third.replace('am','')} · {st.fourth}</> : st.third}</span>
+          <span>Sundays · {st.dotted}</span>
         </div>
       </div>
     </section>
@@ -76,7 +75,6 @@ function HeroA({ onVisit, onWatch }) {
 // ======================================================
 function HeroB({ onVisit, onWatch }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   return (
     <section className="hero-b" data-screen-label="Hero B">
       <div className="container hero-b-inner">
@@ -91,7 +89,7 @@ function HeroB({ onVisit, onWatch }) {
           <div className="hero-b-meta">
             <div className="hero-b-meta-item">
               <div className="hero-b-meta-label">Sundays</div>
-              <div className="hero-b-meta-value">{st.first.replace('am','')} · {st.second.replace('am','')} · {fourthLive ? <>{st.third.replace('am','')} · {st.fourth}</> : st.third}</div>
+              <div className="hero-b-meta-value">{st.dotted}</div>
             </div>
             <div className="hero-b-meta-item">
               <div className="hero-b-meta-label">Location</div>
@@ -115,7 +113,6 @@ function HeroB({ onVisit, onWatch }) {
 // ======================================================
 function HeroC({ onVisit, onWatch }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   return (
     <section className="hero-c" data-screen-label="Hero C">
       <span className="hero-c-bg">HOPE</span>
@@ -137,12 +134,9 @@ function HeroC({ onVisit, onWatch }) {
       </div>
       <div className="hero-c-bar">
         <div className="hero-c-bar-inner">
-          <span className="hero-c-bar-label">Sundays · {fourthLive ? 'Four services' : 'Three services'}</span>
+          <span className="hero-c-bar-label">Sundays · {st.countLabel}</span>
           <div className="hero-c-bar-times">
-            <div><b>{st.first.replace('am','')}</b><s>am</s></div>
-            <div><b>{st.second.replace('am','')}</b><s>am</s></div>
-            <div><b>{st.third.replace('am','')}</b><s>am</s></div>
-            {fourthLive && <div><b>{st.fourth.replace('pm','')}</b><s>pm</s></div>}
+            {st.sunday.map((t) => <div key={t.time}><b>{t.short}</b><s>{t.ampm}</s></div>)}
           </div>
           <a href="https://maps.google.com/?q=5034+Bobby+Hicks+Hwy+Suite+10+Gray+TN+37615" target="_blank" rel="noopener" className="btn btn-outline-on-dark btn-sm">Directions</a>
         </div>

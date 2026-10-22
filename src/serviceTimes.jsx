@@ -1,91 +1,154 @@
 import React from 'react';
+import baked from './generated/service-times.json';
 
 /* Hope Church — Sunday service times, single source of truth.
 
-   The NEW Sunday schedule goes live on the website on
-   Sunday, July 26 2026 at 1:00pm ET (EDT = UTC-4 -> 17:00 UTC).
-   Before that instant the site shows the current (OLD) times; after it,
-   the NEW times — flipped automatically, no redeploy needed.
+   The times come from the CMS (media.hopejc.org/api/public/service-times,
+   set in Shepherd). scripts/gen-service-times.mjs writes them to
+   src/generated/service-times.json before every build, so the pre-rendered
+   HTML already has them: no flash, and crawlers see the real times.
 
-   `stream` is the livestreamed service (currently the 9:45am service; it
-   maps to the new 9:00am service). Change here if a different service is
-   streamed after the switch. */
+   After the page loads we ask the CMS again. The CMS changes what it shows
+   after services on the Sunday before a new schedule starts, and the static
+   page may be older than that. The first render always uses the baked data,
+   so hydration matches; the refresh only swaps in a different answer. */
 const { useState, useEffect } = React;
 
-export const SERVICE_TIMES_SWITCH = Date.parse('2026-07-26T17:00:00Z');
+const API = 'https://media.hopejc.org/api/public/service-times';
 
-const OLD = { first: '8:00am', second: '9:45am', third: '11:30am', stream: '9:45am', runthrough: '7:00am', runthroughEnd: '7:30am', isNew: false };
-const NEW = { first: '7:30am', second: '9:00am', third: '11:00am', fourth: '12:45pm', stream: '9:00am', runthrough: '6:30am', runthroughEnd: '7:00am', isNew: true };
+const ORDINALS = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth'];
+const COUNT_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
 
-export const OLD_SERVICE_TIMES = OLD;
-export const NEW_SERVICE_TIMES = NEW;
-
-// The switch (Jul 26 2026) is now permanently in the past, so NEW is the
-// default the static/SSR render bakes in — this keeps the pre-rendered HTML
-// and SEO structured data correct for no-JS visitors and crawlers, with no
-// flash of old times. The date gate below is retained for safety/preview.
-// Add ?previewTimes=new (or =old) to any URL to force a set for QA.
-// Shared note: under the new schedule the 7:30 service is nursery & preschool
-// only (no K–4th grade, no Linked 5–6th).
-
-// The fourth service (12:45pm) is running. It was gated on
-// 2026-09-20T16:45:00Z while it was still being announced; the church brought
-// it forward, so the gate now sits in the past and the service shows as an
-// ordinary one everywhere. The constant is kept rather than deleted because
-// every "is the fourth service on?" decision on the site reads it, and a date
-// in the past answers that question without any of those call sites changing.
-// Add ?previewFourth=soon to any URL to see the pre-launch state again.
-export const FOURTH_SERVICE_START = Date.parse('2026-09-13T00:00:00Z');
-
-// Initial state is deliberately `false` so the pre-rendered HTML and the first
-// client render agree (no hydration mismatch); the effect corrects it. The
-// build bakes the live state into the static HTML for crawlers.
-export function useFourthServiceLive() {
-  const [live, setLive] = useState(false);
-  useEffect(() => {
-    let force = null;
-    try {
-      const p = new URLSearchParams(window.location.search).get('previewFourth');
-      if (p === 'live' || p === 'soon') window.sessionStorage.setItem('previewFourth', p);
-      else if (p === 'off') window.sessionStorage.removeItem('previewFourth');
-      const stored = window.sessionStorage.getItem('previewFourth');
-      if (stored === 'live') force = true;
-      else if (stored === 'soon') force = false;
-    } catch { /* ignore */ }
-    setLive(force !== null ? force : Date.now() >= FOURTH_SERVICE_START);
-  }, []);
-  return live;
+// "HH:MM" minus some minutes, in the house style ("6:30am").
+function clock(hhmm, minus) {
+  const [h, m] = hhmm.split(':').map(Number);
+  const total = (((h * 60 + m - minus) % 1440) + 1440) % 1440;
+  const hh = Math.floor(total / 60);
+  const mm = String(total % 60).padStart(2, '0');
+  return `${hh % 12 || 12}:${mm}${hh < 12 ? 'am' : 'pm'}`;
 }
-export function KidsServiceNote({ className }) {
-  const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
-  if (!st.isNew) return null;
-  const withClasses = fourthLive
-    ? <>the {st.second}, {st.third}, and {st.fourth} services</>
-    : <>the {st.second} and {st.third} services</>;
-  return (
-    <p className={className}>
-      <strong>Heads up for the {st.first} service:</strong> we offer nursery &amp; preschool only.
-      Kindergarten&ndash;4th grade and Linked 5&ndash;6th grade classes meet at {withClasses}.
-    </p>
-  );
+
+// "a, b, and c" / "a and b" / "a".
+export function joinList(items) {
+  if (items.length <= 1) return items.join('');
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+}
+
+function noteLine(sunday) {
+  const groups = [];
+  sunday.filter((t) => t.note).forEach((t) => {
+    const g = groups.find((x) => x.note === t.note);
+    if (g) g.times.push(t.label); else groups.push({ note: t.note, times: [t.label] });
+  });
+  return groups
+    .map((g) => `the ${joinList(g.times)} ${g.times.length === 1 ? 'service is' : 'services are'} ${g.note.charAt(0).toLowerCase()}${g.note.slice(1)}`)
+    .join(', ');
+}
+
+// Turns the API answer into what the pages use. Sunday only: the site never
+// lists other days' services.
+function shape(data) {
+  const sunday = (data.times || [])
+    .filter((t) => t.weekday === 0)
+    .map((t, i) => ({
+      time: t.time,
+      label: t.label,
+      short: t.short,
+      ampm: t.ampm,
+      name: t.name || (ORDINALS[i] ? `${ORDINALS[i]} Service` : `Service ${i + 1}`),
+      note: t.note || null,
+      stream: !!t.stream,
+      minutes: t.minutes || 70,
+    }));
+  const first = sunday[0];
+  const hasNotes = sunday.some((t) => t.note);
+  return {
+    sunday,
+    count: sunday.length,
+    // "Sundays · 7:30 · 9:00 · 11:00 · 12:45pm": am/pm dropped except on the last.
+    dotted: sunday.map((t, i) => (i < sunday.length - 1 ? t.short : t.label)).join(' \u00b7 '),
+    // "Three services", "One service".
+    countLabel: sunday.length === 1 ? 'One service' : `${COUNT_WORDS[sunday.length] || sunday.length} services`,
+    // For lines that name the streamed time, or nothing when nothing streams.
+    streamAt: data.stream ? ` at ${data.stream.label}` : '',
+    // "the 7:30am service is nursery & preschool only", from the per-time notes.
+    noteLine: noteLine(sunday),
+    countWord: COUNT_WORDS[sunday.length] || String(sunday.length),
+    stream: data.stream ? data.stream.label : null,
+    summary: data.summary || joinList(sunday.map((t) => t.label)),
+    startsOn: data.startsOn || null,
+    upcoming: data.upcoming || null,
+    // Rehearsal: an hour before the first service, finished half an hour before.
+    runthrough: first ? clock(first.time, 60) : '',
+    runthroughEnd: first ? clock(first.time, 30) : '',
+    hasNotes,
+    // Services where every kids class meets: the ones with no note.
+    classTimes: sunday.filter((t) => !t.note),
+    // "every service", or "the 9:00am, 11:00am, and 12:45pm services".
+    classServices: hasNotes && sunday.some((t) => !t.note)
+      ? `the ${joinList(sunday.filter((t) => !t.note).map((t) => t.label))} ${sunday.filter((t) => !t.note).length === 1 ? 'service' : 'services'}`
+      : 'every service',
+    // The time to point people at when copy says "the 9:00 service":
+    // the livestreamed one, else the second, else the only one.
+    featured: sunday.find((t) => t.stream) || sunday[1] || first,
+  };
+}
+
+const initial = shape(baked);
+let current = initial;
+const listeners = new Set();
+let refreshed = false;
+
+function refresh() {
+  if (refreshed || typeof window === 'undefined') return;
+  refreshed = true;
+  fetch(API)
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data || !Array.isArray(data.times) || !data.times.some((t) => t.weekday === 0)) return;
+      const next = shape(data);
+      if (JSON.stringify(next) === JSON.stringify(current)) return;
+      current = next;
+      listeners.forEach((fn) => fn(next));
+    })
+    .catch(() => { /* keep the baked times */ });
 }
 
 export function useServiceTimes() {
-  const [times, setTimes] = useState(NEW);
+  // Initial state is the baked data on the server and the client alike.
+  const [st, setSt] = useState(initial);
   useEffect(() => {
-    let force = null;
-    try {
-      // Persist the preview choice in sessionStorage so it survives in-app
-      // navigation (the ?previewTimes param is dropped on client-side nav).
-      const p = new URLSearchParams(window.location.search).get('previewTimes');
-      if (p === 'new' || p === 'old') window.sessionStorage.setItem('previewTimes', p);
-      else if (p === 'off') window.sessionStorage.removeItem('previewTimes');
-      const stored = window.sessionStorage.getItem('previewTimes');
-      if (stored === 'new') force = NEW;
-      else if (stored === 'old') force = OLD;
-    } catch { /* ignore */ }
-    setTimes(force || (Date.now() >= SERVICE_TIMES_SWITCH ? NEW : OLD));
+    listeners.add(setSt);
+    if (current !== st) setSt(current);
+    refresh();
+    return () => { listeners.delete(setSt); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return times;
+  return st;
+}
+
+// What the kids' pages say about services that differ. Nothing when no Sunday
+// time has a note; otherwise the noted services, their note, and where the
+// classes do meet.
+export function KidsServiceNote({ className }) {
+  const st = useServiceTimes();
+  const noted = st.sunday.filter((t) => t.note);
+  if (!noted.length) return null;
+  const groups = [];
+  noted.forEach((t) => {
+    const g = groups.find((x) => x.note === t.note);
+    if (g) g.times.push(t.label); else groups.push({ note: t.note, times: [t.label] });
+  });
+  return (
+    <p className={className}>
+      {groups.map((g, i) => (
+        <React.Fragment key={g.note}>
+          {i > 0 && ' '}
+          <strong>Heads up for the {joinList(g.times)} {g.times.length === 1 ? 'service' : 'services'}:</strong> {g.note}.
+        </React.Fragment>
+      ))}
+      {st.classTimes.length > 0 && <> Kindergarten&ndash;4th grade and Linked 5&ndash;6th grade classes meet at {st.classServices}.</>}
+    </p>
+  );
 }

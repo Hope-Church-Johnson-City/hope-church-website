@@ -2,13 +2,12 @@ import React from 'react';
 import { Button } from './shared.jsx';
 import { PageHeader } from './pages.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
-import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
+import { useServiceTimes } from '../serviceTimes.jsx';
 // Hope Church — Hope Students ministry detail page (slug: ministry-students)
 // 7th–12th grade. Wednesday-night driven + Sunday morning rhythm.
 
 function StudentsMinistryPage({ onNav }) {
   const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
   const LEARN_MORE_URL = 'https://mytt.ag/pbk16kkr?utm_source=ig&utm_medium=social&utm_content=link_in_bio';
   const SERVE_URL = 'https://hopejc.churchcenter.com/people/forms/346151';
 
@@ -48,7 +47,7 @@ function StudentsMinistryPage({ onNav }) {
                 <div className="hs-stat-label">Wed Night</div>
               </div>
               <div>
-                <div className="hs-stat-num">{fourthLive ? 4 : 3}<em>×</em></div>
+                <div className="hs-stat-num">{st.count}<em>×</em></div>
                 <div className="hs-stat-label">Sundays</div>
               </div>
             </div>
@@ -97,10 +96,7 @@ function StudentsMinistryPage({ onNav }) {
             <h2>Worship with us, <em>every weekend</em>.</h2>
             <p>Hope Students worships with the whole church in the auditorium on Sunday mornings. Sit with your family, find your friends, or grab a leader — there&rsquo;s a row saved for you.</p>
             <div className="hs-sunday-times">
-              <span className="hs-sunday-time">{st.first}</span>
-              <span className="hs-sunday-time">{st.second}</span>
-              <span className="hs-sunday-time">{st.third}</span>
-              {fourthLive && <span className="hs-sunday-time">{st.fourth}</span>}
+              {st.sunday.map((t) => <span key={t.time} className="hs-sunday-time">{t.label}</span>)}
             </div>
           </div>
           <div className="hs-sunday-photo">
