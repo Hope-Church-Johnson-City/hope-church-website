@@ -29,6 +29,12 @@ const CSS = `
 .hc-champ__close{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .16s}
 .hc-champ__close:hover{background:rgba(255,255,255,.18)}
 .hc-champ button:focus-visible{outline:3px solid rgba(107,196,232,.4);outline-offset:2px}
+.hc-champ__q,.hc-champ__quote p{color:#1A1F26}
+[data-theme="dark"] .hc-champ{background:#1A222E;color:#fff}
+[data-theme="dark"] .hc-champ__q,[data-theme="dark"] .hc-champ__quote p{color:#fff}
+[data-theme="dark"] .hc-champ__quote{background:#0E2238}
+[data-theme="dark"] .hc-champ__quote cite,[data-theme="dark"] .hc-champ__body .hc-champ__eyebrow{color:#6BC4E8!important}
+[data-theme="dark"] .hc-champ-backdrop{background:rgba(0,0,0,.72)}
 @media (max-width:480px){.hc-champ__hero{padding:24px 22px 22px}.hc-champ__body{padding:22px}.hc-champ__title{font-size:32px}.hc-champ__logo{margin-bottom:22px}}
 @keyframes hcFade{from{opacity:0}to{opacity:1}}
 @keyframes hcRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
