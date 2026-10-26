@@ -126,6 +126,10 @@ Notes:
   (This Week included).
 - Add `?previewBanner` to see the announcement outside its window, or
   `?previewSignup=closed` for the Discover Hope "coming soon" state.
+- `src/components/ChampionsModal.jsx` is a one-off popup (2026 Fall Festival
+  cornhole champions) that stops showing at 1:00pm Eastern on Oct 26, 2026.
+  `?previewChampions` shows it any time. Safe to delete with its line in
+  `src/routes.jsx`.
 
 ### What triggers a rebuild
 

@@ -19,6 +19,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { KEY_TO_PATH, pathFor, keyForPath } from './nav.js';
 import Seo from './seo.jsx';
 import { useAnnouncement, renderRich } from './announcement.jsx';
+import ChampionsModal from './components/ChampionsModal.jsx';
 
 import {
   AnnouncementBar, SundayStrip, SiteHeader, Footer, NewHereBlock, ServiceTimes,
@@ -180,6 +181,7 @@ function Layout() {
       </main>
       <Footer onNav={onNav} />
       <Analytics />
+      <ChampionsModal />
     </div>
   );
 }
