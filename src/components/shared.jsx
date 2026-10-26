@@ -535,13 +535,13 @@ function ServiceTimes() {
   const fourthLive = useFourthServiceLive();
   const ALL_CLASSES = 'All classes (nursery–Linked 56)';
   const times = [
-    { t: st.first.replace('am',''), s: 'am', name: 'First Service', note: st.isNew ? 'Nursery & preschool only' : null },
+    { t: st.first.replace('am',''), s: 'am', name: 'First Service', note: st.isNew ? ALL_CLASSES : null },
     { t: st.second.replace('am',''), s: 'am', name: 'Second Service', note: st.isNew ? ALL_CLASSES : null },
     { t: st.third.replace('am',''), s: 'am', name: 'Third Service', note: st.isNew ? ALL_CLASSES : null },
   ];
-  // The 12:45 service shows as "coming soon" before it starts, then becomes an
-  // ordinary card alongside the others.
-  if (st.isNew) times.push({
+  // A fourth service shows as "coming soon" before it starts, then becomes an
+  // ordinary card alongside the others. None is scheduled now.
+  if (st.fourth) times.push({
     t: st.fourth.replace('pm',''), s: 'pm', name: 'Fourth Service',
     note: ALL_CLASSES, soon: !fourthLive,
   });

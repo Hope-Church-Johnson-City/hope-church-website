@@ -15,7 +15,8 @@ const { useState, useEffect } = React;
 export const SERVICE_TIMES_SWITCH = Date.parse('2026-07-26T17:00:00Z');
 
 const OLD = { first: '8:00am', second: '9:45am', third: '11:30am', stream: '9:45am', runthrough: '7:00am', runthroughEnd: '7:30am', isNew: false };
-const NEW = { first: '7:30am', second: '9:00am', third: '11:00am', fourth: '12:45pm', stream: '9:00am', runthrough: '6:30am', runthroughEnd: '7:00am', isNew: true };
+// From Sunday, October 26 2026: three services, kids' classes at all three.
+const NEW = { first: '8:00am', second: '9:30am', third: '11:15am', stream: '9:30am', runthrough: '6:30am', runthroughEnd: '7:00am', isNew: true };
 
 export const OLD_SERVICE_TIMES = OLD;
 export const NEW_SERVICE_TIMES = NEW;
@@ -25,17 +26,12 @@ export const NEW_SERVICE_TIMES = NEW;
 // and SEO structured data correct for no-JS visitors and crawlers, with no
 // flash of old times. The date gate below is retained for safety/preview.
 // Add ?previewTimes=new (or =old) to any URL to force a set for QA.
-// Shared note: under the new schedule the 7:30 service is nursery & preschool
-// only (no K–4th grade, no Linked 5–6th).
-
-// The fourth service (12:45pm) is running. It was gated on
-// 2026-09-20T16:45:00Z while it was still being announced; the church brought
-// it forward, so the gate now sits in the past and the service shows as an
-// ordinary one everywhere. The constant is kept rather than deleted because
-// every "is the fourth service on?" decision on the site reads it, and a date
-// in the past answers that question without any of those call sites changing.
-// Add ?previewFourth=soon to any URL to see the pre-launch state again.
-export const FOURTH_SERVICE_START = Date.parse('2026-09-13T00:00:00Z');
+// The fourth service (12:45pm) ended when the church went back to three
+// services in late October 2026. The gate is kept rather than deleted because
+// every "is the fourth service on?" decision on the site reads it; Infinity
+// answers "no" everywhere without those call sites changing. NEW has no
+// `fourth`, so ?previewFourth=live has nothing to show.
+export const FOURTH_SERVICE_START = Infinity;
 
 // Initial state is deliberately `false` so the pre-rendered HTML and the first
 // client render agree (no hydration mismatch); the effect corrects it. The
@@ -56,19 +52,10 @@ export function useFourthServiceLive() {
   }, []);
   return live;
 }
-export function KidsServiceNote({ className }) {
-  const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
-  if (!st.isNew) return null;
-  const withClasses = fourthLive
-    ? <>the {st.second}, {st.third}, and {st.fourth} services</>
-    : <>the {st.second} and {st.third} services</>;
-  return (
-    <p className={className}>
-      <strong>Heads up for the {st.first} service:</strong> we offer nursery &amp; preschool only.
-      Kindergarten&ndash;4th grade and Linked 5&ndash;6th grade classes meet at {withClasses}.
-    </p>
-  );
+// Kids' classes meet at every service now, so there is no exception to note.
+// Kept as a component so a future limited service has one place to say so.
+export function KidsServiceNote() {
+  return null;
 }
 
 export function useServiceTimes() {
