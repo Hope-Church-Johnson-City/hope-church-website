@@ -126,6 +126,10 @@ Notes:
   (This Week included).
 - Add `?previewBanner` to see the announcement outside its window, or
   `?previewSignup=closed` for the Discover Hope "coming soon" state.
+- `src/components/ServiceTimesModal.jsx` is a one-off popup announcing the
+  new Sunday service times (8:00, 9:30 and 11:15am). It stops showing at
+  2:00pm Eastern on Nov 1, 2026. `?previewServiceTimes` shows it any time.
+  Safe to delete with its line in `src/routes.jsx`.
 
 ### What triggers a rebuild
 
