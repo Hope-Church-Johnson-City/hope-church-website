@@ -26,8 +26,31 @@ const BRAND = 'Hope Church · Johnson City, TN';
 
 const bySlug = (slug) => BUILT_EVENTS.find((e) => e.slug === slug) || null;
 
+// A web address typed into a description, up to the next space. Punctuation
+// that ends the sentence ("…sign up here: https://x.com/a.") is not part of it.
+const URL_RE = /https?:\/\/[^\s<>"]+/g;
+const URL_TAIL = /[.,;:!?'")\]]+$/;
+
+function Linked({ line }) {
+  const out = [];
+  let last = 0;
+  for (const m of line.matchAll(URL_RE)) {
+    const url = m[0].replace(URL_TAIL, '');
+    out.push(line.slice(last, m.index));
+    out.push(
+      <a key={m.index} href={url} target="_blank" rel="noopener noreferrer">
+        {url}
+      </a>
+    );
+    last = m.index + url.length;
+  }
+  out.push(line.slice(last));
+  return out;
+}
+
 // Plain text with blank lines becomes paragraphs. The CMS stores what the
-// author typed, so this must not assume any markup.
+// author typed, so this must not assume any markup; web addresses in it
+// become links.
 function Paragraphs({ text }) {
   if (!text) return null;
   return (
@@ -41,7 +64,7 @@ function Paragraphs({ text }) {
           <p key={i}>
             {p.split('\n').map((line, j, arr) => (
               <React.Fragment key={j}>
-                {line}
+                <Linked line={line} />
                 {j < arr.length - 1 && <br />}
               </React.Fragment>
             ))}

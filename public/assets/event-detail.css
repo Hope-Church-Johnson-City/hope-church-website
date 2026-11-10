@@ -89,6 +89,9 @@
 .ev-copy { font-size: var(--fs-body); line-height: var(--lh-body); color: var(--fg-2); }
 .ev-copy p { margin: 0 0 1.05em; }
 .ev-copy p:last-of-type { margin-bottom: 0; }
+/* Links typed into a description are often long tracking URLs: underline them
+   so they read as links, and let them wrap rather than widen the page. */
+.ev-copy p a { text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
 
 .ev-cta { margin-top: 30px; padding: 15px 30px; font-size: 15px; }
 

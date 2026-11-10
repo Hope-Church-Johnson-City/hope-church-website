@@ -29,7 +29,7 @@ The sitemap is generated from `nav.js`.
 | `/` | `components/homepage.jsx` (via `routes.jsx`) |
 | `/visit` | `pages.jsx` (Connect Card embed, see below) |
 | `/about`, `/team`, `/sermons`, `/events`, `/ministries`, `/give`, `/serve`, `/next-steps`, `/contact` | `pages.jsx` |
-| `/events/<slug>` | `event-detail.jsx` (one pre-rendered page per event) |
+| `/events/<slug>` | `event-detail.jsx` (one pre-rendered page per event; web addresses in the description become links) |
 | `/ministries/kids`, `linked56`, `students`, `college`, `women`, `men`, `worship`, `fueled-by-hope` | `ministry-*.jsx` |
 | `/generations` | `generations.jsx` |
 | `/life-groups`, `/missions`, `/connect`, `/discover-hope` | `getinvolved.jsx` |
