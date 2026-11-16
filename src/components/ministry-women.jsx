@@ -13,6 +13,7 @@ import { HopeCalendarEmbed } from './embeds.jsx';
 function WomenMinistryPage({ onNav }) {
   const FACEBOOK_URL = 'https://www.facebook.com/groups/1441473576255607';
   const CONTACT_EMAIL = 'mailto:woven@hopejc.org?subject=Woven%20Women%27s%20Ministry';
+  const FLOURISH_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSejA28Q3Pk1S7dCbw4Y0Ome3K6fJAySPWwZEra4XO3IIz1t8g/viewform';
 
   const rhythms = [
     {
@@ -90,7 +91,7 @@ function WomenMinistryPage({ onNav }) {
       <section className="wv-knit">
         <div className="wv-knit-grid">
           <div className="wv-knit-photo">
-            <img src="/assets/woven-retreat-porch.jpg" alt="The Woven women's retreat group gathered together on a cabin porch at night"/>
+            <img src="/assets/woven-retreat-group.jpg" alt="The women of Woven gathered together in the living room of the retreat cabin"/>
           </div>
           <div className="wv-knit-copy">
             <span className="wv-eyebrow">Every Season</span>
@@ -101,6 +102,53 @@ function WomenMinistryPage({ onNav }) {
             <p>
               We&rsquo;re not a polished group of women who have it all together. We&rsquo;re a community of imperfect women, knit together by the same Savior, growing up in love together.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Flourish: Woven's mentoring program. Mentee applications close
+           December 15 for a January start; update or remove this section once
+           the program is underway. ===== */}
+      <section className="wv-flourish" id="flourish">
+        <div className="container">
+          <header className="wv-flourish-head">
+            <span className="wv-eyebrow">A Woven Ministry Initiative</span>
+            <h2>Flourish <em>Mentor Program</em>.</h2>
+            <blockquote className="wv-flourish-verse">
+              <p>&ldquo;Two are better than one, because they have a good reward for their toil. For if they fall, one will lift up his fellow. But woe to him who is alone when he falls and has no one to lift him up!&rdquo;</p>
+              <span className="wv-verse-ref">Ecclesiastes 4:9 – 10</span>
+            </blockquote>
+            <p>Every woman needs someone who will walk beside her. Flourish is a new mentoring program from Woven, our women&rsquo;s ministry, that pairs women at different stages of life and faith for encouragement, prayer, and growth in Christ.</p>
+          </header>
+
+          <div className="wv-flourish-grid">
+            <article className="wv-rhythm">
+              <div className="wv-rhythm-num">What is Flourish?</div>
+              <p>Flourish connects women in intentional, one-on-one or group mentoring relationships. Mentors offer wisdom, prayer, and a listening ear. Mentees receive support as they grow in faith, navigate life&rsquo;s seasons, and discover how God has gifted them.</p>
+            </article>
+            <article className="wv-rhythm">
+              <div className="wv-rhythm-num">Who can participate?</div>
+              <ul className="wv-flourish-list">
+                <li><strong>Mentors:</strong> Women who have walked with Christ for a while and want to invest in another woman&rsquo;s journey.</li>
+                <li><strong>Mentees:</strong> Women who want guidance, accountability, and friendship as they grow.</li>
+              </ul>
+              <p>You don&rsquo;t need to have it all figured out. You only need a willing heart.</p>
+            </article>
+            <article className="wv-rhythm">
+              <div className="wv-rhythm-num">What to expect</div>
+              <ul className="wv-flourish-list">
+                <li>Matching with a mentor or mentee based on season of life, interests, or goals</li>
+                <li>Meeting monthly</li>
+                <li>Time spent in Scripture, prayer, and honest conversation</li>
+                <li>Mentors will receive training and resources to help them feel equipped and supported</li>
+              </ul>
+            </article>
+          </div>
+
+          <div className="wv-flourish-apply">
+            <h3>Get involved</h3>
+            <p>Applications are open for mentees through <strong>December 15</strong>, and the program begins in January.</p>
+            <a className="btn btn-primary btn-xl" href={FLOURISH_FORM_URL} target="_blank" rel="noopener noreferrer">Apply to be a mentee</a>
           </div>
         </div>
       </section>

@@ -301,6 +301,75 @@
 .wv-knit-copy p strong { color: #fff; font-weight: 600; }
 
 /* =========================================================
+   Flourish — the mentoring program. Same tint and cards as the
+   rhythms section, so it reads as part of Woven, with the
+   application link set apart underneath.
+   ========================================================= */
+.wv-flourish {
+  background: var(--ink-050);
+  padding: 112px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.wv-flourish-head {
+  max-width: 760px; margin: 0 auto 56px; text-align: center;
+}
+.wv-flourish-head .wv-eyebrow {
+  display: inline-block;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wv-blue);
+  margin-bottom: 18px;
+}
+.wv-flourish-head h2 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(36px, 4.4vw, 48px);
+  line-height: 1.05; letter-spacing: -0.022em;
+  margin: 0 0 28px;
+  color: var(--ink-900);
+}
+.wv-flourish-head h2 em { font-style: normal; color: var(--wv-blue); }
+.wv-flourish-head > p {
+  font-size: 17px; line-height: 1.6;
+  color: var(--fg-2); max-width: 620px;
+  margin: 0 auto;
+}
+.wv-flourish-verse {
+  margin: 0 auto 28px; padding: 0; max-width: 640px;
+}
+.wv-flourish-verse p {
+  font-size: 18px; line-height: 1.6; font-style: italic;
+  color: var(--fg-1); margin: 0 0 10px;
+}
+.wv-flourish-verse .wv-verse-ref { display: inline-block; }
+
+.wv-flourish-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+.wv-flourish-grid .wv-rhythm p + p,
+.wv-flourish-grid .wv-flourish-list + p { margin-top: 12px; }
+.wv-flourish-list {
+  margin: 0; padding-left: 18px;
+  font-size: 15.5px; line-height: 1.65; color: var(--fg-2);
+}
+.wv-flourish-list li + li { margin-top: 8px; }
+.wv-flourish-list strong { color: var(--fg-1); font-weight: 700; }
+
+.wv-flourish-apply {
+  margin: 48px auto 0; max-width: 640px; text-align: center;
+}
+.wv-flourish-apply h3 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: 26px; line-height: 1.15; letter-spacing: -0.015em;
+  margin: 0 0 10px; color: var(--ink-900);
+}
+.wv-flourish-apply p {
+  font-size: 17px; line-height: 1.6; color: var(--fg-2);
+  margin: 0 0 24px;
+}
+.wv-flourish-apply p strong { color: var(--fg-1); }
+.wv-flourish-apply .btn { text-decoration: none; }
+
+/* =========================================================
    Section 4 — Calendar (Subsplash embed)
    ========================================================= */
 .wv-calendar {
@@ -399,7 +468,8 @@
 @media (max-width: 1000px) {
   .wv-anchor-inner { grid-template-columns: 1fr; gap: 56px; }
   .wv-anchor-media { min-height: 460px; }
-  .wv-rhythms-grid { grid-template-columns: 1fr; gap: 16px; }
+  .wv-rhythms-grid,
+  .wv-flourish-grid { grid-template-columns: 1fr; gap: 16px; }
   .wv-knit-grid { grid-template-columns: 1fr; }
   .wv-knit-photo { min-height: 360px; }
   .wv-knit-photo::after {
@@ -413,6 +483,7 @@
   .wv-anchor-media { min-height: 380px; }
   .wv-photo-back, .wv-photo-front { width: 78%; }
   .wv-rhythms,
+  .wv-flourish,
   .wv-calendar,
   .wv-cta-band { padding: 72px 0; }
   .wv-rhythm { padding: 28px 24px 24px; }
