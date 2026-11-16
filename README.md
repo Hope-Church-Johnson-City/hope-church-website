@@ -116,9 +116,10 @@ Notes:
   (`src/liveStream.jsx`). While a Transmit broadcast is live on YouTube (never
   a private test) it shows the YouTube player beside the headline and an "Open
   on YouTube" button; otherwise it is the normal hero. Nothing about it is
-  baked in at build time, and a failed check counts as not live. Add
-  `?previewLive=1` (placeholder player) or `?previewLive=<YouTube video id>`
-  to preview it, and `?previewLive=off` to clear it.
+  baked in at build time, and a failed check counts as not live. On the dev
+  server only (`npm run dev`), add `?previewLive=1` (placeholder player) or
+  `?previewLive=<YouTube video id>` to preview it, and `?previewLive=off` to
+  clear it. Production builds ignore `?previewLive`.
 - Sermon pages (`/sermons/<branch>/...`) and the CMS hosts (`media.`,
   `dashboard.`, `calendar.`, `analytics.hopejc.org`) are proxied to the Worker
   by `vercel.json` rewrites, so they are never stale.

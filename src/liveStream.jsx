@@ -11,15 +11,19 @@ import React from 'react';
    agree; the effect fills it in. A failed check counts as not live, so a CMS
    problem can only ever leave the page as it is today.
 
-   QA: ?previewLive=1 shows the live layout with a placeholder player;
-   ?previewLive=VIDEOID plays that YouTube video; ?previewLive=off clears it. */
+   QA (dev server only, `npm run dev`): ?previewLive=1 shows the live layout
+   with a placeholder player; ?previewLive=VIDEOID plays that YouTube video;
+   ?previewLive=off clears it. Production builds ignore the parameter and any
+   saved value, so a link cannot put another video under "Live now". */
 const { useState, useEffect } = React;
 
 const CMS_ORIGIN = (import.meta.env && import.meta.env.VITE_CMS_ORIGIN) || 'https://media.hopejc.org';
 const LIVE_URL = `${CMS_ORIGIN}/api/public/live`;
 const CHECK_MS = 60e3;
+const PREVIEW_ALLOWED = !!(import.meta.env && import.meta.env.DEV);
 
 function previewState() {
+  if (!PREVIEW_ALLOWED) return null;
   try {
     const p = new URLSearchParams(window.location.search).get('previewLive');
     if (p === 'off') window.sessionStorage.removeItem('previewLive');
