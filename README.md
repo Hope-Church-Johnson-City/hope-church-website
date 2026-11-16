@@ -39,7 +39,9 @@ The sitemap is generated from `nav.js`.
 
 `components/shared.jsx` has the header, footer, Sunday strip and announcement
 bar. `src/serviceTimes.jsx` holds the Sunday service times used across pages.
-Navigation uses real `<a href>` links; routing is react-router. Old
+Navigation uses real `<a href>` links; routing is react-router. A link
+with a `#section` (as the app's This Week rows use) lands on that section;
+any other page change starts at the top. Old
 `?page=...` links redirect to the clean URL.
 
 Stylesheets, fonts and images are in `public/` and served as-is under `/assets`

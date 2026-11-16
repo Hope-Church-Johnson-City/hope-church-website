@@ -309,6 +309,7 @@
   background: var(--ink-050);
   padding: 112px 0;
   border-bottom: 1px solid var(--border-hairline);
+  scroll-margin-top: 24px;
 }
 .wv-flourish-head {
   max-width: 760px; margin: 0 auto 56px; text-align: center;

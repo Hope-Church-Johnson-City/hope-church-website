@@ -57,11 +57,18 @@ function useNav() {
 }
 
 /* ---------- small utilities ---------- */
+// A link with a #section (the app's This Week rows use these) lands on that
+// section instead of the top of the page.
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [pathname]);
+    const target = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (target) {
+      requestAnimationFrame(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }));
+    } else {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [pathname, hash]);
   return null;
 }
 
