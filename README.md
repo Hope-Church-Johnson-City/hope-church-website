@@ -68,6 +68,13 @@ metadata stripped (the colour profile is kept). Do the same for a new photo
 before adding it, keeping the file name its references use. Logos and icons
 are left as they are.
 
+Fonts: Gotham, in `public/fonts`. Each face has a `.woff2` (what browsers
+load) next to the original `.otf` or `.TTF` (the fallback); the `@font-face`
+rules are at the top of `public/assets/colors_and_type.css`, all with
+`font-display: swap`. `index.html` preloads `Gotham-Ultra.woff2` (hero
+headlines) and `GOTHAM-BOLD.woff2` (nav and buttons). A new face needs both
+files: `python3 -m fontTools.ttLib.woff2 compress <font>` makes the WOFF2.
+
 ## Data from the CMS
 
 The CMS is the Cloudflare Worker at `media.hopejc.org` (repo hope-church-cms).

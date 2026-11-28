@@ -9,36 +9,45 @@
    Licensed font files provided by Hope Church, stored in /fonts.
    Covers the weights we actually use. Add more @font-face rules
    from fonts/ if you need italics or extended weights.
+   Each face is WOFF2 first (about a quarter of the size), with the
+   original .otf/.TTF as the fallback. index.html preloads the
+   Ultra and Bold WOFF2 files; keep those URLs in step with these.
 ----------------------------------------------------------- */
 @font-face {
   font-family: 'Gotham';
-  src: url('../fonts/Gotham-Light.otf') format('opentype');
+  src: url('../fonts/Gotham-Light.woff2') format('woff2'),
+       url('../fonts/Gotham-Light.otf') format('opentype');
   font-weight: 300; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Gotham';
-  src: url('../fonts/Gotham-Book.otf') format('opentype');
+  src: url('../fonts/Gotham-Book.woff2') format('woff2'),
+       url('../fonts/Gotham-Book.otf') format('opentype');
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Gotham';
-  src: url('../fonts/Gotham-Medium.otf') format('opentype');
+  src: url('../fonts/Gotham-Medium.woff2') format('woff2'),
+       url('../fonts/Gotham-Medium.otf') format('opentype');
   font-weight: 500; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Gotham';
-  src: url('../fonts/GOTHAM-BOLD.TTF') format('truetype');
+  src: url('../fonts/GOTHAM-BOLD.woff2') format('woff2'),
+       url('../fonts/GOTHAM-BOLD.TTF') format('truetype');
   font-weight: 700; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'Gotham';
-  src: url('../fonts/GOTHAM-BLACK.TTF') format('truetype');
+  src: url('../fonts/GOTHAM-BLACK.woff2') format('woff2'),
+       url('../fonts/GOTHAM-BLACK.TTF') format('truetype');
   font-weight: 900; font-style: normal; font-display: swap;
 }
 /* Ultra (beyond 900) — available for very large display use */
 @font-face {
   font-family: 'Gotham Ultra';
-  src: url('../fonts/Gotham-Ultra.otf') format('opentype');
+  src: url('../fonts/Gotham-Ultra.woff2') format('woff2'),
+       url('../fonts/Gotham-Ultra.otf') format('opentype');
   font-weight: 900; font-style: normal; font-display: swap;
 }
 

@@ -53,6 +53,13 @@
   }
   </script>
 
+  <!-- The two Gotham faces on screen at first paint on every page: Ultra for
+       the hero headline, Bold for the nav and buttons. Fetched now rather than
+       after site.css and its @import arrive. Same URLs as the @font-face rules
+       in colors_and_type.css. -->
+  <link rel="preload" href="/fonts/Gotham-Ultra.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/fonts/GOTHAM-BOLD.woff2" as="font" type="font/woff2" crossorigin/>
+
   <link rel="stylesheet" href="/assets/site.css"/>
 
   <link rel="stylesheet" href="/assets/event-detail.css">
