@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import HELP_BUILT from '../generated/help.json';
 import { resources } from '../resources.js';
-import { Icon, Button } from './shared.jsx';
-import { PageHeader } from './pages.jsx';
+import { Icon, Button, PageHeader } from './shared.jsx';
 import { THIS_WEEK_CMS, thisWeekIcon, thisWeekDate, thisWeekRows, THIS_WEEK_NOTICE, isChristmasTree, ChristmasTree } from '../thisWeek.jsx';
 // Hope Church — Prayer Request page + Podcast page (RSS-driven)
 

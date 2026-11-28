@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageHeader } from './pages.jsx';
+import { PageHeader } from './shared.jsx';
 // Hope Church — legal/info pages: Privacy + Accessibility
 
 // ---------- Shared layout ----------

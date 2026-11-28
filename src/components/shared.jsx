@@ -395,6 +395,19 @@ function SiteHeader({ onNav, current, dark = false }) {
   );
 }
 
+// ---------- PageHeader (top of most inner pages) ----------
+function PageHeader({ eyebrow, title, lead }) {
+  return (
+    <section className="page-header">
+      <div className="container">
+        <span className="eyebrow">{eyebrow}</span>
+        <h1>{title}</h1>
+        {lead && <p className="lead">{lead}</p>}
+      </div>
+    </section>
+  );
+}
+
 // ---------- Section Header ----------
 function SectionHeader({ eyebrow, title, lead, align = 'left' }) {
   return (
@@ -579,4 +592,5 @@ function Footer({ onNav }) {
 export {
   Icon, Button, AnnouncementBar, SundayStrip, SiteHeader, SectionHeader,
   MissionBar, ServiceTimes, NewHereBlock, Footer, ThemeToggle, useResolvedTheme,
+  PageHeader,
 };

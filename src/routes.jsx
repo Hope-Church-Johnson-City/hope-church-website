@@ -22,27 +22,12 @@ import Seo from './seo.jsx';
 import { useAnnouncement, renderRich } from './announcement.jsx';
 import ServiceTimesModal from './components/ServiceTimesModal.jsx';
 
-import {
-  AnnouncementBar, SundayStrip, SiteHeader, Footer, NewHereBlock, ServiceTimes,
-} from './components/shared.jsx';
-import {
-  HeroA, HomeThisWeek, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA,
-} from './components/homepage.jsx';
-import {
-  VisitPage, AboutPage, TeamPage, SermonsPage, EventsPage,
-  GivePage, MinistriesPage, MinistryDetailPage, ServePage,
-  NextStepsPage, ContactPage,
-} from './components/pages.jsx';
-import {
-  LifeGroupsPage, MissionsPage, ConnectCardPage, DiscoverHopePage,
-} from './components/getinvolved.jsx';
-import { PrayerRequestPage, GetHelpPage, PodcastPage, AppPage, DownloadPage, ThisWeekPage } from './components/pages-extra.jsx';
-import { GenerationsPage, GenerationsHomeBlock } from './components/generations.jsx';
-import { PrivacyPage, AccessibilityPage, TermsPage, DeleteAccountPage } from './components/pages-legal.jsx';
-import EventDetailPage from './components/event-detail.jsx';
-
-// ServiceTimes lives in shared in some builds; import defensively from homepage.
-// (Kept here so the homepage assembly below matches the original ordering.)
+// The header, footer and announcement bar are on every page, so they are in
+// the main bundle. Each page's own code is loaded per route (`lazy` below):
+// a visitor downloads only the page they are on, and vite-react-ssg still
+// pre-renders every page in full and adds <link rel="modulepreload"> for that
+// page's chunk to its HTML.
+import { AnnouncementBar, SiteHeader, Footer } from './components/shared.jsx';
 
 /* ---------- navigation helper ---------- */
 // Returns an onNav(key) function with the exact signature every component
@@ -86,33 +71,6 @@ function LegacyPageRedirect() {
     }
   }, [navigate]);
   return null;
-}
-
-/* ---------- homepage assembly (was inline in main.jsx) ---------- */
-function HomePage({ onNav }) {
-  return (
-    <>
-      <HeroA
-        onVisit={() => onNav('visit')}
-        onWatch={() =>
-          window.open(
-            'https://www.youtube.com/@hopechurchjohnsoncity',
-            '_blank',
-            'noopener'
-          )
-        }
-      />
-      <HomeThisWeek />
-      <NewHereBlock onVisit={() => onNav('visit')} />
-      <GenerationsHomeBlock onGenerations={() => onNav('generations')} />
-      <ThisWeekSermon onSermons={() => onNav('sermons')} />
-      <ServiceTimes />
-      <MinistriesBlock onMinistries={() => onNav('ministries')} />
-      <UpcomingEvents onEvents={() => onNav('events')} />
-      <AppBand />
-      <GiveCTA onGive={() => onNav('give')} />
-    </>
-  );
 }
 
 /* ---------- 404 ---------- */
@@ -212,8 +170,11 @@ function View({ pageKey, Comp, extraProps }) {
   );
 }
 
-const ministry = (pageKey) => ({
-  element: <View pageKey={pageKey} Comp={MinistryDetailPage} extraProps={{ slug: pageKey }} />,
+// A route's page, once its chunk has loaded. Each `lazy` below calls import()
+// directly (not through a helper) because vite-react-ssg reads the import out
+// of the function's source to add the chunk's modulepreload to the page.
+const page = (pageKey, Comp, extraProps) => ({
+  element: <View pageKey={pageKey} Comp={Comp} extraProps={extraProps} />,
 });
 
 export const routes = [
@@ -221,59 +182,55 @@ export const routes = [
   // nothing but the store buttons (see DownloadPage).
   {
     path: '/download',
-    element: (<><Seo pageKey="download" /><DownloadPage /><Analytics /></>),
+    lazy: () => import('./components/pages-extra.jsx').then(({ DownloadPage }) => ({
+      element: (<><Seo pageKey="download" /><DownloadPage /><Analytics /></>),
+    })),
   },
   {
     path: '/',
     element: <Layout />,
     children: [
-      { index: true, element: <View pageKey="home" Comp={HomePage} /> },
-      { path: 'visit', element: <View pageKey="visit" Comp={VisitPage} /> },
-      { path: 'about', element: <View pageKey="about" Comp={AboutPage} /> },
-      { path: 'team', element: <View pageKey="team" Comp={TeamPage} /> },
-      { path: 'sermons', element: <View pageKey="sermons" Comp={SermonsPage} /> },
-      { path: 'events', element: <View pageKey="events" Comp={EventsPage} /> },
+      { index: true, lazy: () => import('./components/homepage.jsx').then((m) => page('home', m.HomePage)) },
+      { path: 'visit', lazy: () => import('./components/pages.jsx').then((m) => page('visit', m.VisitPage)) },
+      { path: 'about', lazy: () => import('./components/pages.jsx').then((m) => page('about', m.AboutPage)) },
+      { path: 'team', lazy: () => import('./components/pages.jsx').then((m) => page('team', m.TeamPage)) },
+      { path: 'sermons', lazy: () => import('./components/pages.jsx').then((m) => page('sermons', m.SermonsPage)) },
+      { path: 'events', lazy: () => import('./components/pages.jsx').then((m) => page('events', m.EventsPage)) },
       // One event. Rendered here rather than proxied from the CMS so it keeps
       // the site header, nav and footer. Pre-rendered per event at build time
       // (see includedRoutes in vite.config.js); anything newer falls back to
       // the SPA shell and fetches live.
-      { path: 'events/:slug', element: <EventDetailPage /> },
-      { path: 'ministries', element: <View pageKey="ministries" Comp={MinistriesPage} /> },
-      { path: 'ministries/kids', ...ministry('ministry-kids') },
-      { path: 'ministries/linked56', ...ministry('ministry-linked56') },
-      { path: 'ministries/students', ...ministry('ministry-students') },
-      { path: 'ministries/college', ...ministry('ministry-college') },
-      { path: 'ministries/women', ...ministry('ministry-women') },
-      { path: 'ministries/men', ...ministry('ministry-men') },
-      { path: 'ministries/worship', ...ministry('ministry-worship') },
-      { path: 'ministries/fueled-by-hope', ...ministry('ministry-fueledbyhope') },
-      { path: 'give', element: <View pageKey="give" Comp={GivePage} /> },
-      { path: 'generations', element: <View pageKey="generations" Comp={GenerationsPage} /> },
-      { path: 'serve', element: <View pageKey="serve" Comp={ServePage} /> },
-      { path: 'next-steps', element: <View pageKey="nextsteps" Comp={NextStepsPage} /> },
-      { path: 'contact', element: <View pageKey="contact" Comp={ContactPage} /> },
-      { path: 'life-groups', element: <View pageKey="lifegroups" Comp={LifeGroupsPage} /> },
-      { path: 'missions', element: <View pageKey="missions" Comp={MissionsPage} /> },
-      { path: 'connect', element: <View pageKey="connect" Comp={ConnectCardPage} /> },
-      { path: 'discover-hope', element: <View pageKey="discover" Comp={DiscoverHopePage} /> },
-      { path: 'prayer', element: <View pageKey="prayer" Comp={PrayerRequestPage} /> },
-      { path: 'get-help', element: <View pageKey="gethelp" Comp={GetHelpPage} /> },
-      {
-        path: 'podcast',
-        element: <View pageKey="podcast" Comp={PodcastPage} extraProps={{ initialChannel: 'sunday' }} />,
-      },
-      {
-        path: 'podcast/finding-hope',
-        element: <View pageKey="podcast-finding-hope" Comp={PodcastPage} extraProps={{ initialChannel: 'finding-hope' }} />,
-      },
-      { path: 'app', element: <View pageKey="app" Comp={AppPage} /> },
-      { path: 'this-week', element: <View pageKey="thisweek" Comp={ThisWeekPage} /> },
-      { path: 'privacy', element: <View pageKey="privacy" Comp={PrivacyPage} /> },
+      { path: 'events/:slug', lazy: () => import('./components/event-detail.jsx').then((m) => ({ Component: m.default })) },
+      { path: 'ministries', lazy: () => import('./components/pages.jsx').then((m) => page('ministries', m.MinistriesPage)) },
+      { path: 'ministries/kids', lazy: () => import('./components/ministry-kids.jsx').then((m) => page('ministry-kids', m.KidsMinistryPage)) },
+      { path: 'ministries/linked56', lazy: () => import('./components/ministry-linked56.jsx').then((m) => page('ministry-linked56', m.Linked56MinistryPage)) },
+      { path: 'ministries/students', lazy: () => import('./components/ministry-students.jsx').then((m) => page('ministry-students', m.StudentsMinistryPage)) },
+      { path: 'ministries/college', lazy: () => import('./components/ministry-college.jsx').then((m) => page('ministry-college', m.CollegeMinistryPage)) },
+      { path: 'ministries/women', lazy: () => import('./components/ministry-women.jsx').then((m) => page('ministry-women', m.WomenMinistryPage)) },
+      { path: 'ministries/men', lazy: () => import('./components/ministry-men.jsx').then((m) => page('ministry-men', m.MenMinistryPage)) },
+      { path: 'ministries/worship', lazy: () => import('./components/ministry-worship.jsx').then((m) => page('ministry-worship', m.WorshipMinistryPage)) },
+      { path: 'ministries/fueled-by-hope', lazy: () => import('./components/ministry-fueledbyhope.jsx').then((m) => page('ministry-fueledbyhope', m.FueledByHopeMinistryPage)) },
+      { path: 'give', lazy: () => import('./components/pages.jsx').then((m) => page('give', m.GivePage)) },
+      { path: 'generations', lazy: () => import('./components/generations.jsx').then((m) => page('generations', m.GenerationsPage)) },
+      { path: 'serve', lazy: () => import('./components/pages.jsx').then((m) => page('serve', m.ServePage)) },
+      { path: 'next-steps', lazy: () => import('./components/pages.jsx').then((m) => page('nextsteps', m.NextStepsPage)) },
+      { path: 'contact', lazy: () => import('./components/pages.jsx').then((m) => page('contact', m.ContactPage)) },
+      { path: 'life-groups', lazy: () => import('./components/getinvolved.jsx').then((m) => page('lifegroups', m.LifeGroupsPage)) },
+      { path: 'missions', lazy: () => import('./components/getinvolved.jsx').then((m) => page('missions', m.MissionsPage)) },
+      { path: 'connect', lazy: () => import('./components/getinvolved.jsx').then((m) => page('connect', m.ConnectCardPage)) },
+      { path: 'discover-hope', lazy: () => import('./components/getinvolved.jsx').then((m) => page('discover', m.DiscoverHopePage)) },
+      { path: 'prayer', lazy: () => import('./components/pages-extra.jsx').then((m) => page('prayer', m.PrayerRequestPage)) },
+      { path: 'get-help', lazy: () => import('./components/pages-extra.jsx').then((m) => page('gethelp', m.GetHelpPage)) },
+      { path: 'podcast', lazy: () => import('./components/pages-extra.jsx').then((m) => page('podcast', m.PodcastPage, { initialChannel: 'sunday' })) },
+      { path: 'podcast/finding-hope', lazy: () => import('./components/pages-extra.jsx').then((m) => page('podcast-finding-hope', m.PodcastPage, { initialChannel: 'finding-hope' })) },
+      { path: 'app', lazy: () => import('./components/pages-extra.jsx').then((m) => page('app', m.AppPage)) },
+      { path: 'this-week', lazy: () => import('./components/pages-extra.jsx').then((m) => page('thisweek', m.ThisWeekPage)) },
+      { path: 'privacy', lazy: () => import('./components/pages-legal.jsx').then((m) => page('privacy', m.PrivacyPage)) },
       // Linked from the privacy policy and from Google Play's Data safety form,
       // so this path has to stay put once it is published.
-      { path: 'delete-account', element: <View pageKey="delete-account" Comp={DeleteAccountPage} /> },
-      { path: 'terms', element: <View pageKey="terms" Comp={TermsPage} /> },
-      { path: 'accessibility', element: <View pageKey="accessibility" Comp={AccessibilityPage} /> },
+      { path: 'delete-account', lazy: () => import('./components/pages-legal.jsx').then((m) => page('delete-account', m.DeleteAccountPage)) },
+      { path: 'terms', lazy: () => import('./components/pages-legal.jsx').then((m) => page('terms', m.TermsPage)) },
+      { path: 'accessibility', lazy: () => import('./components/pages-legal.jsx').then((m) => page('accessibility', m.AccessibilityPage)) },
       // Concrete 404 route so the build emits a real /404 page; copied to
       // dist/404.html in the postbuild step for Vercel to serve.
       { path: '404', element: <NotFound /> },

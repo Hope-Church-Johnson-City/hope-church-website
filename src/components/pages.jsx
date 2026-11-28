@@ -1,33 +1,12 @@
 import React from 'react';
 import { resources } from '../resources.js';
-import { Icon, Button, SectionHeader } from './shared.jsx';
+import { Icon, Button, SectionHeader, PageHeader } from './shared.jsx';
 import { useServiceTimes } from '../serviceTimes.jsx';
 import { HopeCmsEmbed, GiveEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { PODCASTS, ApplePodcastsIcon, SpotifyIcon, RssIcon } from './pages-extra.jsx';
-import { KidsMinistryPage } from './ministry-kids.jsx';
-import { Linked56MinistryPage } from './ministry-linked56.jsx';
-import { StudentsMinistryPage } from './ministry-students.jsx';
-import { CollegeMinistryPage } from './ministry-college.jsx';
-import { WomenMinistryPage } from './ministry-women.jsx';
-import { MenMinistryPage } from './ministry-men.jsx';
-import { WorshipMinistryPage } from './ministry-worship.jsx';
-import { FueledByHopeMinistryPage } from './ministry-fueledbyhope.jsx';
 // Hope Church — subpages: Visit, About, Sermons, Events, Give, Ministries, Serve, NextSteps, Contact
 
 const { useState: useStateP } = React;
-
-// ---------- PageHeader (reused) ----------
-function PageHeader({ eyebrow, title, lead }) {
-  return (
-    <section className="page-header">
-      <div className="container">
-        <span className="eyebrow">{eyebrow}</span>
-        <h1>{title}</h1>
-        {lead && <p className="lead">{lead}</p>}
-      </div>
-    </section>
-  );
-}
 
 // ---------- Visit Page ----------
 function VisitPage() {
@@ -678,54 +657,6 @@ function MinistriesPage({ onNav }) {
   );
 }
 
-// Generic placeholder page for each individual ministry — to be designed out
-function MinistryDetailPage({ slug, onNav }) {
-  // Dedicated pages override the placeholder
-  if (slug === 'ministry-kids') {
-    return <KidsMinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-linked56') {
-    return <Linked56MinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-students') {
-    return <StudentsMinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-college') {
-    return <CollegeMinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-women') {
-    return <WomenMinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-men') {
-    return <MenMinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-worship') {
-    return <WorshipMinistryPage onNav={onNav}/>;
-  }
-  if (slug === 'ministry-fueledbyhope') {
-    return <FueledByHopeMinistryPage onNav={onNav}/>;
-  }
-
-  const m = MINISTRIES.find(x => x.slug === slug);
-  if (!m) return null;
-  return (
-    <>
-      <PageHeader eyebrow={m.age} title={m.title} lead={m.desc} />
-      <section className="ministries-section">
-        <div className="container" style={{textAlign:'center', maxWidth: 720}}>
-          <p style={{fontSize: 18, color:'var(--fg-2)', marginBottom: 28}}>
-            We&rsquo;re building out a dedicated page for {m.title} — events, leaders, and how to get involved are coming soon.
-          </p>
-          <div style={{display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap'}}>
-            <Button variant="primary" size="lg" onClick={() => onNav && onNav('contact')} iconRight="arrow">Get in touch</Button>
-            <Button variant="outline" size="lg" onClick={() => onNav && onNav('ministries')}>Back to all ministries</Button>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
-
 function ServePage() {
   const groups = [
     {
@@ -889,4 +820,4 @@ function ContactPage() {
   );
 }
 
-export { PageHeader, VisitPage, AboutPage, TeamPage, SermonsPage, EventsPage, GivePage, MinistriesPage, MinistryDetailPage, MINISTRIES, ServePage, NextStepsPage, ContactPage };
+export { VisitPage, AboutPage, TeamPage, SermonsPage, EventsPage, GivePage, MinistriesPage, MINISTRIES, ServePage, NextStepsPage, ContactPage };

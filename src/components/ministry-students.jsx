@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button } from './shared.jsx';
-import { PageHeader } from './pages.jsx';
+import { Button, PageHeader } from './shared.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 // Hope Church — Hope Students ministry detail page (slug: ministry-students)

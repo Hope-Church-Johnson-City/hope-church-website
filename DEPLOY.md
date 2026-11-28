@@ -30,7 +30,10 @@ hooks; if that happens, create a new one and set it on the Worker
 4. `gen-sitemap.mjs`: writes `public/sitemap.xml` from `src/nav.js` plus
    upcoming events (generated file, git-ignored).
 5. `vite-react-ssg build`: pre-renders every page in `src/nav.js` plus one page
-   per event in `events.json` (`vite.config.js`) into `dist/`.
+   per event in `events.json` (`vite.config.js`) into `dist/`. The JavaScript
+   goes to `dist/assets/`: `app-*.js` (React, the router, header and footer)
+   and one chunk per page file (`homepage-*.js`, `pages-*.js`,
+   `ministry-kids-*.js`, ...) that only its own pages load.
 6. `postbuild-404.mjs`: copies `dist/404/index.html` to `dist/404.html`.
 
 If a CMS fetch fails, steps 1 to 3 keep the previous generated file and the
@@ -63,7 +66,8 @@ npx wrangler d1 execute hope-media --remote --command "INSERT INTO app_settings 
 ## After adding a page
 
 1. Add the key and path to `KEY_TO_PATH` in `src/nav.js` (the sitemap follows).
-2. Add the route in `src/routes.jsx` and the title and description in `src/seo.jsx`.
+2. Add the route in `src/routes.jsx`, as a `lazy: () => import('./components/<file>.jsx')`
+   like the others, and the title and description in `src/seo.jsx`.
 3. Update the page table in README.md.
 
 ## Search Console

@@ -1,6 +1,7 @@
 import React from 'react';
 import { resources } from '../resources.js';
-import { Icon, Button, SectionHeader } from './shared.jsx';
+import { Icon, Button, SectionHeader, NewHereBlock, ServiceTimes } from './shared.jsx';
+import { GenerationsHomeBlock } from './generations.jsx';
 import { HopeCmsEmbed, HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 import { useLiveStream } from '../liveStream.jsx';
@@ -515,4 +516,31 @@ function GiveCTA({ onGive }) {
   );
 }
 
-export { HeroA, HeroB, HeroC, HomeThisWeek, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA };
+/* ---------- the homepage, in order (was in routes.jsx) ---------- */
+function HomePage({ onNav }) {
+  return (
+    <>
+      <HeroA
+        onVisit={() => onNav('visit')}
+        onWatch={() =>
+          window.open(
+            'https://www.youtube.com/@hopechurchjohnsoncity',
+            '_blank',
+            'noopener'
+          )
+        }
+      />
+      <HomeThisWeek />
+      <NewHereBlock onVisit={() => onNav('visit')} />
+      <GenerationsHomeBlock onGenerations={() => onNav('generations')} />
+      <ThisWeekSermon onSermons={() => onNav('sermons')} />
+      <ServiceTimes />
+      <MinistriesBlock onMinistries={() => onNav('ministries')} />
+      <UpcomingEvents onEvents={() => onNav('events')} />
+      <AppBand />
+      <GiveCTA onGive={() => onNav('give')} />
+    </>
+  );
+}
+
+export { HomePage, HeroA, HeroB, HeroC, HomeThisWeek, ThisWeekSermon, UpcomingEvents, MinistriesBlock, AppBand, GiveCTA };

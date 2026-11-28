@@ -24,9 +24,19 @@ Details are in DEPLOY.md.
 URL to a component, and `src/seo.jsx` holds each page's title and description.
 The sitemap is generated from `nav.js`.
 
+Each route loads its page with `lazy: () => import(...)`, so the browser gets
+one main script (React, the router, and the header, footer and announcement
+bar in `shared.jsx` and `megaNav.jsx`) plus a small chunk for the page it is
+on; the other pages' code loads only when a visitor goes there. Pre-rendering
+is unchanged: every page's HTML is complete, and vite-react-ssg adds a
+`modulepreload` link for the page's chunk. Keep the `import()` written out in
+each route's `lazy` (vite-react-ssg reads it from there), and keep shared
+pieces such as `PageHeader` in `shared.jsx` rather than a page file, so that
+one page does not pull in another page's chunk.
+
 | URL | Component file |
 |---|---|
-| `/` | `components/homepage.jsx` (via `routes.jsx`) |
+| `/` | `components/homepage.jsx` (`HomePage`) |
 | `/visit` | `pages.jsx` (Connect Card embed, see below) |
 | `/about`, `/team`, `/sermons`, `/events`, `/ministries`, `/give`, `/serve`, `/next-steps`, `/contact` | `pages.jsx` |
 | `/events/<slug>` | `event-detail.jsx` (one pre-rendered page per event; web addresses in the description become links) |

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Icon, Button, SectionHeader } from './shared.jsx';
-import { PageHeader } from './pages.jsx';
+import { Icon, Button, SectionHeader, PageHeader } from './shared.jsx';
 import { useNextDiscoverHope } from '../discoverHope.js';
 // Hope Church — "Get Involved" subpages: Groups, Missions, Connect Card, Discover Hope
 

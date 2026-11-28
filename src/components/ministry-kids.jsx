@@ -1,6 +1,5 @@
 import React from 'react';
-import { Icon, Button } from './shared.jsx';
-import { PageHeader } from './pages.jsx';
+import { Icon, Button, PageHeader } from './shared.jsx';
 import { HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive, KidsServiceNote } from '../serviceTimes.jsx';
 // Hope Church — Kids Ministry detail page (slug: ministry-kids)

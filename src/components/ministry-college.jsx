@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button } from './shared.jsx';
-import { PageHeader } from './pages.jsx';
+import { Button, PageHeader } from './shared.jsx';
 import { HopeCalendarEmbed } from './embeds.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 // Hope Church — College & Career ministry detail page (slug: ministry-college)
