@@ -1,8 +1,9 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { hrefFor } from '../announcement.jsx';
 import { resources } from '../resources.js';
 import { pathFor } from '../nav.js';
-import MegaNav from './megaNav.jsx';
+import MegaNav, { MobileMegaNav } from './megaNav.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 // Hope Church — shared components: Header, Footer, Sunday strip, Announcement bar
 
@@ -290,14 +291,6 @@ function SundayStrip() {
 function SiteHeader({ onNav, current, dark = false }) {
   const st = useServiceTimes();
   const fourthLive = useFourthServiceLive();
-  const involvedItems = [
-    { id: 'lifegroups', label: 'Groups', desc: '', href: 'https://hopejc.churchcenter.com/groups/life-groups?enrollment=open_signup%2Crequest_to_join&filter=enrollment' },
-    { id: 'serve', label: 'Serve', desc: 'Find a team that fits your gifts and schedule.' },
-    { id: 'missions', label: 'Missions', desc: 'Our partners — local, national, and global.' },
-    { id: 'connect', label: 'Connect Card', desc: 'Say hello, share a prayer request, take a step.' },
-    { id: 'discover', label: 'Discover Hope', desc: 'Our new-members class — first Wed each month.' },
-  ];
-  const involvedIds = involvedItems.map(i => i.id);
   const links = [
     { id: 'home', label: 'Home' },
     { id: 'visit', label: 'I’m New' },
@@ -305,11 +298,10 @@ function SiteHeader({ onNav, current, dark = false }) {
     { id: 'sermons', label: 'Sermons' },
     { id: 'events', label: 'Events' },
     { id: 'ministries', label: 'Ministries' },
-    { id: '__involved', label: 'Get Involved', dropdown: involvedItems },
+    { id: '__involved', label: 'Get Involved' },
     { id: 'give', label: 'Give' },
   ];
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mobileInvolvedOpen, setMobileInvolvedOpen] = useState(true);
   // Logo: in dark mode use the reversed lockup (colored icon + white wordmark).
   // The 'dark' prop (passed by hero-C bookend) forces the white treatment regardless of theme.
   const theme = useResolvedTheme();
@@ -327,19 +319,29 @@ function SiteHeader({ onNav, current, dark = false }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Lock body scroll when menu open + scroll to top so menu aligns with header
+  // Lock body scroll while the menu is open. The header floats (sticky), and
+  // the menu opens out of it wherever the page is, so no scroll to the top.
+  // Escape closes it.
+  const headerRef = React.useRef(null);
   useEffect(() => {
-    if (menuOpen) {
-      window.scrollTo({ top: 0, behavior: 'auto' });
-      document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
-    }
+    if (!menuOpen) return;
+    // How much room is under the header right now, so the menu's own scroll
+    // ends at the bottom of the screen wherever the header sits.
+    const r = headerRef.current?.getBoundingClientRect();
+    if (r) headerRef.current.style.setProperty('--mnav-room', `${Math.max(240, window.innerHeight - r.bottom - 22)}px`);
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey); };
   }, [menuOpen]);
+  // The dimmed page behind the phone menu is portalled to <body> (a fixed
+  // element inside the glass header would be clipped to it), so only after mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const go = (id) => { setMenuOpen(false); onNav(id); };
-  const involvedActive = involvedIds.includes(current);
   return (
-    <header className={`site-header ${dark ? 'dark' : ''} ${menuOpen ? 'menu-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
+    <header ref={headerRef} className={`site-header ${dark ? 'dark' : ''} ${menuOpen ? 'menu-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
       <div className="container site-header-inner">
         <a className="brand" href="/" onClick={(e)=>{e.preventDefault();go('home');}}>
           <img src={logo} alt="Hope Church" />
@@ -354,62 +356,18 @@ function SiteHeader({ onNav, current, dark = false }) {
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(o => !o)}
         >
-          <Icon name={menuOpen ? 'x' : 'menu'} size={26}/>
+          {/* Three lines that turn into an X (mega-nav.css). */}
+          <span className="burger-lines" aria-hidden="true"><span/><span/><span/></span>
         </button>
       </div>
 
-      {/* Mobile slide-down menu */}
+      {mounted && createPortal(
+        <div className={`mnav-backdrop ${menuOpen ? 'show' : ''}`} onClick={() => setMenuOpen(false)} aria-hidden="true"/>,
+        document.body
+      )}
+      {/* Phone menu: opens out of the glass header (mega-nav.css) */}
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
-        <nav className="mobile-menu-nav">
-          {links.map(l => {
-            if (l.dropdown) {
-              return (
-                <React.Fragment key={l.id}>
-                  <button
-                    type="button"
-                    className={`mobile-menu-group-head ${mobileInvolvedOpen ? 'open' : ''} ${involvedActive ? 'active' : ''}`}
-                    aria-expanded={mobileInvolvedOpen}
-                    onClick={() => setMobileInvolvedOpen(o => !o)}
-                  >
-                    <span>{l.label}</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  </button>
-                  {mobileInvolvedOpen && (
-                    <div className="mobile-menu-group-items">
-                      {l.dropdown.map(d => (
-                        <a
-                          key={d.id}
-                          href={d.href || pathFor(d.id)}
-                          target={d.href ? '_blank' : undefined}
-                          rel={d.href ? 'noopener noreferrer' : undefined}
-                          onClick={(e)=>{
-                            if (d.href) { setMenuOpen(false); return; }
-                            e.preventDefault(); go(d.id);
-                          }}
-                          className={current === d.id ? 'active' : ''}
-                        >
-                          <span>{d.label}</span>
-                          <Icon name="chevron" size={16}/>
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </React.Fragment>
-              );
-            }
-            return (
-              <a
-                key={l.id}
-                href={pathFor(l.id)}
-                onClick={(e)=>{e.preventDefault();go(l.id);}}
-                className={current === l.id ? 'active' : ''}
-              >
-                <span>{l.label}</span>
-                <Icon name="chevron" size={18}/>
-              </a>
-            );
-          })}
-        </nav>
+        <MobileMegaNav links={links} current={current} go={go} onExternal={() => setMenuOpen(false)}/>
         <div className="mobile-menu-cta">
           <Button variant="primary" size="lg" onClick={()=>go('visit')} iconRight="arrow">Plan Your Visit</Button>
         </div>

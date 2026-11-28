@@ -154,3 +154,181 @@
   .mega-pane.in[data-from="0"] { animation: none; }
   .mega-pane.out[data-from="-1"], .mega-pane.out[data-from="1"] { transform: none; }
 }
+
+/* =========================================================
+   Burger menu: the same menus as sections that slide open (MobileMegaNav)
+   ========================================================= */
+.mmega-group { border-bottom: 1px solid var(--border-hairline); }
+.mmega-head {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; min-height: 56px;
+  background: transparent; border: 0; cursor: pointer; text-align: left;
+  font: inherit; font-size: 19px; font-weight: 700; letter-spacing: -0.005em; color: var(--fg-1);
+}
+.mmega-head .mega-caret { width: 18px; height: 18px; color: var(--ink-400); transition: transform 300ms cubic-bezier(.2,.8,.2,1); }
+.mmega-group.open .mmega-head .mega-caret { transform: rotate(180deg); color: var(--hope-blue); }
+.mmega-head.active { color: var(--hope-blue); }
+/* The section's height animates from 0 to its content (grid 0fr → 1fr). */
+.mmega-body {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 360ms cubic-bezier(.2,.8,.2,1);
+}
+.mmega-group.open .mmega-body { grid-template-rows: 1fr; }
+.mmega-inner { overflow: hidden; min-height: 0; padding: 0 12px; }
+.mmega-group.open .mmega-inner { padding-bottom: 12px; }
+.mmega-intro {
+  margin: 0 12px 8px; padding: 14px 16px; border-radius: 12px;
+  background: var(--ink-050); font-size: 14px; line-height: 1.45; color: var(--fg-2);
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(.2,.8,.2,1);
+}
+.mobile-menu-nav a.mmega-item {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 12px 16px; min-height: 0; margin: 0 0 2px;
+  border: 0; border-radius: 12px;
+  font-size: 16px; font-weight: 700; color: var(--fg-1); text-decoration: none;
+  opacity: 0; transform: translateY(-6px);
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(.2,.8,.2,1), background 160ms ease;
+}
+.mobile-menu-nav a.mmega-item:hover, .mobile-menu-nav a.mmega-item:active { background: var(--ink-050); }
+.mobile-menu-nav a.mmega-item.active { background: var(--bg-brand-soft); color: var(--hope-navy); }
+.mobile-menu-nav a.mmega-item.active span::before { display: none; }
+.mmega-item-label { display: inline-flex; align-items: center; gap: 6px; }
+.mmega-item-desc { font-size: 13px; font-weight: 500; line-height: 1.4; color: var(--fg-2); }
+/* Opening: the intro, then the links one after another. Closing: all at once. */
+.mmega-group.open .mmega-intro { opacity: 1; transform: none; transition-delay: 60ms; }
+.mmega-group.open a.mmega-item {
+  opacity: 1; transform: none;
+  transition-delay: calc(90ms + var(--i, 0) * 35ms), calc(90ms + var(--i, 0) * 35ms), 0ms;
+}
+
+[data-theme="dark"] .mmega-group { border-bottom-color: var(--border-hairline); }
+[data-theme="dark"] .mmega-head { color: #fff; }
+[data-theme="dark"] .mmega-head.active { color: var(--hope-sky); }
+[data-theme="dark"] .mmega-intro { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.78); }
+[data-theme="dark"] .mobile-menu-nav a.mmega-item { color: #fff; }
+[data-theme="dark"] .mobile-menu-nav a.mmega-item:hover { background: rgba(255,255,255,0.05); }
+[data-theme="dark"] .mobile-menu-nav a.mmega-item.active { background: rgba(0,130,202,0.18); color: var(--hope-sky); }
+[data-theme="dark"] .mmega-item-desc { color: rgba(255,255,255,0.7); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mmega-body, .mmega-intro, .mobile-menu-nav a.mmega-item, .mmega-head .mega-caret { transition: none; }
+}
+
+/* =========================================================
+   Phones and small tablets (≤880px): a floating "liquid glass" pill header,
+   a menu button that turns into an X, and the menu opening out of the pill
+   as a glass panel with the page dimmed behind (2026-11-27).
+
+   The glass is drawn on ::before, not on the header itself: an element with
+   backdrop-filter becomes the backdrop for everything inside it, so the menu
+   panel's own blur would only see the header, not the page. The same reason
+   the old drawer turned backdrop-filter off at this width.
+   ========================================================= */
+.burger-lines { position: relative; display: block; width: 22px; height: 16px; }
+.burger-lines span {
+  position: absolute; left: 0; right: 0; height: 2px; border-radius: 2px; background: currentColor;
+  transition: top 300ms cubic-bezier(.2,.8,.2,1), transform 300ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease;
+}
+.burger-lines span:nth-child(1) { top: 0; }
+.burger-lines span:nth-child(2) { top: 7px; }
+.burger-lines span:nth-child(3) { top: 14px; }
+.site-header.menu-open .burger-lines span:nth-child(1) { top: 7px; transform: rotate(45deg); }
+.site-header.menu-open .burger-lines span:nth-child(2) { opacity: 0; transform: scaleX(0.3); }
+.site-header.menu-open .burger-lines span:nth-child(3) { top: 7px; transform: rotate(-45deg); }
+
+.mnav-backdrop { display: none; }
+
+@media (max-width: 880px) {
+  .site-header,
+  .site-header.is-scrolled,
+  .site-header.menu-open {
+    top: 10px;
+    margin: 10px 12px 0;
+    border-radius: 28px;
+    background: transparent;
+    border: 0;
+    box-shadow: 0 12px 32px rgba(0, 46, 98, 0.14), 0 2px 6px rgba(0, 46, 98, 0.06);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    isolation: isolate;
+  }
+  .site-header::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 46, 98, 0.05);
+  }
+  .site-header-inner,
+  .site-header.is-scrolled .site-header-inner { height: 56px; padding: 0 10px 0 18px; }
+  .brand img { height: 36px; }
+  .site-burger {
+    width: 40px; height: 40px; margin: 0; padding: 0; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 0 0 1px rgba(0, 46, 98, 0.08);
+  }
+  .site-burger:hover { background: rgba(255, 255, 255, 0.8); }
+
+  /* The menu: a glass panel just under the pill that unrolls downward. */
+  .site-header .mobile-menu {
+    display: block;
+    position: absolute; top: calc(100% + 10px); left: 0; right: 0; bottom: auto;
+    max-height: var(--mnav-room, calc(100dvh - 110px));
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: 6px 0 16px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(26px) saturate(180%);
+    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 30px 70px rgba(0, 46, 98, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    opacity: 0; pointer-events: none;
+    transform: translateY(-10px) scale(0.96); transform-origin: top center;
+    clip-path: inset(0 0 100% 0 round 28px);
+    transition:
+      clip-path 440ms cubic-bezier(.2,.8,.2,1),
+      transform 420ms cubic-bezier(.2,.8,.2,1),
+      opacity 180ms ease;
+  }
+  .site-header .mobile-menu.open {
+    opacity: 1; pointer-events: auto; transform: none;
+    clip-path: inset(0 0 0 0 round 28px);
+  }
+  /* Rows inside the glass: hairlines softened, no full-bleed borders. */
+  .site-header .mobile-menu-nav { padding: 4px 8px; }
+  .site-header .mobile-menu-nav > a,
+  .site-header .mmega-group { border-bottom-color: rgba(0, 46, 98, 0.08); }
+  .site-header .mobile-menu-nav > a, .site-header .mmega-head { border-radius: 0; padding-left: 16px; padding-right: 16px; }
+  .site-header .mobile-menu-foot { border-top-color: rgba(0, 46, 98, 0.08); }
+
+  .mnav-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 45;
+    background: rgba(10, 22, 40, 0.32);
+    opacity: 0; pointer-events: none;
+    transition: opacity 280ms ease;
+  }
+  .mnav-backdrop.show { opacity: 1; pointer-events: auto; }
+
+  /* Dark */
+  [data-theme="dark"] .site-header::before {
+    background: rgba(22, 27, 34, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  [data-theme="dark"] .site-burger { background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
+  [data-theme="dark"] .site-header .mobile-menu {
+    background: rgba(22, 27, 34, 0.86);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  [data-theme="dark"] .site-header .mobile-menu-nav > a,
+  [data-theme="dark"] .site-header .mmega-group,
+  [data-theme="dark"] .site-header .mobile-menu-foot { border-color: rgba(255, 255, 255, 0.08); }
+  [data-theme="dark"] .mnav-backdrop { background: rgba(0, 0, 0, 0.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burger-lines span, .site-header .mobile-menu, .mnav-backdrop { transition: none; }
+}

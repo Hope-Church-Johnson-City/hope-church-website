@@ -42,7 +42,10 @@ bar. On desktop the header's nav is `components/megaNav.jsx`
 (styles in `public/assets/mega-nav.css`): I'm New, About, Sermons, Ministries and
 Get Involved open one shared panel that resizes and cross-fades between menus,
 with the page dimmed behind it. The menus' links and wording are `MEGA_MENUS` in
-that file. Below 881px the burger menu is used instead. `src/serviceTimes.jsx` holds the Sunday service times used across pages.
+that file. Below 881px the header is a floating glass pill, the menu button
+turns into an X, and the menu opens out of the pill as a glass panel
+(`MobileMegaNav`, the same menus as sections that slide open) with the page
+dimmed behind it. `src/serviceTimes.jsx` holds the Sunday service times used across pages.
 Navigation uses real `<a href>` links; routing is react-router. A link
 with a `#section` (as the app's This Week rows use) lands on that section;
 any other page change starts at the top. Old

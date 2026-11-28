@@ -269,3 +269,62 @@ export default function MegaNav({ links, current, onNav }) {
     </div>
   );
 }
+
+/**
+ * The burger menu's list (2026-11-27): the same menus as the desktop panel,
+ * each a section that slides open, one at a time, its links fading in down the
+ * list. Plain links (Home, Events, Give) stay single rows. `go(id)` navigates
+ * and closes the drawer.
+ */
+export function MobileMegaNav({ links, current, go, onExternal }) {
+  const startOpen = links.find((l) => MEGA_MENUS[l.id] && (l.id === current || idsOf(MEGA_MENUS[l.id]).has(current)));
+  const [open, setOpen] = useState(startOpen ? startOpen.id : null);
+
+  return (
+    <nav className="mobile-menu-nav mmega" aria-label="Main">
+      {links.map((l) => {
+        const menu = MEGA_MENUS[l.id];
+        if (!menu) {
+          return (
+            <a key={l.id} href={pathFor(l.id)} className={current === l.id ? 'active' : ''}
+               onClick={(e) => { e.preventDefault(); go(l.id); }}>
+              <span>{l.label}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25"
+                   strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          );
+        }
+        const isOpen = open === l.id;
+        const active = current === l.id || idsOf(menu).has(current);
+        const items = [...menu.columns.flat(), ...(menu.intro.more ? [{ ...menu.intro.more, desc: '' }] : [])];
+        return (
+          <div key={l.id} className={`mmega-group ${isOpen ? 'open' : ''}`}>
+            <button type="button" className={`mmega-head ${active ? 'active' : ''}`}
+                    aria-expanded={isOpen} aria-controls={`mmega-${l.id}`}
+                    onClick={() => setOpen(isOpen ? null : l.id)}>
+              <span>{l.label}</span>
+              <Caret/>
+            </button>
+            <div className="mmega-body" id={`mmega-${l.id}`}>
+              <div className="mmega-inner">
+                <p className="mmega-intro">{menu.intro.text}</p>
+                {items.map((d, i) => (
+                  <a key={d.id + d.label} style={{ '--i': i }}
+                     href={d.href || pathFor(d.id)}
+                     target={d.href ? '_blank' : undefined}
+                     rel={d.href ? 'noopener noreferrer' : undefined}
+                     tabIndex={isOpen ? 0 : -1}
+                     className={`mmega-item ${current === d.id && !d.href ? 'active' : ''}`}
+                     onClick={(e) => { if (d.href) { onExternal?.(); return; } e.preventDefault(); go(d.id); }}>
+                    <span className="mmega-item-label">{d.label}{d.href && <Arrow/>}</span>
+                    {d.desc && <span className="mmega-item-desc">{d.desc}</span>}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </nav>
+  );
+}
