@@ -422,3 +422,18 @@
 
 /* The mega panel hangs from the pill. */
 .mega-panel { top: calc(100% + 12px); }
+
+/* Only the ::before glass paints the pill. The old full-width bar's fills and
+   its margin/radius animation (dark-mode.css, redesign-header-hero.css) are
+   switched off here: on one iPhone the dark-mode fill showed as a solid block
+   beside the pill (2026-11-27). */
+.site-header,
+.site-header.is-scrolled,
+.site-header.menu-open,
+.site-header.dark,
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .site-header.is-scrolled {
+  background: transparent;
+  border-color: transparent;
+  transition: box-shadow 320ms var(--ease-out, ease);
+}
