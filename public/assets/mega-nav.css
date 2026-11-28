@@ -344,3 +344,81 @@
 @media (max-width: 880px) {
   .site-header, .site-header.is-scrolled, .site-header.menu-open { margin-bottom: 10px; }
 }
+
+/* =========================================================
+   The pill floats from the start (2026-11-27b)
+
+   No full-width bar any more: at every width the header is a floating glass
+   pill over the top of the page, and the page's first block (the blue hero,
+   a page header, or content) runs up to the top of the window behind it.
+   The header is sticky with a negative bottom margin equal to its own top
+   margin and height, so it takes no room in the page; src/pillSpace.js adds
+   --pill-space to the first block's top padding so nothing in it sits under
+   the pill. The Sundays strip above it was removed; the light/dark switch is
+   in the pill (desktop) and at the foot of the phone menu.
+   ========================================================= */
+:root { --pill-top: 14px; --pill-h: 68px; --pill-gap: 22px; }
+@media (max-width: 880px) { :root { --pill-top: 10px; --pill-h: 56px; --pill-gap: 14px; } }
+:root { --pill-space: calc(var(--pill-top) + var(--pill-h) + var(--pill-gap)); }
+
+.site-header,
+.site-header.is-scrolled,
+.site-header.menu-open {
+  position: sticky; top: var(--pill-top); z-index: 50;
+  width: calc(100% - 28px); max-width: 1240px;
+  margin: var(--pill-top) auto calc(-1 * (var(--pill-top) + var(--pill-h)));
+  border-radius: 999px;
+  background: transparent; border: 0;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  box-shadow: 0 14px 34px rgba(0, 46, 98, 0.16), 0 2px 8px rgba(0, 46, 98, 0.07);
+  isolation: isolate;
+}
+.site-header::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 46, 98, 0.05);
+}
+.site-header-inner,
+.site-header.is-scrolled .site-header-inner {
+  height: var(--pill-h); max-width: none; width: auto;
+  padding: 0 10px 0 26px; gap: 24px;
+}
+.brand img { height: 42px; }
+.site-cta { gap: 8px; }
+.site-cta .theme-toggle .theme-toggle-label { display: none; }
+.site-cta .theme-toggle {
+  width: 40px; height: 40px; padding: 0; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fg-2); background: rgba(0, 46, 98, 0.05); border: 0;
+}
+.site-cta .theme-toggle:hover { background: rgba(0, 46, 98, 0.1); }
+.mobile-menu-foot-theme { margin-bottom: 14px; }
+
+[data-theme="dark"] .site-header::before {
+  background: rgba(22, 27, 34, 0.62);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .site-header.is-scrolled { box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3); }
+[data-theme="dark"] .site-cta .theme-toggle { color: #fff; background: rgba(255, 255, 255, 0.08); }
+
+@media (max-width: 880px) {
+  .site-header,
+  .site-header.is-scrolled,
+  .site-header.menu-open {
+    width: calc(100% - 20px);
+    margin: var(--pill-top) auto calc(-1 * (var(--pill-top) + var(--pill-h)));
+    border-radius: 28px;
+  }
+  .site-header-inner,
+  .site-header.is-scrolled .site-header-inner { padding: 0 8px 0 18px; }
+  .brand img { height: 36px; }
+}
+
+/* The mega panel hangs from the pill. */
+.mega-panel { top: calc(100% + 12px); }

@@ -38,7 +38,13 @@ The sitemap is generated from `nav.js`.
 | anything else | pre-rendered 404 (`dist/404.html`) |
 
 `components/shared.jsx` has the header, footer, Sunday strip and announcement
-bar. On desktop the header's nav is `components/megaNav.jsx`
+bar. The header is a floating glass pill over the top of every page from the
+start; the page's first block (hero or page header) runs to the top of the
+window behind it, and `src/pillSpace.js` (with a copy in `index.html` for the
+first paint) adds `--pill-space` to that block's top padding so nothing sits
+under the pill. The Sundays strip above the header was removed on 2026-11-27;
+the light/dark switch is in the pill and at the foot of the phone menu.
+On desktop the header's nav is `components/megaNav.jsx`
 (styles in `public/assets/mega-nav.css`): I'm New, About, Sermons, Ministries and
 Get Involved open one shared panel that resizes and cross-fades between menus,
 with the page dimmed behind it. The menus' links and wording are `MEGA_MENUS` in

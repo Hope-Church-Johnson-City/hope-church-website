@@ -10,6 +10,7 @@
    so search engines and first-paint both get real, complete HTML. */
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { initReveal } from './motion.js';
+import { applyPillSpace } from './pillSpace.js';
 
 // useLayoutEffect warns during pre-rendering, where there is no layout.
 const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
@@ -162,8 +163,16 @@ function Layout() {
       void main.offsetWidth; // restart the animation on a second navigation
       main.setAttribute('data-pt', 'in');
     }
+    applyPillSpace(main);
     return initReveal(main);
   }, [location.pathname]);
+  // Breakpoints change both the page's own top padding and the pill's size.
+  useEffect(() => {
+    let t;
+    const onResize = () => { clearTimeout(t); t = setTimeout(() => applyPillSpace(mainRef.current), 120); };
+    window.addEventListener('resize', onResize);
+    return () => { clearTimeout(t); window.removeEventListener('resize', onResize); };
+  }, []);
   const current = keyForPath(location.pathname);
   const onNav = useNav();
 
@@ -181,7 +190,6 @@ function Layout() {
         link={announcement ? announcement.link : null}
         onDismiss={dismissAnnouncement}
       />
-      <SundayStrip />
       <SiteHeader onNav={onNav} current={current} dark={false} />
       <main ref={mainRef}>
         <Outlet />

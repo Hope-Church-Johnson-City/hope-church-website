@@ -355,6 +355,8 @@ function SiteHeader({ onNav, current, dark = false }) {
         </a>
         <MegaNav links={links} current={current} onNav={(id) => { setMenuOpen(false); onNav(id); }}/>
         <div className="site-cta">
+          {/* Moved here from the Sundays strip, which was removed (2026-11-27). */}
+          <ThemeToggle/>
           <Button variant="primary" size="sm" onClick={()=>onNav('visit')}>Plan Your Visit</Button>
         </div>
         <button
@@ -379,6 +381,7 @@ function SiteHeader({ onNav, current, dark = false }) {
           <Button variant="primary" size="lg" onClick={()=>go('visit')} iconRight="arrow">Plan Your Visit</Button>
         </div>
         <div className="mobile-menu-foot">
+          <div className="mobile-menu-foot-theme"><ThemeToggle/></div>
           <div className="mobile-menu-foot-label">Sundays</div>
           <div className="mobile-menu-foot-times">
             {st.first.replace('am','')} · {st.second.replace('am','')} · {fourthLive ? <>{st.third.replace('am','')} · {st.fourth}</> : st.third}

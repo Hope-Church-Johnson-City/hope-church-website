@@ -156,5 +156,25 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <!-- Room for the floating pill header before first paint; src/pillSpace.js
+       keeps it right after navigation and resize. -->
+  <script>
+    (function () {
+      if (!document.querySelector('.site-header')) return;
+      var main = document.querySelector('main');
+      var el = main && main.firstElementChild;
+      for (var i = 0; el && i < 3; i++) {
+        var cs = getComputedStyle(el);
+        var bg = cs.backgroundImage !== 'none' || !/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor);
+        var next = el.firstElementChild;
+        if (bg || parseFloat(cs.paddingTop) > 0 || !next) break;
+        if (/absolute|fixed/.test(getComputedStyle(next).position)) break;
+        el = next;
+      }
+      if (!el) return;
+      var own = getComputedStyle(el).paddingTop || '0px';
+      el.style.paddingTop = 'calc(' + own + ' + var(--pill-space))';
+    })();
+  </script>
 </body>
 </html>
