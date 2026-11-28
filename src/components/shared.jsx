@@ -304,9 +304,6 @@ function SiteHeader({ onNav, current, dark = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   // Logo: in dark mode use the reversed lockup (colored icon + white wordmark).
   // The 'dark' prop (passed by hero-C bookend) forces the white treatment regardless of theme.
-  const theme = useResolvedTheme();
-  const isDark = dark || theme === 'dark';
-  const logo = isDark ? resources.logoHorizReversed : resources.logoHorizBlue;
 
   // Floating-pill header: turns on past a small scroll threshold. Plain
   // scroll listener (not IntersectionObserver) since there's no fixed anchor
@@ -344,7 +341,17 @@ function SiteHeader({ onNav, current, dark = false }) {
     <header ref={headerRef} className={`site-header ${dark ? 'dark' : ''} ${menuOpen ? 'menu-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
       <div className="container site-header-inner">
         <a className="brand" href="/" onClick={(e)=>{e.preventDefault();go('home');}}>
-          <img src={logo} alt="Hope Church" />
+          {/* Both lockups are in the page and CSS shows the one for the theme
+              (mega-nav.css). Picking one in JS showed the blue lockup in dark
+              mode: the page is pre-rendered light, and React keeps the
+              pre-rendered src when it takes over (2026-11-27). The dark prop
+              (hero-C bookend) still forces the white one. */}
+          {dark
+            ? <img src={resources.logoHorizReversed} alt="Hope Church" />
+            : <>
+                <img className="brand-light" src={resources.logoHorizBlue} alt="Hope Church" />
+                <img className="brand-dark" src={resources.logoHorizReversed} alt="" aria-hidden="true" />
+              </>}
         </a>
         <MegaNav links={links} current={current} onNav={(id) => { setMenuOpen(false); onNav(id); }}/>
         <div className="site-cta">

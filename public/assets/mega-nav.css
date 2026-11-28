@@ -332,3 +332,15 @@
 @media (prefers-reduced-motion: reduce) {
   .burger-lines span, .site-header .mobile-menu, .mnav-backdrop { transition: none; }
 }
+
+/* Header logo: blue lockup in light mode, white-text lockup in dark mode,
+   chosen by CSS so it is right from the first paint (see SiteHeader). */
+.brand .brand-dark { display: none; }
+[data-theme="dark"] .brand .brand-light { display: none; }
+[data-theme="dark"] .brand .brand-dark { display: block; }
+
+/* Phones: a gap under the pill, so it sits above the page instead of on the
+   edge of the hero. */
+@media (max-width: 880px) {
+  .site-header, .site-header.is-scrolled, .site-header.menu-open { margin-bottom: 10px; }
+}
