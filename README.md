@@ -60,6 +60,14 @@ any other page change starts at the top. Old
 Stylesheets, fonts and images are in `public/` and served as-is under `/assets`
 and `/fonts`.
 
+Photos in `public/assets` are sized for the web, not straight off a camera: the
+longest side is at most 2400px for full-bleed images (the Generations hero,
+the Worship page background) and 1600px for everything else, saved as
+progressive JPEG at quality 80 with the camera rotation applied and the
+metadata stripped (the colour profile is kept). Do the same for a new photo
+before adding it, keeping the file name its references use. Logos and icons
+are left as they are.
+
 ## Data from the CMS
 
 The CMS is the Cloudflare Worker at `media.hopejc.org` (repo hope-church-cms).
