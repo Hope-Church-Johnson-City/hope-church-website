@@ -22,7 +22,10 @@
 /* Lazy images fade in as they load. */
 img[data-ld="wait"] { opacity: 0; }
 img[data-ld="done"] { animation: motion-fade var(--motion-reveal) var(--motion-ease) both; }
-@keyframes motion-fade { from { opacity: 0; } to { opacity: 1; } }
+/* No `to`: it fades up to the element's own opacity, so a photo meant to be
+   faint (the Generations band behind the home page, opacity .28) stays faint
+   once it has loaded instead of ending at 1 (2026-11-28). */
+@keyframes motion-fade { from { opacity: 0; } }
 @keyframes motion-rise { from { opacity: 0; transform: translateY(var(--motion-rise)); } to { opacity: 1; transform: none; } }
 @keyframes motion-rise-sm { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
