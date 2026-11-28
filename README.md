@@ -240,6 +240,15 @@ Light or dark, in this order: `?theme=` URL parameter, saved preference, OS
 setting, local clock (dark 7 p.m. to 7 a.m.). An inline script in `index.html`
 applies it before first paint.
 
+The pre-rendered HTML cannot know any of those, so the light/dark switch
+(`ThemeToggle` in `components/shared.jsx`) is built as "Auto" with the sun, and
+its first render in the browser draws exactly that too; the real setting
+appears right after. Anything else that depends on the visitor (saved
+settings, the clock, the window, live data) follows the same rule: render what
+the build rendered, then change it in a `useEffect`. A difference on that
+first render is a hydration mismatch (React errors #418 and #423), and React
+then throws the pre-rendered page away and draws it again.
+
 ## Other folders
 
 - `public/admin` and `tina/`: generated TinaCMS files. Not used by the site's

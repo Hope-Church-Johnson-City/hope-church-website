@@ -99,9 +99,8 @@ function applyTheme(mode) {
 // Hook: read the current resolved theme from <html data-theme>, and re-read it
 // whenever it changes (theme toggle, OS toggle, or anything else mutating the attr).
 function useResolvedTheme() {
-  const [theme, setTheme] = useState(() => {
-    return (typeof document !== 'undefined' && document.documentElement.dataset.theme) || 'light';
-  });
+  // 'light' to start, as in the pre-rendered HTML; the effect reads the real one.
+  const [theme, setTheme] = useState('light');
   useEffect(() => {
     const root = document.documentElement;
     const read = () => setTheme(root.dataset.theme || 'light');
@@ -162,11 +161,18 @@ function ThemeToggle() {
     } catch {}
   };
 
-  const label = mode === 'auto' ? 'Auto' : mode === 'light' ? 'Light' : 'Dark';
-  const resolved = mode === 'auto' ? resolveAutoTheme() : mode;
-  const title = mode === 'auto'
+  // The pre-rendered HTML has no saved preference, OS setting or clock to go
+  // on, so the first render in the browser draws the same fixed Auto / sun
+  // that the build did (anything else is a hydration mismatch), and the real
+  // state shows right after mount.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  const shown = hydrated ? mode : 'auto';
+  const label = shown === 'auto' ? 'Auto' : shown === 'light' ? 'Light' : 'Dark';
+  const resolved = !hydrated ? 'light' : shown === 'auto' ? resolveAutoTheme() : shown;
+  const title = shown === 'auto'
     ? `Theme: Auto (currently ${resolved}). Click for Light.`
-    : mode === 'light' ? 'Theme: Light. Click for Dark.'
+    : shown === 'light' ? 'Theme: Light. Click for Dark.'
     : 'Theme: Dark. Click for Auto.';
 
   return (
