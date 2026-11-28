@@ -240,30 +240,8 @@
 .mnav-backdrop { display: none; }
 
 @media (max-width: 880px) {
-  .site-header,
-  .site-header.is-scrolled,
-  .site-header.menu-open {
-    top: 10px;
-    margin: 10px 12px 0;
-    border-radius: 28px;
-    background: transparent;
-    border: 0;
-    box-shadow: 0 12px 32px rgba(0, 46, 98, 0.14), 0 2px 6px rgba(0, 46, 98, 0.06);
-    backdrop-filter: none; -webkit-backdrop-filter: none;
-    isolation: isolate;
-  }
-  .site-header::before {
-    content: ''; position: absolute; inset: 0; z-index: -1;
-    border-radius: inherit;
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(22px) saturate(180%);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 46, 98, 0.05);
-  }
-  .site-header-inner,
-  .site-header.is-scrolled .site-header-inner { height: 56px; padding: 0 10px 0 18px; }
-  .brand img { height: 36px; }
+  /* The pill itself, its glass and its size are in "The pill floats from the
+     start" below. */
   .site-burger {
     width: 40px; height: 40px; margin: 0; padding: 0; border-radius: 999px;
     background: rgba(255, 255, 255, 0.55);
@@ -312,11 +290,6 @@
   .mnav-backdrop.show { opacity: 1; pointer-events: auto; }
 
   /* Dark */
-  [data-theme="dark"] .site-header::before {
-    background: rgba(22, 27, 34, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
   [data-theme="dark"] .site-burger { background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
   [data-theme="dark"] .site-header .mobile-menu {
     background: rgba(22, 27, 34, 0.86);
@@ -339,12 +312,6 @@
 [data-theme="dark"] .brand .brand-light { display: none; }
 [data-theme="dark"] .brand .brand-dark { display: block; }
 
-/* Phones: a gap under the pill, so it sits above the page instead of on the
-   edge of the hero. */
-@media (max-width: 880px) {
-  .site-header, .site-header.is-scrolled, .site-header.menu-open { margin-bottom: 10px; }
-}
-
 /* =========================================================
    The pill floats from the start (2026-11-27b)
 
@@ -361,9 +328,7 @@
 @media (max-width: 880px) { :root { --pill-top: 10px; --pill-h: 56px; --pill-gap: 14px; } }
 :root { --pill-space: calc(var(--pill-top) + var(--pill-h) + var(--pill-gap)); }
 
-.site-header,
-.site-header.is-scrolled,
-.site-header.menu-open {
+.site-header {
   position: sticky; top: var(--pill-top); z-index: 50;
   width: calc(100% - 28px); max-width: 1240px;
   margin: var(--pill-top) auto calc(-1 * (var(--pill-top) + var(--pill-h)));
@@ -382,8 +347,7 @@
   border: 1px solid rgba(255, 255, 255, 0.75);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 46, 98, 0.05);
 }
-.site-header-inner,
-.site-header.is-scrolled .site-header-inner {
+.site-header-inner {
   height: var(--pill-h); max-width: none; width: auto;
   padding: 0 10px 0 26px; gap: 24px;
 }
@@ -403,36 +367,29 @@
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
-[data-theme="dark"] .site-header,
-[data-theme="dark"] .site-header.is-scrolled { box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3); }
+[data-theme="dark"] .site-header { box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3); }
 [data-theme="dark"] .site-cta .theme-toggle { color: #fff; background: rgba(255, 255, 255, 0.08); }
 
 @media (max-width: 880px) {
-  .site-header,
-  .site-header.is-scrolled,
-  .site-header.menu-open {
+  .site-header {
     width: calc(100% - 20px);
     margin: var(--pill-top) auto calc(-1 * (var(--pill-top) + var(--pill-h)));
     border-radius: 28px;
   }
-  .site-header-inner,
-  .site-header.is-scrolled .site-header-inner { padding: 0 8px 0 18px; }
+  .site-header-inner { padding: 0 8px 0 18px; }
   .brand img { height: 36px; }
 }
 
 /* The mega panel hangs from the pill. */
 .mega-panel { top: calc(100% + 12px); }
 
-/* Only the ::before glass paints the pill. The old full-width bar's fills and
-   its margin/radius animation (dark-mode.css, redesign-header-hero.css) are
-   switched off here: on one iPhone the dark-mode fill showed as a solid block
-   beside the pill (2026-11-27). */
+/* Only the ::before glass paints the pill. The old full-width bar's fills
+   (site.css, dark-mode.css) are switched off here: on one iPhone the dark-mode
+   fill showed as a solid block beside the pill (2026-11-27). Only the shadow
+   animates, for the light/dark switch. */
 .site-header,
-.site-header.is-scrolled,
-.site-header.menu-open,
 .site-header.dark,
-[data-theme="dark"] .site-header,
-[data-theme="dark"] .site-header.is-scrolled {
+[data-theme="dark"] .site-header {
   background: transparent;
   border-color: transparent;
   transition: box-shadow 320ms var(--ease-out, ease);

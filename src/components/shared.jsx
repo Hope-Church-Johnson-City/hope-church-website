@@ -267,32 +267,6 @@ function SimpleThemeToggle() {
   );
 }
 
-// ---------- Sunday Strip (sticky service times, top of page) ----------
-function SundayStrip() {
-  const st = useServiceTimes();
-  const fourthLive = useFourthServiceLive();
-  return (
-    <div className="sunday-strip">
-      <div className="container sunday-strip-inner">
-        <div className="sunday-strip-left">
-          <span className="sunday-strip-label">Sundays</span>
-          <div className="sunday-strip-times">
-            <span>{st.first}</span><em/>
-            <span>{st.second}</span><em/>
-            <span>{st.third}</span>
-            {fourthLive && <><em/><span>{st.fourth}</span></>}
-          </div>
-        </div>
-        <div className="sunday-strip-right">
-          <a href="https://www.google.com/maps/search/?api=1&query=5034+Bobby+Hicks+Hwy+Johnson+City+TN" target="_blank" rel="noopener"><Icon name="pin" size={13}/> 5034 Bobby Hicks Hwy</a>
-          <a href="https://www.youtube.com/@hopechurchjohnsoncity" target="_blank" rel="noopener">Watch Live on Sundays at {st.stream}</a>
-          <ThemeToggle/>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ---------- Site Header ----------
 function SiteHeader({ onNav, current, dark = false }) {
   const st = useServiceTimes();
@@ -596,7 +570,7 @@ function Footer({ onNav }) {
 }
 
 export {
-  Icon, Button, AnnouncementBar, SundayStrip, SiteHeader, SectionHeader,
+  Icon, Button, AnnouncementBar, SiteHeader, SectionHeader,
   MissionBar, ServiceTimes, NewHereBlock, Footer, ThemeToggle, useResolvedTheme,
   PageHeader,
 };

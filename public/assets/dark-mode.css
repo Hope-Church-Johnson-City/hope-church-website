@@ -168,30 +168,11 @@
 
 /* Brand logo: SiteHeader now picks the right PNG (reversed in dark mode); no filter needed. */
 
-/* Nav dropdown */
-[data-theme="dark"] .nav-dropdown-trigger        { color: #fff; }
-[data-theme="dark"] .nav-dropdown-trigger:hover  { color: #fff; }
-[data-theme="dark"] .nav-dropdown-trigger.active { color: var(--hope-sky); }
-[data-theme="dark"] .nav-dropdown-panel {
-  background: #18202B;
-  border-color: var(--border-hairline);
-  box-shadow: var(--shadow-lg);
-}
-[data-theme="dark"] .nav-dropdown-eyebrow   { color: var(--hope-sky); }
-[data-theme="dark"] .nav-dropdown-item-label{ color: #fff; }
-[data-theme="dark"] .nav-dropdown-item-desc { color: #fff; }
-[data-theme="dark"] .nav-dropdown-item:hover{ background: rgba(255,255,255,0.05); }
-[data-theme="dark"] .nav-dropdown-item.active { background: rgba(0,130,202,0.18); }
-[data-theme="dark"] .nav-dropdown-item.active .nav-dropdown-item-label { color: var(--hope-sky); }
-
 /* Mobile menu */
 [data-theme="dark"] .mobile-menu                  { background: var(--bg-page); }
 [data-theme="dark"] .mobile-menu-nav a            { color: #fff; border-bottom-color: var(--border-hairline); }
 [data-theme="dark"] .mobile-menu-nav a:hover      { background: rgba(255,255,255,0.05); }
 [data-theme="dark"] .mobile-menu-nav a.active     { color: var(--hope-sky); }
-[data-theme="dark"] .mobile-menu-group-head       { color: #fff; border-bottom-color: var(--border-hairline); }
-[data-theme="dark"] .mobile-menu-group-items      { background: var(--bg-tint); border-bottom-color: var(--border-hairline); }
-[data-theme="dark"] .mobile-menu-group-items a    { color: #fff; }
 [data-theme="dark"] .mobile-menu-foot             { color: #fff; border-top-color: var(--border-hairline); }
 
 /* =========================================================
@@ -337,7 +318,7 @@
 [data-theme="dark"] .announce-bar { background: #061226; }
 
 /* =========================================================
-   THEME TOGGLE BUTTON (sits in the sunday-strip)
+   THEME TOGGLE BUTTON (in the header pill and the phone menu's foot)
    ========================================================= */
 .theme-toggle {
   display: inline-flex; align-items: center; gap: 6px;

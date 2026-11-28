@@ -1,44 +1,12 @@
 /* =========================================================
-   HOPE CHURCH — HEADER BAR + ANIMATIONS (additive)
+   HOPE CHURCH — HOMEPAGE HERO ENTRANCE (additive)
 
-   Loaded AFTER site.css and dark-mode.css so these rules win the
-   cascade for the properties they touch, without editing either
-   file in place. Every selector below either:
-     (a) targets a brand-new class (is-scrolled), or
-     (b) adds a property to an existing selector that file didn't
-         already set (e.g. .site-header didn't have margin/border-radius/
-         transition before — this is the first rule to set them).
-   Scope is deliberately narrow: the floating header on scroll, and one
-   entrance animation on the homepage hero. Nothing else on the site is
-   touched — no layout changes, no new content, no removed content.
+   One entrance animation on the homepage hero, loaded after site.css and
+   dark-mode.css. This file used to also turn the old full-width header bar
+   into a rounded pill once scrolled (.site-header.is-scrolled); the header
+   is a floating pill from the start now, styled in mega-nav.css, so those
+   rules are gone.
    ========================================================= */
-
-/* ---------- Site header: floating rounded pill once scrolled ---------- */
-.site-header {
-  margin: 0;
-  border-radius: 0;
-  transition: margin 380ms var(--ease-out), border-radius 380ms var(--ease-out),
-              box-shadow 320ms var(--ease-out), border-color 320ms var(--ease-out);
-}
-/* Plain margin/border-radius/box-shadow transition — no position or
-   backdrop-filter change — so this can't reintroduce the position:fixed
-   .mobile-menu containing-block bug site.css already works around at
-   the 880px breakpoint (see that file's comment on .site-header). */
-.site-header.is-scrolled {
-  margin: 12px clamp(10px, 3vw, 22px) 0;
-  border-radius: 999px;
-  border-bottom-color: transparent;
-  box-shadow: 0 14px 32px rgba(0,46,98,0.14), 0 2px 8px rgba(0,46,98,0.07);
-}
-[data-theme="dark"] .site-header.is-scrolled {
-  box-shadow: 0 14px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.3);
-}
-/* Full-width and square again while the mobile drawer is open, so the
-   drawer (positioned off this header's height) lines up correctly. */
-.site-header.menu-open { margin: 0; border-radius: 0; box-shadow: none; }
-
-.site-header-inner { transition: height 320ms var(--ease-out); }
-.site-header.is-scrolled .site-header-inner { height: 72px; }
 
 /* ---------- Hero: one orchestrated entrance, nothing scattered ----------
    .hero-photo-anim was already present as a class in the JSX with no
@@ -59,5 +27,4 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-a-photo.hero-photo-anim,
   .hero-a-eyebrow, .hero-a-title, .hero-a-actions { animation: none; opacity: 1; transform: none; }
-  .site-header { transition: none; }
 }

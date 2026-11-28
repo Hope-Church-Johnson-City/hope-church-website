@@ -47,8 +47,7 @@ one page does not pull in another page's chunk.
 | `/privacy`, `/accessibility`, `/terms`, `/delete-account` | `pages-legal.jsx` |
 | anything else | pre-rendered 404 (`dist/404.html`) |
 
-`components/shared.jsx` has the header, footer, Sunday strip and announcement
-bar. The header is a floating glass pill over the top of every page from the
+`components/shared.jsx` has the header, footer and announcement bar. The header is a floating glass pill over the top of every page from the
 start; the page's first block (hero or page header) runs to the top of the
 window behind it, and `src/pillSpace.js` (with a copy in `index.html` for the
 first paint) adds `--pill-space` to that block's top padding so nothing sits
@@ -69,6 +68,14 @@ any other page change starts at the top. Old
 
 Stylesheets, fonts and images are in `public/` and served as-is under `/assets`
 and `/fonts`.
+
+`index.html` loads the stylesheets in a fixed order and later files override
+earlier ones, so keep the order. The header pill and both menus are styled in
+`mega-nav.css` (loaded last); the rules for the old full-width header bar, its
+Get Involved dropdown (`.nav-dropdown*`), the old phone menu groups
+(`.mobile-menu-group*`) and the Sundays strip (`.sunday-strip*`) were deleted
+on 2026-11-28, so `redesign-header-hero.css` now holds only the homepage hero
+entrance.
 
 Photos in `public/assets` are sized for the web, not straight off a camera: the
 longest side is at most 2400px for full-bleed images (the Generations hero,
@@ -226,13 +233,13 @@ them.
   its rows rise in a stagger by their `--i` index, the tag pill pulses once.
 - **Hero**: a 100 ms fade-up stagger, 860 ms in all. **Page change**: the main
   content fades in after a client-side navigation (`main[data-pt]`), never on
-  the first load. Buttons, nav underline, dropdown and mobile menu share the
-  same feel.
+  the first load. Buttons, nav underline and mobile menu share the same feel
+  (the desktop mega menu's motion is in `mega-nav.css`).
 - **Reduced motion**: under `prefers-reduced-motion: reduce` the script does
   nothing and the CSS turns off every animation, transition and transform
   (content stays fully visible). Print shows everything too.
-- The header's shrink on scroll (`height` in `redesign-header-hero.css`) was
-  there before and is the one layout transition left.
+- The header pill keeps one size while scrolling; the old full-width bar's
+  shrink-on-scroll rules were removed with that bar.
 
 ## Theme
 

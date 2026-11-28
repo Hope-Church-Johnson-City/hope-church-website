@@ -54,37 +54,18 @@ main[data-pt="in"] { animation: motion-fade var(--motion-base) var(--motion-ease
 .btn:active, .gen-btn:active, .app-store-btn:active, .footer-live-btn:active { transform: scale(.98); box-shadow: none; }
 
 /* ---------- Nav: an underline that draws in on hover ---------- */
-.site-nav a::after, .nav-dropdown-trigger::after {
+.site-nav a::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px;
   background: var(--hope-blue); border-radius: 2px;
   transform: scaleX(0); transform-origin: left center;
   transition: transform var(--motion-base) var(--motion-ease);
 }
-.nav-dropdown-trigger::after { right: 14px; }
-.site-nav a:hover::after, .site-nav a.active::after,
-.nav-dropdown-trigger:hover::after, .nav-dropdown-trigger.active::after,
-.nav-dropdown.open .nav-dropdown-trigger::after { transform: scaleX(1); }
-.site-header.dark .site-nav a::after, .site-header.dark .nav-dropdown-trigger::after,
-[data-theme="dark"] .site-nav a::after, [data-theme="dark"] .nav-dropdown-trigger::after { background: var(--hope-sky); }
-.site-nav a, .nav-dropdown-trigger { transition: color var(--motion-fast) var(--motion-ease); }
+.site-nav a:hover::after, .site-nav a.active::after { transform: scaleX(1); }
+.site-header.dark .site-nav a::after,
+[data-theme="dark"] .site-nav a::after { background: var(--hope-sky); }
+.site-nav a { transition: color var(--motion-fast) var(--motion-ease); }
 
-/* ---------- Dropdown and mobile menu: fade and slide, items in a light stagger ---------- */
-.nav-dropdown-panel {
-  transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-base) var(--motion-ease), visibility 0s linear var(--motion-base);
-}
-.nav-dropdown.open .nav-dropdown-panel {
-  transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-base) var(--motion-ease);
-}
-.nav-dropdown-caret { transition: transform var(--motion-base) var(--motion-ease); }
-.nav-dropdown-item { transition: background-color var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease); }
-.nav-dropdown-item:hover { transform: translateX(2px); }
-.nav-dropdown.open .nav-dropdown-item { animation: motion-rise-sm var(--motion-base) var(--motion-ease) both; }
-.nav-dropdown.open .nav-dropdown-item:nth-child(2) { animation-delay: 30ms; }
-.nav-dropdown.open .nav-dropdown-item:nth-child(3) { animation-delay: 60ms; }
-.nav-dropdown.open .nav-dropdown-item:nth-child(4) { animation-delay: 90ms; }
-.nav-dropdown.open .nav-dropdown-item:nth-child(5) { animation-delay: 120ms; }
-.nav-dropdown.open .nav-dropdown-item:nth-child(n+6) { animation-delay: 150ms; }
-
+/* ---------- Mobile menu: fade and slide, items in a light stagger ---------- */
 .mobile-menu { transition: opacity var(--motion-fast) var(--motion-ease), transform var(--motion-base) var(--motion-ease); }
 .mobile-menu.open .mobile-menu-nav > *,
 .mobile-menu.open .mobile-menu-cta, .mobile-menu.open .mobile-menu-foot {
@@ -154,16 +135,16 @@ a.hwk-row:active .hwk-tile, a.hwk-row:active .hwk-day { transform: scale(.96); }
 @media (prefers-reduced-motion: reduce) {
   [data-rv], [data-tw], img[data-ld], main[data-pt] { opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; }
   .hero-a-photo.hero-photo-anim, .hero-a-eyebrow, .hero-a-title, .hero-a-actions, .hero-a-bottom,
-  .nav-dropdown.open .nav-dropdown-item, .mobile-menu.open .mobile-menu-nav > *,
+  .mobile-menu.open .mobile-menu-nav > *,
   .mobile-menu.open .mobile-menu-cta, .mobile-menu.open .mobile-menu-foot,
   .hwk-card .is-live li, .hwk-card .hwk-message, .hwk-card .hwk-date-text, .hwk-card .hwk-foot,
   .hwk-card .hwk-section, .hwk-card .hwk-today { animation: none !important; opacity: 1; transform: none; }
   .btn, .btn:hover, .btn:active, .gen-btn:hover, .gen-btn:active, .app-store-btn:hover, .app-store-btn:active,
   .ministry-card:hover, .event-card:hover, .event-card-big:hover, .msg-card:hover, .msg-list-card:hover,
   a.hwk-row:hover .hwk-trail, a.hwk-row:active .hwk-tile, a.hwk-row:active .hwk-day,
-  .hwk-message:hover .hwk-play, .hwk-message:active .hwk-play, .nav-dropdown-item:hover,
+  .hwk-message:hover .hwk-play, .hwk-message:active .hwk-play,
   .new-here-photo:hover > img, .hwk-message:hover .hwk-message-art img { transform: none !important; }
-  .site-nav a::after, .nav-dropdown-trigger::after { transition: none; }
+  .site-nav a::after { transition: none; }
 }
 @media print {
   [data-rv], [data-tw], img[data-ld] { opacity: 1 !important; transform: none !important; animation: none !important; }

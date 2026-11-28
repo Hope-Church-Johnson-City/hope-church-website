@@ -51,39 +51,6 @@
 .announce-bar-close:hover { color: #fff; background: rgba(255,255,255,0.18); opacity: 1; }
 
 /* =========================================================
-   SERVICE TIME STRIP (top bar, above header)
-   ========================================================= */
-.sunday-strip {
-  background: var(--ink-900);
-  color: #fff;
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
-  padding: 9px 0;
-  position: relative;
-  z-index: 55;
-}
-.sunday-strip-inner {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-.sunday-strip-left { display: flex; align-items: center; gap: 20px; font-weight: 500; }
-.sunday-strip-label {
-  font-size: 11px; font-weight: 900; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--hope-sky);
-}
-.sunday-strip-times { display: flex; align-items: center; gap: 14px; font-variant-numeric: tabular-nums; }
-.sunday-strip-times span { color: #fff; font-weight: 700; }
-.sunday-strip-times em {
-  display: inline-block; width: 3px; height: 3px; border-radius: 50%;
-  background: rgba(255,255,255,0.35); margin: 0 2px 2px 2px;
-}
-.sunday-strip-right { display: flex; align-items: center; gap: 20px; }
-.sunday-strip-right a {
-  color: #fff; font-size: 12.5px; font-weight: 600;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.sunday-strip-right a:hover { color: #fff; text-decoration: none; }
-
-/* =========================================================
    SITE HEADER
    ========================================================= */
 .site-header {
@@ -2077,14 +2044,6 @@ a.hwk-row:hover .hwk-trail { color: var(--hwk-blue); }
   .service-times, .cta-band { padding: 64px 0; }
   .mission-bar { padding: 48px 0; }
 
-  /* Sunday strip — keep, simplify */
-  .sunday-strip { font-size: 12px; padding: 8px 0; }
-  .sunday-strip-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .sunday-strip-left { gap: 12px; flex-wrap: wrap; }
-  .sunday-strip-right { width: 100%; justify-content: flex-start; gap: 14px; flex-wrap: wrap; }
-  .sunday-strip-right a:nth-child(2) { display: none; } /* hide "Watch Live" — addr is enough */
-  .sunday-strip-label { font-size: 10px; }
-
   /* Announcement bar */
   .announce-bar { font-size: 14px; }
   .announce-bar-inner { padding: 12px 46px 12px 16px; text-align: left; }
@@ -2275,122 +2234,8 @@ a.hwk-row:hover .hwk-trail { color: var(--hwk-blue); }
   .messages-featured-meta h3 { font-size: 20px; }
   .messages-featured-meta { bottom: 88px; }
   .msg-play-big { width: 48px; height: 48px; font-size: 16px; }
-
-  /* Stack sunday strip times tighter */
-  .sunday-strip-times { gap: 10px; font-size: 12px; }
-  .sunday-strip-times em { margin: 0; }
 }
 
-
-/* =========================================================
-   NAV DROPDOWN — Get Involved
-   ========================================================= */
-.nav-dropdown { position: relative; display: inline-block; }
-.nav-dropdown-trigger {
-  background: transparent; border: 0; padding: 8px 0;
-  font: inherit; color: var(--fg-2); font-weight: 600; font-size: 14px;
-  letter-spacing: 0.01em; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 4px;
-  position: relative;
-}
-.nav-dropdown-trigger:hover { color: var(--hope-blue); }
-.nav-dropdown-trigger.active { color: var(--hope-blue); }
-.nav-dropdown-trigger.active::after {
-  content: ''; position: absolute; left: 0; right: 14px; bottom: -2px;
-  height: 2px; background: var(--hope-blue); border-radius: 2px;
-}
-.nav-dropdown-caret {
-  transition: transform 180ms ease;
-  margin-top: 1px;
-}
-.nav-dropdown.open .nav-dropdown-caret { transform: rotate(180deg); }
-.site-header.dark .nav-dropdown-trigger { color: #fff; }
-.site-header.dark .nav-dropdown-trigger:hover { color: #fff; }
-.site-header.dark .nav-dropdown-trigger.active { color: var(--hope-sky); }
-.site-header.dark .nav-dropdown-trigger.active::after { background: var(--hope-sky); }
-
-.nav-dropdown-panel {
-  position: absolute; top: calc(100% + 14px); right: 50%; transform: translate(50%, -8px);
-  min-width: 360px;
-  background: #fff;
-  border: 1px solid var(--border-hairline);
-  border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.06);
-  padding: 16px;
-  opacity: 0; pointer-events: none; visibility: hidden;
-  transition: opacity 160ms ease, transform 200ms cubic-bezier(.2,.7,.2,1), visibility 0s linear 200ms;
-  z-index: 60;
-}
-.nav-dropdown-panel::before {
-  content: ''; position: absolute; top: -8px; left: 0; right: 0; height: 8px;
-}
-.nav-dropdown.open .nav-dropdown-panel {
-  opacity: 1; pointer-events: auto; visibility: visible;
-  transform: translate(50%, 0);
-  transition: opacity 160ms ease, transform 200ms cubic-bezier(.2,.7,.2,1);
-}
-.nav-dropdown-eyebrow {
-  font-size: 10px; font-weight: 900; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--hope-blue);
-  padding: 4px 12px 10px;
-}
-.nav-dropdown-list { display: flex; flex-direction: column; }
-.nav-dropdown-item {
-  display: block; padding: 12px 14px; border-radius: 10px;
-  color: var(--fg-1); text-decoration: none;
-  transition: background 140ms ease;
-}
-.nav-dropdown-item:hover {
-  background: var(--bg-brand-soft); text-decoration: none;
-}
-.nav-dropdown-item-label {
-  font-size: 15px; font-weight: 800; color: var(--fg-1);
-  letter-spacing: -0.005em; margin-bottom: 2px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.nav-dropdown-item:hover .nav-dropdown-item-label { color: var(--hope-navy); }
-.nav-dropdown-item.active { background: var(--bg-brand-soft); }
-.nav-dropdown-item.active .nav-dropdown-item-label { color: var(--hope-navy); }
-.nav-dropdown-item-desc {
-  font-size: 13px; color: var(--fg-2); line-height: 1.4;
-}
-
-/* Mobile group head (used in mobile-menu) */
-.mobile-menu-group-head {
-  background: transparent; border: 0; padding: 18px 24px;
-  font: inherit; font-size: 18px; font-weight: 700;
-  color: var(--fg-1); cursor: pointer;
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%; text-align: left;
-  border-bottom: 1px solid var(--border-hairline);
-}
-.mobile-menu-group-head svg { color: var(--ink-400); transition: transform 200ms ease; }
-.mobile-menu-group-head.open svg { transform: rotate(180deg); color: var(--hope-blue); }
-.mobile-menu-group-head.active { color: var(--hope-blue); }
-.site-header.dark .mobile-menu-group-head { color: #fff; border-bottom-color: rgba(255,255,255,0.08); }
-.site-header.dark .mobile-menu-group-head.active { color: var(--hope-sky); }
-.mobile-menu-group-items {
-  background: var(--ink-050);
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border-hairline);
-}
-.mobile-menu-group-items a {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 24px 14px 44px;
-  color: var(--fg-2); font-weight: 600; font-size: 15px;
-  text-decoration: none;
-}
-.mobile-menu-group-items a:hover, .mobile-menu-group-items a.active {
-  color: var(--hope-blue); background: rgba(0,130,202,0.06);
-  text-decoration: none;
-}
-.mobile-menu-group-items svg { color: var(--ink-400); }
-.site-header.dark .mobile-menu-group-items { background: rgba(255,255,255,0.04); }
-.site-header.dark .mobile-menu-group-items a { color: #fff; }
-
-@media (max-width: 880px) {
-  .nav-dropdown { display: none; }
-}
 
 /* =========================================================
    LIFE GROUPS PAGE
