@@ -1,0 +1,156 @@
+/* =========================================================
+   HOPE CHURCH — desktop nav with one shared menu panel
+   (src/components/megaNav.jsx, 2026-11-27)
+
+   One white panel hangs under the header. Its height animates to fit whichever
+   menu is open, the menus cross-fade with a short slide toward the direction
+   the pointer moved, and the page dims behind. Loaded after motion.css.
+   ========================================================= */
+
+.mega { display: flex; align-items: center; }
+
+/* Triggers look like the other nav links, with a caret. */
+.site-nav .mega-trigger {
+  background: transparent; border: 0; cursor: pointer;
+  font: inherit; color: var(--fg-2); font-weight: 600; font-size: 14px;
+  letter-spacing: 0.01em; padding: 8px 0; position: relative;
+  display: inline-flex; align-items: center; gap: 4px;
+  text-decoration: none;
+}
+.site-nav .mega-trigger:hover,
+.site-nav .mega-trigger.open { color: var(--hope-blue); text-decoration: none; }
+.site-nav .mega-trigger.active { color: var(--hope-blue); }
+.site-nav .mega-trigger.active::after {
+  content: ''; position: absolute; left: 0; right: 15px; bottom: -2px;
+  height: 2px; background: var(--hope-blue); border-radius: 2px;
+}
+.mega-caret { transition: transform 220ms var(--ease-out, cubic-bezier(.2,.8,.2,1)); margin-top: 1px; }
+.mega-trigger.open .mega-caret { transform: rotate(180deg); }
+.site-header.dark .site-nav .mega-trigger { color: #fff; }
+.site-header.dark .site-nav .mega-trigger.active { color: var(--hope-sky); }
+
+/* The panel: centred under the header, its height set from the open menu. */
+.mega-panel {
+  position: absolute; top: calc(100% + 10px); left: 50%;
+  width: min(1080px, calc(100vw - 40px));
+  transform: translate(-50%, -6px) scale(0.985);
+  transform-origin: top center;
+  background: #fff;
+  border: 1px solid var(--border-hairline);
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0, 46, 98, 0.16), 0 6px 16px rgba(0, 46, 98, 0.07);
+  overflow: hidden;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition:
+    height 340ms cubic-bezier(.2,.8,.2,1),
+    opacity 200ms ease,
+    transform 300ms cubic-bezier(.2,.8,.2,1),
+    visibility 0s linear 300ms;
+  z-index: 60;
+}
+.mega.is-open .mega-panel {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translate(-50%, 0) scale(1);
+  transition:
+    height 340ms cubic-bezier(.2,.8,.2,1),
+    opacity 200ms ease,
+    transform 300ms cubic-bezier(.2,.8,.2,1);
+}
+/* A bridge over the gap, so moving the pointer down to the panel doesn't close it. */
+.mega-panel::before { content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 12px; }
+
+/* Each menu sits at the top of the panel; only the open one shows. */
+.mega-pane {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: grid; grid-template-columns: 280px 1fr; gap: 12px;
+  padding: 12px;
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(.2,.8,.2,1), visibility 0s linear 320ms;
+}
+.mega-pane.out { opacity: 0; visibility: hidden; pointer-events: none; }
+.mega-pane.out[data-from="-1"] { transform: translateX(-24px); }
+.mega-pane.out[data-from="1"]  { transform: translateX(24px); }
+.mega-pane.in {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 260ms ease 60ms, transform 340ms cubic-bezier(.2,.8,.2,1);
+}
+/* Opening from closed: the contents rise a little instead of sliding. */
+.mega-pane.in[data-from="0"] { animation: mega-rise 320ms cubic-bezier(.2,.8,.2,1); }
+@keyframes mega-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.mega-intro {
+  background: var(--ink-050);
+  border-radius: 14px;
+  padding: 22px 22px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.mega-eyebrow {
+  font-size: 10px; font-weight: 900; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--hope-blue);
+}
+.mega-intro p { margin: 0; font-size: 15px; line-height: 1.45; color: var(--fg-1); }
+.mega-more {
+  margin-top: auto; font-size: 14px; font-weight: 700; color: var(--hope-blue);
+  text-decoration: none;
+}
+.mega-more:hover { text-decoration: underline; }
+
+.mega-cols { display: grid; gap: 4px 12px; padding: 6px 4px; align-content: start; }
+/* One list flows into two columns, so the panel isn't half empty. */
+.mega-cols.cols-1 { grid-template-columns: 1fr; }
+.mega-cols.cols-1 .mega-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
+.mega-cols.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mega-col { display: flex; flex-direction: column; gap: 2px; }
+
+.mega-item {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 11px 14px; border-radius: 12px;
+  color: var(--fg-1); text-decoration: none;
+  transition: background 160ms ease;
+}
+.mega-item:hover, .mega-item:focus-visible { background: var(--ink-050); text-decoration: none; }
+.mega-item.active { background: var(--bg-brand-soft); }
+.mega-item-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 700; color: var(--fg-1); letter-spacing: -0.005em;
+}
+.mega-item:hover .mega-item-label, .mega-item.active .mega-item-label { color: var(--hope-navy); }
+.mega-ext { opacity: 0.55; }
+.mega-item-desc { font-size: 13px; line-height: 1.4; color: var(--fg-2); }
+
+/* The page dims while a menu is open. */
+.mega-backdrop {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(10, 22, 40, 0.38);
+  opacity: 0; pointer-events: none;
+  transition: opacity 260ms ease;
+}
+.mega-backdrop.show { opacity: 1; pointer-events: auto; }
+
+/* Dark mode */
+[data-theme="dark"] .mega-panel { background: #1b2129; border-color: rgba(255,255,255,0.08); box-shadow: 0 30px 70px rgba(0,0,0,0.5); }
+[data-theme="dark"] .mega-intro { background: rgba(255,255,255,0.05); }
+[data-theme="dark"] .mega-intro p,
+[data-theme="dark"] .mega-item-label { color: #fff; }
+[data-theme="dark"] .mega-item-desc { color: rgba(255,255,255,0.72); }
+[data-theme="dark"] .mega-eyebrow, [data-theme="dark"] .mega-more { color: var(--hope-sky); }
+[data-theme="dark"] .mega-item:hover, [data-theme="dark"] .mega-item:focus-visible { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .mega-item.active { background: rgba(0,130,202,0.18); }
+[data-theme="dark"] .mega-item.active .mega-item-label { color: var(--hope-sky); }
+[data-theme="dark"] .site-nav .mega-trigger { color: #fff; }
+[data-theme="dark"] .site-nav .mega-trigger.active,
+[data-theme="dark"] .site-nav .mega-trigger:hover,
+[data-theme="dark"] .site-nav .mega-trigger.open { color: var(--hope-sky); }
+[data-theme="dark"] .site-nav .mega-trigger.active::after { background: var(--hope-sky); }
+[data-theme="dark"] .mega-backdrop { background: rgba(0,0,0,0.5); }
+
+/* The burger menu takes over below 881px. */
+@media (max-width: 880px) {
+  .mega { display: none; }
+  .mega-backdrop { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mega-panel, .mega.is-open .mega-panel, .mega-pane, .mega-pane.in, .mega-backdrop, .mega-caret { transition: none; }
+  .mega-pane.in[data-from="0"] { animation: none; }
+  .mega-pane.out[data-from="-1"], .mega-pane.out[data-from="1"] { transform: none; }
+}

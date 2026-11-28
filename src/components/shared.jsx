@@ -2,6 +2,7 @@ import React from 'react';
 import { hrefFor } from '../announcement.jsx';
 import { resources } from '../resources.js';
 import { pathFor } from '../nav.js';
+import MegaNav from './megaNav.jsx';
 import { useServiceTimes, useFourthServiceLive } from '../serviceTimes.jsx';
 // Hope Church — shared components: Header, Footer, Sunday strip, Announcement bar
 
@@ -308,7 +309,6 @@ function SiteHeader({ onNav, current, dark = false }) {
     { id: 'give', label: 'Give' },
   ];
   const [menuOpen, setMenuOpen] = useState(false);
-  const [dropOpen, setDropOpen] = useState(false);
   const [mobileInvolvedOpen, setMobileInvolvedOpen] = useState(true);
   // Logo: in dark mode use the reversed lockup (colored icon + white wordmark).
   // The 'dark' prop (passed by hero-C bookend) forces the white treatment regardless of theme.
@@ -336,94 +336,15 @@ function SiteHeader({ onNav, current, dark = false }) {
     }
   }, [menuOpen]);
 
-  // Close dropdown on Escape / click outside
-  useEffect(() => {
-    if (!dropOpen) return;
-    const onKey = (e) => { if (e.key === 'Escape') setDropOpen(false); };
-    const onDocClick = (e) => {
-      if (!e.target.closest('.nav-dropdown')) setDropOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    document.addEventListener('click', onDocClick);
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.removeEventListener('click', onDocClick);
-    };
-  }, [dropOpen]);
-
-  const go = (id) => { setMenuOpen(false); setDropOpen(false); onNav(id); };
+  const go = (id) => { setMenuOpen(false); onNav(id); };
   const involvedActive = involvedIds.includes(current);
-  const dropCloseTimer = React.useRef(null);
-  const openDrop = () => {
-    if (dropCloseTimer.current) { clearTimeout(dropCloseTimer.current); dropCloseTimer.current = null; }
-    setDropOpen(true);
-  };
-  const scheduleCloseDrop = () => {
-    if (dropCloseTimer.current) clearTimeout(dropCloseTimer.current);
-    dropCloseTimer.current = setTimeout(() => setDropOpen(false), 220);
-  };
-
   return (
     <header className={`site-header ${dark ? 'dark' : ''} ${menuOpen ? 'menu-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
       <div className="container site-header-inner">
         <a className="brand" href="/" onClick={(e)=>{e.preventDefault();go('home');}}>
           <img src={logo} alt="Hope Church" />
         </a>
-        <nav className="site-nav">
-          {links.map(l => {
-            if (l.dropdown) {
-              return (
-                <div
-                  key={l.id}
-                  className={`nav-dropdown ${dropOpen ? 'open' : ''}`}
-                  onMouseEnter={openDrop}
-                  onMouseLeave={scheduleCloseDrop}
-                >
-                  <button
-                    type="button"
-                    className={`nav-dropdown-trigger ${involvedActive ? 'active' : ''}`}
-                    aria-expanded={dropOpen}
-                    aria-haspopup="true"
-                    onClick={(e) => { e.stopPropagation(); setDropOpen(o => !o); }}
-                  >
-                    {l.label}
-                    <svg className="nav-dropdown-caret" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  </button>
-                  <div className="nav-dropdown-panel" role="menu">
-                    <div className="nav-dropdown-eyebrow">Get Involved</div>
-                    <div className="nav-dropdown-list">
-                      {l.dropdown.map(d => (
-                        <a
-                          key={d.id}
-                          href={d.href || pathFor(d.id)}
-                          target={d.href ? '_blank' : undefined}
-                          rel={d.href ? 'noopener noreferrer' : undefined}
-                          role="menuitem"
-                          className={`nav-dropdown-item ${current === d.id ? 'active' : ''}`}
-                          onClick={(e)=>{
-                            if (d.href) { setDropOpen(false); return; }
-                            e.preventDefault(); go(d.id);
-                          }}
-                        >
-                          <div className="nav-dropdown-item-label">
-                            <span>{d.label}</span>
-                            {d.href && (
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" style={{opacity:0.55, marginLeft:8}}><path d="M7 17L17 7M9 7h8v8"/></svg>
-                            )}
-                          </div>
-                          <div className="nav-dropdown-item-desc">{d.desc}</div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <a key={l.id} href={pathFor(l.id)} onClick={(e)=>{e.preventDefault();onNav(l.id);}} className={current === l.id ? 'active' : ''}>{l.label}</a>
-            );
-          })}
-        </nav>
+        <MegaNav links={links} current={current} onNav={(id) => { setMenuOpen(false); onNav(id); }}/>
         <div className="site-cta">
           <Button variant="primary" size="sm" onClick={()=>onNav('visit')}>Plan Your Visit</Button>
         </div>
